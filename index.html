@@ -7,11 +7,12 @@
 <meta name="author" content="author"/> 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Jade Dungeon</title>
-<link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" />
-<link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" />
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" />
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" />
 <link rel="stylesheet" href="themes/hobbit/style/style.css" />
-<script src="http://cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
-<script src="http://cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js" ></script>
+<script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js" ></script>
+<script src="//cdn.bootcss.com/showdown/1.3.0/showdown.min.js" ></script>
 </head>
 <body>
 <nav class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
@@ -19,11 +20,11 @@
 		<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#example-navbar-collapse">
 			<span class="sr-only">切换导航</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span>
 		</button>
-		<a class="navbar-brand" href="#">Jade Dungeon</a>
+		<a class="navbar-brand" href="/">Jade Dungeon</a>
 	</div>
 	<div class="collapse navbar-collapse" id="example-navbar-collapse">
 		<ul class="nav navbar-nav">
-			<li class="active"><a href="#">Journal</a></li>
+			<li class="active"><a href="/">Journal</a></li>
 			<li><a href="/gallery.html">Gallery</a></li>
 			<li><a target="_blank" href="/study/wiki/wiki_html/index.html" >Notes</a></li>
 			<li class="dropdown">
@@ -98,16 +99,7 @@
 		<div class="item">
 			<div class="title">Ultrices</div>
 			<div class="metadata">May 29, 2006 by Feugiat</div>
-			<div class="body">
-				<p>Integer porta. Fusce nibh. Curabitur pellentesque, lectus at <a href="index.html">volutpat interdum</a>. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Pellentesque a nibh quis nunc volutpat aliquam</p>
-				<blockquote>
-					<p>A box without thines, key or lid, Yet a golden treasure inside is hid.</p>
-				</blockquote>
-				<p>Sem justo placerat elit, eget feugiat est leo tempor quam. Ut quis neque convallis magna consequat molestie. Nullam semper massa eget ligula. Fusce accumsan enim et arcu. Duis sagittis libero at lacus. Suspendisse lacinia nulla eget urna.</p>
-				<blockquote>
-					<p>Alive without breath, As cold as death; Never thirsty, ever drinking, All in mail never clinking.</p>
-				</blockquote>
-				<p>Eget feugiat est leo tempor quam. Ut quis neque convallis magna consequat molestie. Donec varius tincidunt nisi.</p>
+			<div id="ib-3" class="body">
 			</div>
 		</div>
 
@@ -126,4 +118,13 @@
 </div>
 
 </body>
+<script type="text/javascript">
+var text      = '#hello, markdown!\n' +
+ 		'![bar](http://7xldv2.com1.z0.glb.clouddn.com/dungeon%2Fthemes%2Fhobbit%2Fimages%2Fmap.jpg)\n'
+
+var converter = new showdown.Converter();
+var html      = converter.makeHtml(text);
+
+$("#ib-3").html(html);
+</script>
 </html>
