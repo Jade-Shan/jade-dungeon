@@ -9,35 +9,15 @@
 <title>Jade Dungeon</title>
 <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" />
 <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" />
-<link rel="stylesheet" href="themes/hobbit/style/style.css" />
+<link rel="stylesheet" href="styles/portal.min.css" />
 <script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
 <script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js" ></script>
 <script src="//cdn.bootcss.com/showdown/1.3.0/showdown.min.js" ></script>
+<script src="scripts/portal.js" ></script>
 </head>
 <body>
-<nav class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
-	<div class="navbar-header">
-		<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#example-navbar-collapse">
-			<span class="sr-only">切换导航</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span>
-		</button>
-		<a class="navbar-brand" href="/">Jade Dungeon</a>
-	</div>
-	<div class="collapse navbar-collapse" id="example-navbar-collapse">
-		<ul class="nav navbar-nav">
-			<li class="active"><a href="/">Journal</a></li>
-			<li><a href="/gallery.html">Gallery</a></li>
-			<li><a target="_blank" href="/study/wiki/wiki_html/index.html" >Notes</a></li>
-			<li class="dropdown">
-			<a href="#" class="dropdown-toggle" data-toggle="dropdown">About Me<b class="caret"></b></a>
-			<ul class="dropdown-menu">
-				<li><a target="_blank" href="https://github.com/Jade-Shan/">Github</a></li>
-				<li class="divider"></li>
-				<li><a target="_blank" href="/content/qiwei-resume.html">Resume</a></li>
-			</ul>
-			</li>
-		</ul>
-	</div>
-</nav>
+
+<nav id="topnav" class="navbar navbar-inverse  navbar-fixed-top" role="navigation"> </nav>
 
 <div class="container ctx-main"> 
 	<div class="pattern"><span></span></div>
@@ -119,12 +99,18 @@
 
 </body>
 <script type="text/javascript">
-var text      = '#hello, markdown!\n' +
- 		'![bar](http://7xldv2.com1.z0.glb.clouddn.com/dungeon%2Fthemes%2Fhobbit%2Fimages%2Fmap.jpg)\n'
+//
+//
+//var text      = '#hello, markdown!\n' +
+// 		'![bar](http://7xldv2.com1.z0.glb.clouddn.com/dungeon%2Fthemes%2Fhobbit%2Fimages%2Fmap.jpg =180x*)\n'
+//
+//var converter = new showdown.Converter();
+//var html      = converter.makeHtml(text);
+//
+//$("#ib-3").html(html);
 
-var converter = new showdown.Converter();
-var html      = converter.makeHtml(text);
+var page = new net.jadedungeon.journal();
+page.render({pageTitle: "Journal"});
 
-$("#ib-3").html(html);
 </script>
 </html>
