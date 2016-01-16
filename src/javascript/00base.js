@@ -6,6 +6,8 @@ var net = net || {};
 		self.ui = {};
 		self.data = {};
 
+		self.markdown = new showdown.Converter();
+
 		self.data.nav = [ {title: "Journal", link: "/"},
 			{title: "Gallery", link: "/gallery.html"},
 			{title: "Note", link: "/notes/", isNewWin: true},
