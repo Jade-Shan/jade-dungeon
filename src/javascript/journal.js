@@ -9,6 +9,7 @@
 	self.render = function () {
 		net.jadedungeon.renderTopNav(self.initCfg);
 		net.jadedungeon.renderSubTitle(self.initCfg);
+		net.jadedungeon.renderPhotoFrame();
 		self.renderJournal(self.initCfg.articles);
 	};
 

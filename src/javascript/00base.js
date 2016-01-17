@@ -50,11 +50,25 @@ var net = net || {};
 		$("#topnav").html(navhtml);
 	};
 
+
+
+	self.renderPhotoFrame = function () {
+		var html = '<div class="modal-dialog"><div class="modal-content">';
+		html = html + '<div class="modal-header">';
+		html = html + '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>';
+		html = html + '<h4 class="modal-title" id="photo-frame-label"></h4></div>';
+		html = html + '<div class="modal-body row">';
+		html = html + '<img id="photo-frame-img" alt="" src="" class="col-xs-12 col-sm-12 col-md-12 col-lg-12" >';
+		html = html + '</div></div>';
+		$("#photo-frame").html(html);
+	}
+
+
 	self.renderSubTitle = function (page) { $("#subTitle").html(page.subTitle); };
 
 	self.renderPicItem = function (itm) {
 		var html = '<div class="col-sm-6 col-md-3"><div class="thumbnail">';
-		html = html + '<img id="' + itm.id + '" src="' + itm.url +'" alt="' + 
+		html = html + '<img onClick="javascript:net.jadedungeon.viewPic(this)" id="' + itm.id + '" src="' + itm.url +'" alt="' + 
 			itm.title +'"></div>';
 		html = html + '<div class="caption"><h3>' + itm.title + '</h3><p>' + 
 			itm.desc + '</p></div></div>';
@@ -80,6 +94,14 @@ var net = net || {};
 		}
 		html = html + '<div class="divider"><span></span></div>';
 		return html;
+	};
+
+	self.viewPic = function (img) {
+		var m = $(img);
+		$("#photo-frame-label").html(m.attr("alt"));
+		$("#photo-frame-img").attr("src", m.attr("src"));
+		$("#photo-frame-img").attr("alt", m.attr("alt"));
+		$('#photo-frame').modal('show');
 	};
 
 })(jQuery);
