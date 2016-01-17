@@ -27,7 +27,6 @@
 			type: 'GET', dataType: 'json', data: { },
 			timeout: net.jadedungeon.ajaxTimeout,
 			success: function(data, status, xhr) {
-				// console.debug(status);
 				if ('success' == data.status) {
 					self.renderJournal(data);
 					$('html,body').animate({scrollTop:0},700);
