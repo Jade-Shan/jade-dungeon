@@ -1,2 +1,5 @@
 study/*
+scripts/
+themes/hobbit/css/
+styles/
 **/*.swp
