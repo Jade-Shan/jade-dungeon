@@ -5,6 +5,7 @@ var net = net || {};
 	var init = function (cfg) {
 		self.ui = {};
 		self.data = {};
+		self.cfg = {ajaxTimeout: 5000};
 
 		self.markdown = new showdown.Converter();
 
@@ -50,7 +51,39 @@ var net = net || {};
 		$("#topnav").html(navhtml);
 	};
 
+	self.renderSubTitle = function (page) { $("#subTitle").html(page.subTitle); };
 
+	self.renderPagination = function (page, count, callbackName) {
+		var i = 1;
+		var html = '<ul class="pagination center">';
+		if (page === 1) {
+			html = html + '<li><a class="disable" href="javascript:void(0);">&laquo;</a></li>';
+		} else {
+			html = html + '<li><a href="javascript:' + callbackName + 
+				'(' + i + ');">&laquo;</a></li>';
+		}
+		while (page > i) {
+			html = html + '<li><a href="javascript:' + callbackName + 
+				'(' + i + ');">' + i + '</a></li>';
+			i = i + 1;
+		}
+		html = html + '<li class="active"><a href="javascript:void(0);">' + page + 
+			'</a></li>';
+		i = page + 1;
+		while (i <= count) {
+			html = html + '<li><a href="javascript:' + callbackName + 
+				'(' + i + ');">' + i + '</a></li>';
+			i = i + 1;
+		}
+		if (page === count) {
+			html = html + '<li><a class="disable" href="javascript:void(0);">&raquo;</a></li>';
+		} else {
+			html = html + '<li><a href="javascript:' + callbackName + 
+				'(' + count + ');">&raquo;</a></li>';
+		}
+		html = html + '</ul>';
+		return html;
+	};
 
 	self.renderPhotoFrame = function () {
 		var html = '<div class="modal-dialog"><div class="modal-content">';
@@ -62,9 +95,6 @@ var net = net || {};
 		html = html + '</div></div>';
 		$("#photo-frame").html(html);
 	}
-
-
-	self.renderSubTitle = function (page) { $("#subTitle").html(page.subTitle); };
 
 	self.renderPicItem = function (itm) {
 		var html = '<div class="col-sm-6 col-md-3"><div class="thumbnail">';

@@ -14,13 +14,15 @@
 <script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
 <script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js" ></script>
 <script src="//cdn.bootcss.com/showdown/1.3.0/showdown.min.js" ></script>
-<!-- 
 <script src="src/javascript/00base.js" ></script>
 <script src="src/javascript/journal.js" ></script>
 <script src="src/javascript/gallery.js" ></script>
--->
+<!-- 
 <script src="scripts/portal.min.js" ></script>
+-->
 </head>
+<style>
+</style>
 <body>
 
 <nav id="topnav" class="navbar navbar-inverse  navbar-fixed-top" role="navigation"> </nav>
@@ -50,23 +52,14 @@
 
 </body>
 <script type="text/javascript">
-var atcs = [
-{time:(new Date()).getTime(), auth: "Jade Shan", title: "测试效果", text: "#hello, markdown!\n![bar](http://7xldv2.com1.z0.glb.clouddn.com/dungeon%2Fthemes%2Fhobbit%2Fimages%2Fmap.jpg =180x*)\n"},
-{time:(new Date()).getTime(), auth: "Jade Shan", title: "Adipiscing", text: "In hac [this link](http://example.com/ \"Title\") habitasse platea dictumst. Duis porttitor. Sed vulputate elementum nisl. Vivamus et mi at arcu mattis iaculis. Nullam posuere tristique tortor. In bibendum. Aenean ornare, nunc eget pretium porttitor, sem"},
-{time:(new Date()).getTime(), auth: "Jade Shan", title: "测试效果", text: "#hello, markdown!\n![bar](http://7xldv2.com1.z0.glb.clouddn.com/dungeon%2Fthemes%2Fhobbit%2Fimages%2Fmap.jpg =180x*)\n"},
-{time:(new Date()).getTime(), auth: "Jade Shan", title: "Adipiscing", text: "In hac  [this link](http://example.com/ \"Title\") habitasse platea dictumst. Duis porttitor. Sed vulputate elementum nisl. Vivamus et mi at arcu mattis iaculis. Nullam posuere tristique tortor. In bibendum. Aenean ornare, nunc eget pretium porttitor, sem"},
-{time:(new Date()).getTime(), auth: "Jade Shan", title: "测试效果", text: "#hello, markdown!\n![bar](http://7xldv2.com1.z0.glb.clouddn.com/dungeon%2Fthemes%2Fhobbit%2Fimages%2Fmap.jpg =180x*)\n"},
-{time:(new Date()).getTime(), auth: "Jade Shan", title: "Adipiscing", text: "In hac  [this link](http://example.com/ \"Title\") habitasse platea dictumst. Duis porttitor. Sed vulputate elementum nisl. Vivamus et mi at arcu mattis iaculis. Nullam posuere tristique tortor. In bibendum. Aenean ornare, nunc eget pretium porttitor, sem"},
-{time:(new Date()).getTime(), auth: "Jade Shan", title: "测试效果", text: "#hello, markdown!\n![bar](http://7xldv2.com1.z0.glb.clouddn.com/dungeon%2Fthemes%2Fhobbit%2Fimages%2Fmap.jpg =180x*)\n"},
-{time:(new Date()).getTime(), auth: "Jade Shan", title: "Adipiscing", text: "In hac  [this link](http://example.com/ \"Title\") habitasse platea dictumst. Duis porttitor. Sed vulputate elementum nisl. Vivamus et mi at arcu mattis iaculis. Nullam posuere tristique tortor. In bibendum. Aenean ornare, nunc eget pretium porttitor, sem"},
-{time:(new Date()).getTime(), auth: "Jade Shan", title: "测试效果", text: "#hello, markdown!\n![bar](http://7xldv2.com1.z0.glb.clouddn.com/dungeon%2Fthemes%2Fhobbit%2Fimages%2Fmap.jpg =180x*)\n"},
-{time:(new Date()).getTime(), auth: "Jade Shan", title: "Adipiscing", text: "In hac habitasse platea dictumst. Duis porttitor. Sed vulputate elementum nisl. Vivamus et mi at arcu mattis iaculis. Nullam posuere tristique tortor. In bibendum. Aenean ornare, nunc eget pretium porttitor, sem"},
-{time:(new Date()).getTime(), auth: "Jade Shan", title: "测试效果", text: "#hello, markdown!\n![bar](http://7xldv2.com1.z0.glb.clouddn.com/dungeon%2Fthemes%2Fhobbit%2Fimages%2Fmap.jpg =180x*)\n"},
-{time:(new Date()).getTime(), auth: "Jade Shan", title: "Adipiscing", text: "In hac habitasse platea dictumst. Duis porttitor. Sed vulputate elementum nisl. Vivamus et mi at arcu mattis iaculis. Nullam posuere tristique tortor. In bibendum. Aenean ornare, nunc eget pretium porttitor, sem"}
-];
+var cfg = {
+	apiRoot: "http://localhost:8080/api/journal/",
+	pageTitle: "Journal", subTitle: "My Journal"
+};
 
-var page = new net.jadedungeon.journal({pageTitle: "Journal", subTitle: "My Journal", articles: atcs});
+var page = new net.jadedungeon.journal(cfg);
 page.render();
+page.loadPage(1);
 
 </script>
 </html>
