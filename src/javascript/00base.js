@@ -15,7 +15,7 @@ var net = net || {};
 			{title: "About Me", subs: [
 				{title: "Github", link: "https://github.com/Jade-Shan/", isNewWin: true},
 				{title: "", link: ""},
-				{title: "Resume", link: "/content/qiwei-resume.html", isNewWin: true}]
+				{title: "Resume", link: "/resume.html"}]
 		}];
 	};
 
