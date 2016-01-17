@@ -14,32 +14,49 @@ var gulp = require('gulp'),
 		concat  = require('gulp-concat'),         //合并文件
 		clean = require('gulp-clean');            //清空文件夹
 		
-var pathLess = "./src/less";
-var pathCss = "./styles/";
+var pathLessBase = "./src/less/";
+var pathCssBase = "./styles/";
+var pathLessHobbit = "./themes/hobbit/less/";
+var pathCssHobbit = "./themes/hobbit/css/";
 var pathJs = "./src/javascript/";
 var pathScripts = "./scripts/";
 
 // 清空图片、样式、js
 gulp.task('clean', function() {
-		gulp.src([pathCss, pathScripts], {read: false}).pipe(clean());
+		gulp.src([pathCssBase, pathCssHobbit, pathScripts], 
+			{read: false}).pipe(clean());
 });
 
 // less编译为css
-gulp.task('build-less', function() {
-	gulp.src(pathLess + '**/*.less')
+gulp.task('build-less-base', function() {
+	gulp.src(pathLessBase + '**/*.less')
 		.pipe(less({ compress: true }))
 		.on('error', function(e) {console.log(e);} )
-		.pipe(gulp.dest(pathCss));
+		.pipe(gulp.dest(pathCssBase));
+	});
+gulp.task('build-less-hobbit', function() {
+	gulp.src(pathLessHobbit + '**/*.less')
+		.pipe(less({ compress: true }))
+		.on('error', function(e) {console.log(e);} )
+		.pipe(gulp.dest(pathCssHobbit));
 	});
 
 // 合并、压缩、重命名css
-gulp.task('min-styles', function() {
-	gulp.src([pathCss + '**/*.css'])
+gulp.task('min-styles-base', function() {
+	gulp.src([pathCssBase + '**/*.css'])
 		.pipe(concat('portal.css'))      // 合并文件为all.css
-		.pipe(gulp.dest(pathCss))  // 输出all.css文件
+		.pipe(gulp.dest(pathCssBase))  // 输出all.css文件
 		.pipe(rename({suffix: '.min'})) // 重命名all.css为 all.min.css
 		.pipe(minifycss())                // 压缩css文件
-		.pipe(gulp.dest(pathCss)); // 输出all.min.css
+		.pipe(gulp.dest(pathCssBase)); // 输出all.min.css
+	});
+gulp.task('min-styles-hobbit', function() {
+	gulp.src([pathCssHobbit + '**/*.css'])
+		.pipe(concat('hobbit.css'))      // 合并文件为all.css
+		.pipe(gulp.dest(pathCssHobbit))  // 输出all.css文件
+		.pipe(rename({suffix: '.min'})) // 重命名all.css为 all.min.css
+		.pipe(minifycss())                // 压缩css文件
+		.pipe(gulp.dest(pathCssHobbit)); // 输出all.min.css
 	});
 
 // 检查javascript
@@ -64,7 +81,8 @@ gulp.task('min-scripts', function() {
 // 监控变化
 gulp.task('develop', function() {
 	gulp.watch(
-		[pathLess + '**/*.less', pathJs + '**/*.js'], 
-		['clean', 'build-less', 'min-styles']);
+		[pathLessHobbit + '**/*.less', pathJs + '**/*.js'], 
+		['clean', 'build-less-base', 'build-less-hobbit', 
+			'min-styles-base', 'min-styles-hobbit']);
 		});
 

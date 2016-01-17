@@ -9,19 +9,24 @@ do
 	case $arg in
 		c)
 			gulp clean       ;
-			gulp check-js    ;
-			gulp build-less  ;
 			sleep 5 ;
-			gulp min-styles  ;
+			gulp check-js    ;
+			gulp build-less-base  ;
+			gulp build-less-hobbit  ;
+			sleep 5 ;
+			gulp min-styles-base  ;
+			gulp min-styles-hobbit  ;
 			gulp min-scripts ;
 			;;
 		a)
 			gulp clean       ;
 			sleep 5 ;
 			gulp check-js    ;
-			gulp build-less  ;
+			gulp build-less-base  ;
+			gulp build-less-hobbit  ;
 			sleep 5 ;
-			gulp min-styles  ;
+			gulp min-styles-base  ;
+			gulp min-styles-hobbit  ;
 			gulp min-scripts ;
 			sleep 5 ;
 			# qrsync ~/.config/qiniu/workout.json ;
