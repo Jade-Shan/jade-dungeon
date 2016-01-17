@@ -14,123 +14,23 @@
 <script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
 <script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js" ></script>
 <script src="//cdn.bootcss.com/showdown/1.3.0/showdown.min.js" ></script>
+<script src="src/javascript/00base.js" ></script>
+<script src="src/javascript/journal.js" ></script>
+<script src="src/javascript/gallery.js" ></script>
+<!-- 
 <script src="scripts/portal.js" ></script>
+-->
 </head>
 <body>
 
 <nav id="topnav" class="navbar navbar-inverse  navbar-fixed-top" role="navigation"> </nav>
 
 <div class="container ctx-main"> 
-
 	<div class="pattern"><span></span></div>
-	<div class="vestibule"><h1>Jade Dungeon</h1><p>My Gallery</p></div>
+	<div class="vestibule"><h1>Jade Dungeon</h1><p id="subTitle"></p></div>
 	<div class="pattern"><span></span></div>
 
-	<div class="content">
-
-		<div class="spacer"></div>
-
-		<div class="item">
-			<div class="title">测试效果</div>
-			<div class="metadata">Jun 13, 2006 by Vulputate</div>
-			<div class="body">
-				<img data-toggle="modal" data-target="#photo-frame"  class="left" src="http://7xldv2.com1.z0.glb.clouddn.com/dungeon%2Fthemes%2Fhobbit%2Fimages%2Fmap.jpg" width="180" height="152" alt="sample image"/>
-				<p>In hac habitasse platea dictumst. Duis porttitor. Sed vulputate elementum nisl. Vivamus et mi at arcu mattis iaculis. Nullam posuere tristique tortor. Aenean ornare, <a href="index.html">nunc eget pretium</a> porttitor, sem est pretium leo.</p>
-				<p>Aliquam risus justo, mollis in, laoreet a, consectetuer nec, risus. Nunc blandit sodales lacus. Nam luctus semper mi. In eu diam. Aliquam risus justo, mollis in, laoreet a, consectetuer nec, risus. Nunc blandit sodales lacus. Nam luctus semper mi. In eu diam. Aliquam risus justo, mollis in, laoreet a, consectetuer nec, risus. Nunc blandit sodales lacus. Nam luctus semper mi. In eu diam.</p>
-				<p>Fusce porta pede nec eros. Maecenas ipsum sem, interdum non, aliquam vitae, interdum nec, metus. Maecenas ornare lobortis risus. Etiam placerat varius mauris. Maecenas viverra. Sed feugiat. Donec mattis <a href="index.html">quam aliquam</a> risus. Nulla non felis sollicitudin urna blandit egestas. Integer et libero varius pede tristique ultricies. Cras nisl. Proin quis massa semper felis euismod ultricies.  </p>
-				<p>Aliquam risus justo, mollis in, laoreet a, consectetuer nec, risus. Nunc blandit sodales lacus. Nam luctus semper mi.</p>
-				<h2>Justo Elit</h2>
-				<p>In hac habitasse platea dictumst. Duis porttitor. Sed vulputate elementum nisl. Vivamus et mi at arcu mattis iaculis. Nullam posuere tristique tortor. In bibendum. Aenean ornare, nunc eget pretium porttitor, sem est pretium leo</p>
-				<h2>Non Euismod Nulla</h2>
-				<p>Dui non diam. Pellentesque dictum faucibus leo. Vestibulum ac ante. Sed in est. Sed sodales nisl sit amet augue. Donec ultrices, augue ullamcorper posuere laoreet, turpis massa tristique justo, sed egestas metus magna sed purus. Fusce eleifend, dui ut posuere auctor, justo elit posuere sapien, at blandit enim quam fringilla mi.</p>
-				<p>In hac habitasse platea dictumst. Duis porttitor. Sed vulputate elementum nisl. Vivamus et mi at arcu mattis iaculis. <a href="index.html">Nullam</a> posuere tristique tortor.</p>
-				<h1>Tristique</h1>
-				<p>In bibendum. Aenean ornare, nunc eget pretium porttitor, sem est pretium leo, non euismod nulla dui non diam. Pellentesque dictum faucibus leo. Vestibulum ac ante. Sed in est.</p>
-				<ul>
-					<li>Tristique</li>
-					<li>Aenean</li>
-					<li>Pretium</li>
-				</ul>
-				<p>Aliquam risus justo, mollis in, laoreet a, <a href="index.html">consectetuer nec</a> risus. Nunc blandit sodales lacus. Nam luctus semper mi. Sed sodales nisl sit amet augue. Donec ultrices, augue ullamcorper posuere laoreet, turpis massa tristique justo.</p>
-				<p>Integer porta. Fusce nibh. Curabitur pellentesque, lectus at <a href="index.html">volutpat interdum</a>. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Pellentesque a nibh quis nunc volutpat aliquam</p>
-				<blockquote>
-					<p>A box without thines, key or lid, Yet a golden treasure inside is hid.</p>
-				</blockquote>
-				<p>Sem justo placerat elit, eget feugiat est leo tempor quam. Ut quis neque convallis magna consequat molestie. Nullam semper massa eget ligula. Fusce accumsan enim et arcu. Duis sagittis libero at lacus. Suspendisse lacinia nulla eget urna.</p>
-				<blockquote>
-					<p>Alive without breath, As cold as death; Never thirsty, ever drinking, All in mail never clinking.</p>
-				</blockquote>
-				<p>Eget feugiat est leo tempor quam. Ut quis neque convallis magna consequat molestie. Donec varius tincidunt nisi.</p>
-			</div>
-			<div class="row">
-				<div class="col-sm-6 col-md-3">
-					<div class="thumbnail">
-						<img src="http://www.runoob.com/wp-content/uploads/2014/06/kittens.jpg" alt="通用的占位符缩略图">
-					</div>
-					<div class="caption">
-						<h3>缩略图标签</h3>
-						<p>一些示例文本。一些示例文本。</p>
-					</div>
-				</div>
-				<div class="col-sm-6 col-md-3">
-					<div class="thumbnail">
-						<img src="http://www.runoob.com/wp-content/uploads/2014/06/kittens.jpg" alt="通用的占位符缩略图">
-					</div>
-					<div class="caption">
-						<h3>缩略图标签</h3>
-						<p>一些示例文本。一些示例文本。</p>
-					</div>
-				</div>
-				<div class="col-sm-6 col-md-3">
-					<div class="thumbnail">
-						<img src="http://www.runoob.com/wp-content/uploads/2014/06/kittens.jpg" alt="通用的占位符缩略图">
-					</div>
-					<div class="caption">
-						<h3>缩略图标签</h3>
-						<p>一些示例文本。一些示例文本。</p>
-					</div>
-				</div>
-				<div class="col-sm-6 col-md-3">
-					<div class="thumbnail">
-						<img src="http://www.runoob.com/wp-content/uploads/2014/06/kittens.jpg" alt="通用的占位符缩略图">
-					</div>
-					<div class="caption">
-						<h3>缩略图标签</h3>
-						<p>一些示例文本。一些示例文本。</p>
-					</div>
-				</div>
-				<div class="col-sm-6 col-md-3">
-					<div class="thumbnail">
-						<img src="http://www.runoob.com/wp-content/uploads/2014/06/kittens.jpg" alt="通用的占位符缩略图">
-					</div>
-					<div class="caption">
-						<h3>缩略图标签</h3>
-						<p>一些示例文本。一些示例文本。</p>
-					</div>
-				</div>
-				<div class="col-sm-6 col-md-3">
-					<div class="thumbnail">
-						<img src="http://www.runoob.com/wp-content/uploads/2014/06/kittens.jpg" alt="通用的占位符缩略图">
-					</div>
-					<div class="caption">
-						<h3>缩略图标签</h3>
-						<p>一些示例文本。一些示例文本。</p>
-					</div>
-				</div>
-				<div class="col-sm-6 col-md-3">
-					<div class="thumbnail">
-						<img src="http://www.runoob.com/wp-content/uploads/2014/06/kittens.jpg" alt="通用的占位符缩略图">
-					</div>
-					<div class="caption">
-						<h3>缩略图标签</h3>
-						<p>一些示例文本。一些示例文本。</p>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="divider"><span></span></div>
-
-	</div>
+	<div id="articles" class="content"></div>
 
 	<div class="footer">
 		<div class="left">
@@ -158,7 +58,23 @@
 
 </body>
 <script type="text/javascript">
-var page = new net.jadedungeon.gallery({pageTitle: "Gallery"});
+var ablum = [
+{id: 1, title: "图片标题", desc: "一些示例文本。一些示例文本。", url: "http://www.runoob.com/wp-content/uploads/2014/06/kittens.jpg"},
+{id: 2, title: "图片标题", desc: "一些示例文本。一些示例文本。", url: "http://www.runoob.com/wp-content/uploads/2014/06/kittens.jpg"},
+{id: 3, title: "图片标题", desc: "一些示例文本。一些示例文本。", url: "http://www.runoob.com/wp-content/uploads/2014/06/kittens.jpg"},
+{id: 4, title: "图片标题", desc: "一些示例文本。一些示例文本。", url: "http://www.runoob.com/wp-content/uploads/2014/06/kittens.jpg"},
+{id: 5, title: "图片标题", desc: "一些示例文本。一些示例文本。", url: "http://www.runoob.com/wp-content/uploads/2014/06/kittens.jpg"},
+{id: 6, title: "图片标题", desc: "一些示例文本。一些示例文本。", url: "http://www.runoob.com/wp-content/uploads/2014/06/kittens.jpg"},
+{id: 7, title: "图片标题", desc: "一些示例文本。一些示例文本。", url: "http://www.runoob.com/wp-content/uploads/2014/06/kittens.jpg"}
+];
+var atcs = [
+{time:(new Date()).getTime(), auth: "Jade Shan", title: "Adipiscing", ablum: ablum, text: "In hac [this link](http://example.com/ \"Title\") habitasse platea dictumst. Duis porttitor. Sed vulputate elementum nisl. Vivamus et mi at arcu mattis iaculis. Nullam posuere tristique tortor. In bibendum. Aenean ornare, nunc eget pretium porttitor, sem"},
+{time:(new Date()).getTime(), auth: "Jade Shan", title: "Adipiscing", ablum: ablum, text: "In hac  [this link](http://example.com/ \"Title\") habitasse platea dictumst. Duis porttitor. Sed vulputate elementum nisl. Vivamus et mi at arcu mattis iaculis. Nullam posuere tristique tortor. In bibendum. Aenean ornare, nunc eget pretium porttitor, sem"},
+{time:(new Date()).getTime(), auth: "Jade Shan", title: "Adipiscing", ablum: ablum, text: "In hac  [this link](http://example.com/ \"Title\") habitasse platea dictumst. Duis porttitor. Sed vulputate elementum nisl. Vivamus et mi at arcu mattis iaculis. Nullam posuere tristique tortor. In bibendum. Aenean ornare, nunc eget pretium porttitor, sem"},
+{time:(new Date()).getTime(), auth: "Jade Shan", title: "Adipiscing", ablum: ablum, text: "In hac habitasse platea dictumst. Duis porttitor. Sed vulputate elementum nisl. Vivamus et mi at arcu mattis iaculis. Nullam posuere tristique tortor. In bibendum. Aenean ornare, nunc eget pretium porttitor, sem"}
+];
+
+var page = new net.jadedungeon.gallery({pageTitle: "Gallery", subTitle: "My Gallery", articles: atcs});
 page.render();
 </script>
 </html>

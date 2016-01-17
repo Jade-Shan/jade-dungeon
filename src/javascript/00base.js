@@ -49,4 +49,37 @@ var net = net || {};
 		navhtml = navhtml + '</ul></div>';
 		$("#topnav").html(navhtml);
 	};
+
+	self.renderSubTitle = function (page) { $("#subTitle").html(page.subTitle); };
+
+	self.renderPicItem = function (itm) {
+		var html = '<div class="col-sm-6 col-md-3"><div class="thumbnail">';
+		html = html + '<img id="' + itm.id + '" src="' + itm.url +'" alt="' + 
+			itm.title +'"></div>';
+		html = html + '<div class="caption"><h3>' + itm.title + '</h3><p>' + 
+			itm.desc + '</p></div></div>';
+		return html;
+	};
+
+	self.renderArticle = function (itm) {
+		var html = '<div class="item">';
+		html = html + '<div class="title">' + itm.title + '</div>';
+		var t = (new Date());
+		t.setTime(itm.time);
+		html = html + '<div class="metadata">' + t.toLocaleString() +
+			' by ' + itm.auth + '</div>';
+		html = html + '<div class="body">' + 
+			net.jadedungeon.markdown.makeHtml(itm.text) + '</div>';
+		html = html + '</div>';
+		if (itm.ablum && itm.ablum.length > 0) {
+			html = html + '<div class="row">';
+			$.each(itm.ablum, function (i, pic) {
+				html = html + self.renderPicItem(pic);
+			});
+			html = html + '</div>';
+		}
+		html = html + '<div class="divider"><span></span></div>';
+		return html;
+	};
+
 })(jQuery);
