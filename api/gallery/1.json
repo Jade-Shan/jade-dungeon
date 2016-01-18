@@ -1,47 +1,20 @@
-{ "status": "success", "page": 1, "count": 5, "articles": [
-	{"time":1453027321766, "auth": "Jade Shan", "title": "第一页", "ablum": [
-		{"id": 1, "title": "图片标题", "desc": "一些示例文本。一些示例文本。", "url": "http://www.runoob.com/wp-content/uploads/2014/06/kittens.jpg"},
-		{"id": 2, "title": "图片标题", "desc": "一些示例文本。一些示例文本。", "url": "http://www.runoob.com/wp-content/uploads/2014/06/kittens.jpg"},
-		{"id": 3, "title": "图片标题", "desc": "一些示例文本。一些示例文本。", "url": "http://www.runoob.com/wp-content/uploads/2014/06/kittens.jpg"},
-		{"id": 4, "title": "图片标题", "desc": "一些示例文本。一些示例文本。", "url": "http://www.runoob.com/wp-content/uploads/2014/06/kittens.jpg"},
-		{"id": 5, "title": "图片标题", "desc": "一些示例文本。一些示例文本。", "url": "http://www.runoob.com/wp-content/uploads/2014/06/kittens.jpg"},
-		{"id": 6, "title": "图片标题", "desc": "一些示例文本。一些示例文本。", "url": "http://www.runoob.com/wp-content/uploads/2014/06/kittens.jpg"},
-		{"id": 7, "title": "图片标题", "desc": "一些示例文本。一些示例文本。", "url": "http://www.runoob.com/wp-content/uploads/2014/06/kittens.jpg"}],
-		"text": "#hello, markdown!\n![bar](http://7xldv2.com1.z0.glb.clouddn.com/dungeon%2Fthemes%2Fhobbit%2Fimages%2Fmap.jpg =180x*)\n" },
-	{"time":1453027321766, "auth": "Jade Shan", "title": "Adipiscing", "ablum": [
-		{"id": 1, "title": "图片标题", "desc": "一些示例文本。一些示例文本。", "url": "http://www.runoob.com/wp-content/uploads/2014/06/kittens.jpg"},
-		{"id": 2, "title": "图片标题", "desc": "一些示例文本。一些示例文本。", "url": "http://www.runoob.com/wp-content/uploads/2014/06/kittens.jpg"},
-		{"id": 3, "title": "图片标题", "desc": "一些示例文本。一些示例文本。", "url": "http://www.runoob.com/wp-content/uploads/2014/06/kittens.jpg"},
-		{"id": 4, "title": "图片标题", "desc": "一些示例文本。一些示例文本。", "url": "http://www.runoob.com/wp-content/uploads/2014/06/kittens.jpg"},
-		{"id": 5, "title": "图片标题", "desc": "一些示例文本。一些示例文本。", "url": "http://www.runoob.com/wp-content/uploads/2014/06/kittens.jpg"},
-		{"id": 6, "title": "图片标题", "desc": "一些示例文本。一些示例文本。", "url": "http://www.runoob.com/wp-content/uploads/2014/06/kittens.jpg"},
-		{"id": 7, "title": "图片标题", "desc": "一些示例文本。一些示例文本。", "url": "http://www.runoob.com/wp-content/uploads/2014/06/kittens.jpg"}],
-		"text": "In hac [this link](http://example.com/ \"Title\") habitasse platea dictumst. Duis porttitor. Sed vulputate elementum nisl. Vivamus et mi at arcu mattis iaculis. Nullam posuere tristique tortor. In bibendum. Aenean ornare, nunc eget pretium porttitor, sem"},
-	{"time":1453027321766, "auth": "Jade Shan", "title": "Adipiscing", "ablum": [
-		{"id": 1, "title": "图片标题", "desc": "一些示例文本。一些示例文本。", "url": "http://www.runoob.com/wp-content/uploads/2014/06/kittens.jpg"},
-		{"id": 2, "title": "图片标题", "desc": "一些示例文本。一些示例文本。", "url": "http://www.runoob.com/wp-content/uploads/2014/06/kittens.jpg"},
-		{"id": 3, "title": "图片标题", "desc": "一些示例文本。一些示例文本。", "url": "http://www.runoob.com/wp-content/uploads/2014/06/kittens.jpg"},
-		{"id": 4, "title": "图片标题", "desc": "一些示例文本。一些示例文本。", "url": "http://www.runoob.com/wp-content/uploads/2014/06/kittens.jpg"},
-		{"id": 5, "title": "图片标题", "desc": "一些示例文本。一些示例文本。", "url": "http://www.runoob.com/wp-content/uploads/2014/06/kittens.jpg"},
-		{"id": 6, "title": "图片标题", "desc": "一些示例文本。一些示例文本。", "url": "http://www.runoob.com/wp-content/uploads/2014/06/kittens.jpg"},
-		{"id": 7, "title": "图片标题", "desc": "一些示例文本。一些示例文本。", "url": "http://www.runoob.com/wp-content/uploads/2014/06/kittens.jpg"}],
-		"text": "In hac [this link](http://example.com/ \"Title\") habitasse platea dictumst. Duis porttitor. Sed vulputate elementum nisl. Vivamus et mi at arcu mattis iaculis. Nullam posuere tristique tortor. In bibendum. Aenean ornare, nunc eget pretium porttitor, sem"},
-	{"time":1453027321766, "auth": "Jade Shan", "title": "测试效果", "ablum": [
-		{"id": 1, "title": "图片标题", "desc": "一些示例文本。一些示例文本。", "url": "http://www.runoob.com/wp-content/uploads/2014/06/kittens.jpg"},
-		{"id": 2, "title": "图片标题", "desc": "一些示例文本。一些示例文本。", "url": "http://www.runoob.com/wp-content/uploads/2014/06/kittens.jpg"},
-		{"id": 3, "title": "图片标题", "desc": "一些示例文本。一些示例文本。", "url": "http://www.runoob.com/wp-content/uploads/2014/06/kittens.jpg"},
-		{"id": 4, "title": "图片标题", "desc": "一些示例文本。一些示例文本。", "url": "http://www.runoob.com/wp-content/uploads/2014/06/kittens.jpg"},
-		{"id": 5, "title": "图片标题", "desc": "一些示例文本。一些示例文本。", "url": "http://www.runoob.com/wp-content/uploads/2014/06/kittens.jpg"},
-		{"id": 6, "title": "图片标题", "desc": "一些示例文本。一些示例文本。", "url": "http://www.runoob.com/wp-content/uploads/2014/06/kittens.jpg"},
-		{"id": 7, "title": "图片标题", "desc": "一些示例文本。一些示例文本。", "url": "http://www.runoob.com/wp-content/uploads/2014/06/kittens.jpg"}],
-		"text": "#hello, markdown!\n![bar](http://7xldv2.com1.z0.glb.clouddn.com/dungeon%2Fthemes%2Fhobbit%2Fimages%2Fmap.jpg =180x*)\n"},
-	{"time":1453027321766, "auth": "Jade Shan", "title": "Adipiscing", "ablum": [
-		{"id": 1, "title": "图片标题", "desc": "一些示例文本。一些示例文本。", "url": "http://www.runoob.com/wp-content/uploads/2014/06/kittens.jpg"},
-		{"id": 2, "title": "图片标题", "desc": "一些示例文本。一些示例文本。", "url": "http://www.runoob.com/wp-content/uploads/2014/06/kittens.jpg"},
-		{"id": 3, "title": "图片标题", "desc": "一些示例文本。一些示例文本。", "url": "http://www.runoob.com/wp-content/uploads/2014/06/kittens.jpg"},
-		{"id": 4, "title": "图片标题", "desc": "一些示例文本。一些示例文本。", "url": "http://www.runoob.com/wp-content/uploads/2014/06/kittens.jpg"},
-		{"id": 5, "title": "图片标题", "desc": "一些示例文本。一些示例文本。", "url": "http://www.runoob.com/wp-content/uploads/2014/06/kittens.jpg"},
-		{"id": 6, "title": "图片标题", "desc": "一些示例文本。一些示例文本。", "url": "http://www.runoob.com/wp-content/uploads/2014/06/kittens.jpg"},
-		{"id": 7, "title": "图片标题", "desc": "一些示例文本。一些示例文本。", "url": "http://www.runoob.com/wp-content/uploads/2014/06/kittens.jpg"}], 
-		"text": "In hac [this link](http://example.com/ \"Title\") habitasse platea dictumst. Duis porttitor. Sed vulputate elementum nisl. Vivamus et mi at arcu mattis iaculis. Nullam posuere tristique tortor. In bibendum. Aenean ornare, nunc eget pretium porttitor, sem"}]
+{ "status": "success", "page": 1, "count": 1, "articles": [
+	{"time":1449897647678, "auth": "Jade Shan", "title": "我在食堂学素描：第七周", "ablum": [
+		{"id":  7, "title": "", "desc": "", "url": "http://7xplww.com1.z0.glb.clouddn.com/public/201601/sch0200.png"},
+		{"id": 14, "title": "老师的示范", "desc": "", "url": "http://7xplww.com1.z0.glb.clouddn.com/public/201601/sch0208.png"}],
+		"text": "\n" },
+	{"time":1449897647678, "auth": "Jade Shan", "title": "我在食堂学素描：第六周", "ablum": [
+		{"id": 6, "title": "老师的示范", "desc": "这个水平看来我很难达到了……", "url": "http://7xplww.com1.z0.glb.clouddn.com/public/201601/sch01.png"}],
+		"text": "\n" },
+	{"time":1449897647678, "auth": "Jade Shan", "title": "我在食堂学素描：第五周", "ablum": [
+		{"id": 3, "title": "范例", "desc": "", "url": "http://7xplww.com1.z0.glb.clouddn.com/public/201512/sch04.png"},
+		{"id": 4, "title": "我的练习", "desc": "", "url": "http://7xplww.com1.z0.glb.clouddn.com/public/201512/sch03.jpg"},
+		{"id": 5, "title": "老师的示范", "desc": "", "url": "http://7xplww.com1.z0.glb.clouddn.com/public/201512/sch05.png"}],
+		"text": "形状、明暗和细节都差一点\n" },
+	{"time":1449897647678, "auth": "Jade Shan", "title": "我在食堂学素描：第三周", "ablum": [
+		{"id": 1, "title": "第一张", "desc": "初中毕业以后重画第一张，结构画问题很大啊", "url": "http://7xplww.com1.z0.glb.clouddn.com/public/201512/sch01.jpg"},
+		{"id": 2, "title": "再练习结构", "desc": "这张看起来好些了，当然本来结构就比前一张简单", "url": "http://7xplww.com1.z0.glb.clouddn.com/public/201512/sch02.jpg"}],
+		"text": "别人已经开始学了两个星期了，今天中午我才听说开课的消息。还好画具已经有一套了不用另外买\n" }
+	]
 }
+
