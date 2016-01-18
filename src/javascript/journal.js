@@ -20,6 +20,12 @@
 		html = html + net.jadedungeon.renderPagination(
 			data.page, data.count, "page.loadPage");
 		$("#articles").html(html);
+		$("#articles>.item>.body>p>img").each(function (idx, item) {
+			var img = $(item);
+			img.unbind("click").bind("click", function (evt) {
+				net.jadedungeon.viewPic(item);
+			});
+		});
 	};
 
 	self.loadPage = function (page) {
@@ -47,3 +53,4 @@
 })(jQuery);
 
 
+var ccc = 5;
