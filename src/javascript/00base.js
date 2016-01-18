@@ -94,7 +94,7 @@ var net = net || {};
 		html = html + '<img id="photo-frame-img" alt="" src="" class="col-xs-12 col-sm-12 col-md-12 col-lg-12" >';
 		html = html + '</div></div>';
 		$("#photo-frame").html(html);
-	}
+	};
 
 	self.renderPicItem = function (itm) {
 		var html = '<div class="col-sm-6 col-md-3"><div class="thumbnail">';

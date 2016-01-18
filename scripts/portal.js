@@ -94,7 +94,7 @@ var net = net || {};
 		html = html + '<img id="photo-frame-img" alt="" src="" class="col-xs-12 col-sm-12 col-md-12 col-lg-12" >';
 		html = html + '</div></div>';
 		$("#photo-frame").html(html);
-	}
+	};
 
 	self.renderPicItem = function (itm) {
 		var html = '<div class="col-sm-6 col-md-3"><div class="thumbnail">';
@@ -207,6 +207,12 @@ var net = net || {};
 		html = html + net.jadedungeon.renderPagination(
 			data.page, data.count, "page.loadPage");
 		$("#articles").html(html);
+		$("#articles>.item>.body>p>img").each(function (idx, item) {
+			var img = $(item);
+			img.unbind("click").bind("click", function (evt) {
+				net.jadedungeon.viewPic(item);
+			});
+		});
 	};
 
 	self.loadPage = function (page) {
@@ -234,3 +240,4 @@ var net = net || {};
 })(jQuery);
 
 
+var ccc = 5;
