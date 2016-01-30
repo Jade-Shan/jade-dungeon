@@ -53,14 +53,14 @@
 </body>
 <script type="text/javascript">
 var cfg = {
-	// apiRoot: "http://localhost:8080/api/journal/",
-	apiRoot: "/api/journal/",
+	apiRoot: "http://localhost:8080/crawler-web2/api/blog/",
+	// apiRoot: "/api/blog/",
 	pageTitle: "Journal", subTitle: "My Journal"
 };
 
 var page = new net.jadedungeon.journal(cfg);
 page.render();
-page.loadPage(1);
+page.loadPage("JadeShan", 1);
 
 </script>
 </html>

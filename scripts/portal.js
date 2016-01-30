@@ -215,8 +215,10 @@ var net = net || {};
 		});
 	};
 
-	self.loadPage = function (page) {
-		$.ajax({ url: self.initCfg.apiRoot + page + '.json', 
+	self.loadPage = function (author, page) {
+		$.ajax({ 
+			url: encodeURI(self.initCfg.apiRoot + "findJournal/" + author + "/" + 
+						 page), 
 			type: 'GET', dataType: 'json', data: { },
 			timeout: net.jadedungeon.ajaxTimeout,
 			success: function(data, status, xhr) {
