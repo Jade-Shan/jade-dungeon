@@ -21,6 +21,8 @@
 -->
 <script src="scripts/portal.min.js" ></script>
 </head>
+<style>
+</style>
 <body>
 
 <nav id="topnav" class="navbar navbar-inverse  navbar-fixed-top" role="navigation"> </nav>
@@ -52,12 +54,13 @@
 <script type="text/javascript">
 var cfg = {
 	// apiRoot: "http://localhost:8080/crawler-web2/api/blog/",
-	apiRoot: "http://www.jade-dungeon.net:8080/crawler-web2/api/blog/",
-	pageTitle: "Gallery", subTitle: "My Gallery"
+	apiRoot: "http://www.jade-dungeon.net:8080/jade-dungeon/api/blog/",
+	pageTitle: "Journal", subTitle: "My Journal"
 };
 
-var page = new net.jadedungeon.gallery(cfg);
+var page = new net.jadedungeon.journal(cfg);
 page.render();
 page.loadPage("Jade Shan", 1);
+
 </script>
 </html>
