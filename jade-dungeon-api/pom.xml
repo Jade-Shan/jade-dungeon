@@ -14,7 +14,7 @@
 
 	<artifactId>jade-dungeon</artifactId>
 	<packaging>war</packaging>
-	<version>0.1.12</version>
+	<version>0.1.13-SNAPSHOT</version>
 	<name>jade blog</name>
 	<url>https://github.com/Jade-Shan/jade-dungeon</url>
 
