@@ -45,27 +45,24 @@ const cfg = {
 gulp.task('clean-styles', async (callback) => {
 		await gulp.src([cfg.path.tmp.css + '**/*.css', cfg.path.dst.css + '**/*.css'], 
 			{read: false, allowEmpty: true}).pipe(clean());
-		
 		await callback();
 });
 
-gulp.task('build-less', gulp.series('clean-styles', async (callback) => {
+gulp.task('build-styles', async (callback) => {
 	await gulp.src(cfg.path.src.less + '**/*.less')
 		.pipe(less({compress: true}))
 		.on('error', (e) => {console.log(e)})
 		.pipe(gulp.dest(cfg.path.tmp.css));
-	
 	await callback();
-}));
+});
 
-gulp.task('min-styles', gulp.series('build-less', async (callback) => {
+gulp.task('min-styles', gulp.series('clean-styles', 'build-styles', async (callback) => {
 	await gulp.src([cfg.path.tmp.css + '*.css'])
-		.pipe(concat('all.css'))           // 合并文件为all.css
-		.pipe(gulp.dest(cfg.path.tmp.css))     // 输出all.css文件
-		.pipe(rename({suffix: '.min'}))    // 重命名all.css为 all.min.css
-		.pipe(minifycss())                 // 压缩css文件
-		.pipe(gulp.dest(cfg.path.dst.css));    // 输出all.min.css
-	
+		.pipe(concat('all.css'))             // 合并文件为all.css
+		.pipe(gulp.dest(cfg.path.tmp.css))   // 输出all.css文件
+		.pipe(rename({suffix: '.min'}))      // 重命名all.css为 all.min.css
+		.pipe(minifycss())                   // 压缩css文件
+		.pipe(gulp.dest(cfg.path.dst.css));  // 输出all.min.css
 	await callback();
 }));
 
@@ -81,20 +78,18 @@ gulp.task('clean-scripts', async (callback) => {
 });
 
 // 检查javascript
-gulp.task('check-scripts', gulp.series('clean-scripts', async (callback) => {
+gulp.task('check-scripts', async (callback) => {
 	await gulp.src(cfg.path.src.js + '**/*.js').pipe(jshint())
 		.pipe(jshint.reporter('default'));
-	
 	await callback();
-}));
+});
 
 // 合并、压缩、重命名javascript
-gulp.task('min-scripts', gulp.series('check-scripts', async (callback) => {
+gulp.task('min-scripts', gulp.series('clean-scripts', 'check-scripts', async (callback) => {
 	await gulp.src(cfg.path.src.js + '**/*.js').pipe(concat('all.js'))
 		.pipe(gulp.dest(cfg.path.tmp.js))
 		.pipe(rename({suffix: '.min'})).pipe(uglify())
 		.pipe(gulp.dest(cfg.path.dst.js));
-	
 	await callback();
 }));
 
@@ -111,17 +106,18 @@ gulp.task('include-html', gulp.series('clean-html', async (callback) => {
 	await gulp.src([cfg.path.src.html + "**/*.html"])
 		.pipe(fileinclude({prefix: '@@', basepath: '@root', context: cfg.env}))
 		.pipe(gulp.dest(cfg.path.dst.html));
-	
 	await callback();
 }));
 
 gulp.task('process-html', gulp.series('clean-html', async (callback) => {
 	await gulp.src([cfg.path.src.html + "**/*.html", cfg.path.src.tpls + "**/*.html"])
 		.pipe(fileinclude({prefix: '@@', basepath: '@root', context: cfg.env}))
-    .pipe(processhtml()).pipe(gulp.dest(cfg.path.dst.html));
-	
+    .pipe(processhtml())
+		.pipe(gulp.dest(cfg.path.dst.html));
 	await callback();
 }));
 
 gulp.task('default', gulp.parallel('min-styles','min-scripts','include-html'));
+
+gulp.task('release', gulp.parallel('min-styles','min-scripts','process-html'));
 
