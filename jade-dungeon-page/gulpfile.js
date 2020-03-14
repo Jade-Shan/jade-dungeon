@@ -5,19 +5,19 @@
 // gulp build-less：你会在目录下发现less目录下的less文件被编译成对应的css文件。
 // gulp min-styles：会在css目录下输出all.css和all.min.css文件。
 // gulp develop：会监听所有less文件，当有less文件改变时，会执行build-less和min-styles
-var gulp = require('gulp'),
-		less = require('gulp-less'),              //less编译
-		minifycss = require('gulp-minify-css'),   //css压缩
-		jshint = require('gulp-jshint'),          //js检查
-		uglify  = require('gulp-uglify'),         //js压缩
-		rename = require('gulp-rename'),          //重命名
-		concat  = require('gulp-concat'),         //合并文件
-		fileinclude = require('gulp-file-include'), //html模板
-		processhtml = require('gulp-processhtml'),  // html引用替换
-		clean = require('gulp-clean');            //清空文件夹
-		
+const gulp = require('gulp');
+const less = require('gulp-less');                //less编译
+const minifycss = require('gulp-minify-css');     //css压缩
+const jshint = require('gulp-jshint');            //js检查
+const uglify  = require('gulp-uglify');           //js压缩
+const rename = require('gulp-rename');            //重命名
+const concat  = require('gulp-concat');           //合并文件
+const fileinclude = require('gulp-file-include'); //html模板
+const processhtml = require('gulp-processhtml');  // html引用替换
+const clean = require('gulp-clean');              //清空文件夹
+const envs = require('./envs');              //清空文件夹
 
-
+const currEnv = envs.dev;
 
 const cfg = {
 	path: {
@@ -25,16 +25,17 @@ const cfg = {
 			js  : "./src/scripts/" ,
 			less: "./src/styles/"  ,
 			tplt: "./src/pagetemp/",
-			html: "./src/htmlpage/"
+			html: "./src/html/"
 		}, tmp: {
 			js  : "./tmp/scripts/" ,
 			css : "./tmp/styles/"  ,
-			html: "./tmp/htmlpage/"
+			html: "./tmp/html/"
 		}, dst: {
 			js  : "./webroot/scripts/" ,
 			css : "./webroot/styles/"  ,
-			html: "./webroot/htmlpage/"
-		} }
+			html: "./webroot/"
+		} },
+	env : currEnv
 };
 
 // =======================
@@ -42,55 +43,85 @@ const cfg = {
 // =======================
 
 gulp.task('clean-styles', async (callback) => {
-		await gulp.src([cfg.path.tmp.css, cfg.path.dst.css], 
+		await gulp.src([cfg.path.tmp.css + '**/*.css', cfg.path.dst.css + '**/*.css'], 
 			{read: false, allowEmpty: true}).pipe(clean());
+		
 		await callback();
 });
 
-gulp.task('build-less', gulp.series(/*'clean-styles',*/ async (callback) => {
+gulp.task('build-less', gulp.series('clean-styles', async (callback) => {
 	await gulp.src(cfg.path.src.less + '**/*.less')
 		.pipe(less({compress: true}))
 		.on('error', (e) => {console.log(e)})
 		.pipe(gulp.dest(cfg.path.tmp.css));
+	
 	await callback();
 }));
 
-gulp.task('min-styles', gulp.series(/* 'build-less',*/ async (callback) => {
+gulp.task('min-styles', gulp.series('build-less', async (callback) => {
 	await gulp.src([cfg.path.tmp.css + '*.css'])
 		.pipe(concat('all.css'))           // 合并文件为all.css
 		.pipe(gulp.dest(cfg.path.tmp.css))     // 输出all.css文件
 		.pipe(rename({suffix: '.min'}))    // 重命名all.css为 all.min.css
 		.pipe(minifycss())                 // 压缩css文件
 		.pipe(gulp.dest(cfg.path.dst.css));    // 输出all.min.css
+	
 	await callback();
 }));
-
 
 // =======================
 // javascript
 // =======================
 
 gulp.task('clean-scripts', async (callback) => {
-	await gulp.src([cfg.path.tmp.js,cfg.path.dst.js], 
+	await gulp.src([cfg.path.tmp.js + '**/*.js', cfg.path.dst.js + '**/*.js'], 
 		{read: false, allowEmpty: true}).pipe(clean());
+	
 	await callback();
 });
 
 // 检查javascript
-gulp.task('check-scripts', gulp.series(/* 'clean-scripts',*/ async (callback) => {
+gulp.task('check-scripts', gulp.series('clean-scripts', async (callback) => {
 	await gulp.src(cfg.path.src.js + '**/*.js').pipe(jshint())
 		.pipe(jshint.reporter('default'));
+	
 	await callback();
 }));
 
 // 合并、压缩、重命名javascript
-gulp.task('min-scripts', gulp.series(/*'check-scripts',*/ async (callback) => {
-	await gulp.src(cfg.path.src.js + '**/*.js').pipe(concat('script.js'))
+gulp.task('min-scripts', gulp.series('check-scripts', async (callback) => {
+	await gulp.src(cfg.path.src.js + '**/*.js').pipe(concat('all.js'))
 		.pipe(gulp.dest(cfg.path.tmp.js))
 		.pipe(rename({suffix: '.min'})).pipe(uglify())
 		.pipe(gulp.dest(cfg.path.dst.js));
+	
 	await callback();
 }));
 
+// =======================
+// javascript
+// =======================
 
+gulp.task('clean-html', async (callback) => {
+	await gulp.src([cfg.path.dst.html + '**/*.html'], {read: false}).pipe(clean());
+	await callback();
+});
+
+gulp.task('include-html', gulp.series('clean-html', async (callback) => {
+	await gulp.src([cfg.path.src.html + "**/*.html"])
+		.pipe(fileinclude({prefix: '@@', basepath: '@root', context: cfg.env}))
+		.pipe(gulp.dest(cfg.path.dst.html));
+	
+	await callback();
+}));
+
+gulp.task('process-html', gulp.series('clean-html', async (callback) => {
+	await gulp.src([cfg.path.src.html + "**/*.html", cfg.path.src.tpls + "**/*.html"])
+		.pipe(fileinclude({prefix: '@@', basepath: '@root', context: cfg.env}))
+    .pipe(processhtml()).pipe(gulp.dest(cfg.path.dst.html));
+	
+	await callback();
+}));
+
+gulp.task('default', gulp.parallel('min-styles','min-scripts','include-html'));
 

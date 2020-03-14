@@ -11,14 +11,20 @@ do
 			gulp clean-styles ;
 			sleep 3 ;
 			gulp build-less  ;
-			sleep 3 ;
+			sleep 5 ;
 			gulp min-styles  ;
-			sleep 3 ;
+			sleep 5 ;
 			gulp clean-scripts;
 			sleep 3 ;
 			gulp check-scripts;
-			sleep 3 ;
+			sleep 5 ;
 			gulp min-scripts;
+			sleep 5 ;
+			gulp clean-html;
+			sleep 3 ;
+			gulp include-html;
+			sleep 5 ;
+			gulp process-html;
 			;;
 		a)
 			# qrsync ~/.config/qiniu/workout.json ;
