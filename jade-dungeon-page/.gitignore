@@ -1,5 +1,10 @@
-study/*
+# study/*
 # scripts/
 # themes/hobbit/css/
 # styles/
 **/*.swp
+
+envs.sample.js
+tmp/
+webroot/
+

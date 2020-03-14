@@ -12,77 +12,85 @@ var gulp = require('gulp'),
 		uglify  = require('gulp-uglify'),         //js压缩
 		rename = require('gulp-rename'),          //重命名
 		concat  = require('gulp-concat'),         //合并文件
+		fileinclude = require('gulp-file-include'), //html模板
+		processhtml = require('gulp-processhtml'),  // html引用替换
 		clean = require('gulp-clean');            //清空文件夹
 		
-var pathLessBase = "./src/less/";
-var pathCssBase = "./styles/";
-var pathLessHobbit = "./themes/hobbit/less/";
-var pathCssHobbit = "./themes/hobbit/css/";
-var pathJs = "./src/javascript/";
-var pathScripts = "./scripts/";
 
-// 清空图片、样式、js
-gulp.task('clean', function() {
-		gulp.src([pathCssBase, pathCssHobbit, pathScripts], 
-			{read: false}).pipe(clean());
+
+
+const cfg = {
+	path: {
+		src: {
+			jsc  : "./src/scripts/" ,
+			less: "./src/styles/"  ,
+			tplt: "./src/pagetemp/",
+			html: "./src/htmlpage/"
+		}, tmp: {
+			jsc : "./tmp/scripts/" ,
+			css : "./tmp/styles/"  ,
+			html: "./tmp/htmlpage/"
+		}, dst: {
+			jsc : "./webroot/scripts/" ,
+			css : "./webroot/styles/"  ,
+			html: "./webroot/htmlpage/"
+		} }
+};
+
+// =======================
+// css
+// =======================
+
+gulp.task('clean-styles', async (callback) => {
+		await gulp.src([cfg.path.tmp.css, cfg.path.dst.css], 
+			{read: false, allowEmpty: true}).pipe(clean());
+		await callback();
 });
 
-// less编译为css
-gulp.task('build-less-base', function() {
-	gulp.src(pathLessBase + '**/*.less')
-		.pipe(less({ compress: true }))
-		.on('error', function(e) {console.log(e);} )
-		.pipe(gulp.dest(pathCssBase));
-	});
-gulp.task('build-less-hobbit', function() {
-	gulp.src(pathLessHobbit + '**/*.less')
-		.pipe(less({ compress: true }))
-		.on('error', function(e) {console.log(e);} )
-		.pipe(gulp.dest(pathCssHobbit));
-	});
+gulp.task('build-less', gulp.series(/*'clean-styles',*/ async (callback) => {
+	await gulp.src(cfg.path.src.less + '**/*.less')
+		.pipe(less({compress: true}))
+		.on('error', (e) => {console.log(e)})
+		.pipe(gulp.dest(cfg.path.tmp.css));
+	await callback();
+}));
 
-// 合并、压缩、重命名css
-gulp.task('min-styles-base', function() {
-	gulp.src([pathCssBase + '**/*.css'])
-		.pipe(concat('portal.css'))      // 合并文件为all.css
-		.pipe(gulp.dest(pathCssBase))  // 输出all.css文件
-		.pipe(rename({suffix: '.min'})) // 重命名all.css为 all.min.css
-		.pipe(minifycss())                // 压缩css文件
-		.pipe(gulp.dest(pathCssBase)); // 输出all.min.css
-	});
-gulp.task('min-styles-hobbit', function() {
-	gulp.src([pathCssHobbit + '**/*.css'])
-		.pipe(concat('hobbit.css'))      // 合并文件为all.css
-		.pipe(gulp.dest(pathCssHobbit))  // 输出all.css文件
-		.pipe(rename({suffix: '.min'})) // 重命名all.css为 all.min.css
-		.pipe(minifycss())                // 压缩css文件
-		.pipe(gulp.dest(pathCssHobbit)); // 输出all.min.css
-	});
+gulp.task('min-styles', gulp.series(/* 'build-less',*/ async (callback) => {
+	await gulp.src([cfg.path.tmp.css + '*.css'])
+		.pipe(concat('all.css'))           // 合并文件为all.css
+		.pipe(gulp.dest(cfg.path.tmp.css))     // 输出all.css文件
+		.pipe(rename({suffix: '.min'}))    // 重命名all.css为 all.min.css
+		.pipe(minifycss())                 // 压缩css文件
+		.pipe(gulp.dest(cfg.path.dst.css));    // 输出all.min.css
+	await callback();
+}));
+
+
+// =======================
+// javascript
+// =======================
+
+gulp.task('clean-scripts', async (callback) => {
+	await gulp.src([cfg.path.tmp.jsc,cfg.path.dst.jsc], 
+		{read: false, allowEmpty: true}).pipe(clean());
+	await callback();
+});
 
 // 检查javascript
-gulp.task('check-js', function() {
-	gulp.src(pathJs + '**/*.js').pipe(jshint()) .pipe(jshint.reporter('default'));
-	});
+gulp.task('check-scripts', gulp.series(/* 'clean-scripts',*/ async (callback) => {
+	await gulp.src(cfg.path.src.jsc + '**/*.js').pipe(jshint())
+		.pipe(jshint.reporter('default'));
+	await callback();
+}));
 
-gulp.task('min-scripts', function() {
-	gulp.src(pathJs + '**/*.js')
-		.pipe(concat('portal.js'))
-		.pipe(gulp.dest(pathScripts))
-		.pipe(rename({suffix: '.min'}))
-		.pipe(uglify())
-		.pipe(gulp.dest(pathScripts));
-	});
+// 合并、压缩、重命名javascript
+gulp.task('min-scripts', gulp.series(/*'check-scripts',*/ async (callback) => {
+	await gulp.src(cfg.path.src.jsc + '**/*.js').pipe(concat('script.js'))
+		.pipe(gulp.dest(cfg.path.tmp.jsc))
+		.pipe(rename({suffix: '.min'})).pipe(uglify())
+		.pipe(gulp.dest(cfg.path.dst.jsc));
+	await callback();
+}));
 
-// // 默认任务 清空图片、样式、js并重建 运行语句 gulp
-// gulp.task('default', ['build-less'], function(){
-//     gulp.start('min-styles','min-scripts');
-//     gulp.start();
-// });
-// 监控变化
-gulp.task('develop', function() {
-	gulp.watch(
-		[pathLessHobbit + '**/*.less', pathJs + '**/*.js'], 
-		['clean', 'build-less-base', 'build-less-hobbit', 
-			'min-styles-base', 'min-styles-hobbit']);
-		});
+
 
