@@ -24,7 +24,7 @@ const cfg = {
 		src: {
 			js  : "./src/scripts/" ,
 			less: "./src/styles/"  ,
-			tplt: "./src/pagetemp/",
+			tpls: "./src/tpls/",
 			html: "./src/html/"
 		}, tmp: {
 			js  : "./tmp/scripts/" ,

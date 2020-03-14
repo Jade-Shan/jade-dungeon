@@ -1,25 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="description" content="description"/>
-<meta name="keywords" content="keywords"/> 
-<meta name="author" content="author"/> 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Jade Dungeon</title>
-<link rel="stylesheet" href="@@cdn3rd/bootstrap/3.3.6/css/bootstrap.min.css" />
-<link rel="stylesheet" href="@@cdn3rd/bootstrap/3.3.6/css/bootstrap-theme.min.css" />
-<link rel="stylesheet" href="@@cdnRoot/web-root/css-themes/hobbit/styles/all.min.css" />
-<link rel="stylesheet" href="./styles/all.min.css" />
-<script src="@@cdn3rd/jquery/2.1.4/jquery.min.js"></script>
-<script src="@@cdn3rd/bootstrap/3.3.6/js/bootstrap.min.js" ></script>
-<script src="@@cdn3rd/showdown/1.3.0/showdown.min.js" ></script>
-<!-- 
-<script src="src/javascript/00base.js" ></script>
-<script src="src/javascript/journal.js" ></script>
-<script src="src/javascript/gallery.js" ></script>
--->
-<script src="./scripts/all.min.js" ></script>
+@@include('./src/tpls/head.html', {
+	      "author" : "Jade Shan",
+	   "page-title": "Jade Dungeon", 
+	     "keywords": "jade-dungeon, Journal",
+	 "description": "jade-dungeon, Journal"
+})
 </head>
 <style></style>
 <body>
