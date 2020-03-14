@@ -17,7 +17,7 @@ const processhtml = require('gulp-processhtml');  // html引用替换
 const clean = require('gulp-clean');              //清空文件夹
 const envs = require('./envs');              //清空文件夹
 
-const currEnv = envs.dev;
+const currEnv = envs.envs.dev;
 
 const cfg = {
 	path: {
