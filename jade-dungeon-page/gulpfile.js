@@ -22,16 +22,16 @@ var gulp = require('gulp'),
 const cfg = {
 	path: {
 		src: {
-			jsc  : "./src/scripts/" ,
+			js  : "./src/scripts/" ,
 			less: "./src/styles/"  ,
 			tplt: "./src/pagetemp/",
 			html: "./src/htmlpage/"
 		}, tmp: {
-			jsc : "./tmp/scripts/" ,
+			js  : "./tmp/scripts/" ,
 			css : "./tmp/styles/"  ,
 			html: "./tmp/htmlpage/"
 		}, dst: {
-			jsc : "./webroot/scripts/" ,
+			js  : "./webroot/scripts/" ,
 			css : "./webroot/styles/"  ,
 			html: "./webroot/htmlpage/"
 		} }
@@ -71,24 +71,24 @@ gulp.task('min-styles', gulp.series(/* 'build-less',*/ async (callback) => {
 // =======================
 
 gulp.task('clean-scripts', async (callback) => {
-	await gulp.src([cfg.path.tmp.jsc,cfg.path.dst.jsc], 
+	await gulp.src([cfg.path.tmp.js,cfg.path.dst.js], 
 		{read: false, allowEmpty: true}).pipe(clean());
 	await callback();
 });
 
 // 检查javascript
 gulp.task('check-scripts', gulp.series(/* 'clean-scripts',*/ async (callback) => {
-	await gulp.src(cfg.path.src.jsc + '**/*.js').pipe(jshint())
+	await gulp.src(cfg.path.src.js + '**/*.js').pipe(jshint())
 		.pipe(jshint.reporter('default'));
 	await callback();
 }));
 
 // 合并、压缩、重命名javascript
 gulp.task('min-scripts', gulp.series(/*'check-scripts',*/ async (callback) => {
-	await gulp.src(cfg.path.src.jsc + '**/*.js').pipe(concat('script.js'))
-		.pipe(gulp.dest(cfg.path.tmp.jsc))
+	await gulp.src(cfg.path.src.js + '**/*.js').pipe(concat('script.js'))
+		.pipe(gulp.dest(cfg.path.tmp.js))
 		.pipe(rename({suffix: '.min'})).pipe(uglify())
-		.pipe(gulp.dest(cfg.path.dst.jsc));
+		.pipe(gulp.dest(cfg.path.dst.js));
 	await callback();
 }));
 
