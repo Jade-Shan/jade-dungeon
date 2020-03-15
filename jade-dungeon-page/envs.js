@@ -1,7 +1,7 @@
 exports.envs = {
 	dev: {
 		buildversion: "0.0.1-dev",
-		webRoot: "//localhost:8080",
+		webRoot: ".",
 		apiRoot: "//localhost:8082",
 		cdnRoot: "//localhost:8081/jadeutils.v2",
 		cdn3rd : "//cdn.bootcss.com"

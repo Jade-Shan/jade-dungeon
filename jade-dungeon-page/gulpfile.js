@@ -25,39 +25,51 @@ const cfg = {
 			js  : "./src/scripts/" ,
 			less: "./src/styles/"  ,
 			tpls: "./src/tpls/",
+			img : "./src/images/",
 			html: "./src/html/"
-		}, tmp: {
-			js  : "./tmp/scripts/" ,
-			css : "./tmp/styles/"  ,
-			html: "./tmp/html/"
 		}, dst: {
 			js  : "./webroot/scripts/" ,
 			css : "./webroot/styles/"  ,
+			img : "./webroot/images/",
 			html: "./webroot/"
 		} },
 	env : currEnv
 };
 
 // =======================
+// images
+// =======================
+
+// gulp.task('clean-images', () => {
+// 		return gulp.src([cfg.path.dst.img + '**/*'], 
+// 			{read: false, allowEmpty: true}).pipe(clean());
+// });
+// 
+// gulp.task('copy-images', gulp.series('clean-images', () => {
+// 		return gulp.src([cfg.path.src.img], 
+// 			{read: false, allowEmpty: true})
+// 		.pipe(gulp.dest(cfg.path.dst.img))
+// }));
+
+// =======================
 // css
 // =======================
 
 gulp.task('clean-styles', () => {
-		return gulp.src([cfg.path.tmp.css + '**/*.css', cfg.path.dst.css + '**/*.css'], 
+		return gulp.src([cfg.path.dst.css + '**/*.css'], 
 			{read: false, allowEmpty: true}).pipe(clean());
 });
 
-gulp.task('build-styles', () => {
+gulp.task('build-styles', gulp.series('clean-styles', () => {
 	return gulp.src(cfg.path.src.less + '**/*.less')
-		.pipe(less({compress: true}))
-		.on('error', (e) => {console.log(e)})
-		.pipe(gulp.dest(cfg.path.tmp.css));
-});
+		.pipe(less({compress: true})).on('error', (e) => {console.log(e)})
+		.pipe(gulp.dest(cfg.path.dst.css));
+}));
 
-gulp.task('min-styles', gulp.series('clean-styles', 'build-styles', () => {
-	return gulp.src([cfg.path.tmp.css + '*.css'])
-		.pipe(concat('all.css'))             // 合并文件为all.css
-		.pipe(gulp.dest(cfg.path.tmp.css))   // 输出all.css文件
+gulp.task('min-styles',   gulp.series('clean-styles', () => {
+	return gulp.src(cfg.path.src.less + '**/*.less')
+		.pipe(less({compress: true})).on('error', (e) => {console.log(e)})
+		.pipe(concat('blog.css'))            // 合并文件为all.css
 		.pipe(rename({suffix: '.min'}))      // 重命名all.css为 all.min.css
 		.pipe(minifycss())                   // 压缩css文件
 		.pipe(gulp.dest(cfg.path.dst.css));  // 输出all.min.css
@@ -68,7 +80,7 @@ gulp.task('min-styles', gulp.series('clean-styles', 'build-styles', () => {
 // =======================
 
 gulp.task('clean-scripts', () => {
-	return gulp.src([cfg.path.tmp.js + '**/*.js', cfg.path.dst.js + '**/*.js'], 
+	return gulp.src([cfg.path.dst.js + '**/*.js'], 
 		{read: false, allowEmpty: true}).pipe(clean());
 });
 
@@ -78,10 +90,22 @@ gulp.task('check-scripts', () => {
 		.pipe(jshint.reporter('default'));
 });
 
+// 复制末处理的源文件供调试用
+gulp.task('copy-scripts', gulp.series('clean-scripts', 'check-scripts', () => {
+	return gulp.src([
+			cfg.path.src.js + 'base.js',
+			cfg.path.src.js + 'journal.js',
+			cfg.path.src.js + 'gallery.js'
+	]).pipe(gulp.dest(cfg.path.dst.js))
+}));
+
 // 合并、压缩、重命名javascript
 gulp.task('min-scripts', gulp.series('clean-scripts', 'check-scripts', () => {
-	return gulp.src(cfg.path.src.js + '**/*.js').pipe(concat('all.js'))
-		.pipe(gulp.dest(cfg.path.tmp.js))
+	return gulp.src([
+			cfg.path.src.js + 'base.js',
+			cfg.path.src.js + 'journal.js',
+			cfg.path.src.js + 'gallery.js'
+	]).pipe(concat('all.js'))
 		.pipe(rename({suffix: '.min'})).pipe(uglify())
 		.pipe(gulp.dest(cfg.path.dst.js));
 }));
@@ -127,6 +151,6 @@ gulp.task('process-html', gulp.series('clean-html', async (callback) => {
 // 	await callback();
 // }));
 
-gulp.task('default', gulp.parallel('min-styles','min-scripts','include-html'));
-gulp.task('release', gulp.parallel('min-styles','min-scripts','process-html'));
+gulp.task('default', gulp.parallel(/* 'copy-images', */ 'build-styles','copy-scripts','include-html'));
+gulp.task('release', gulp.parallel(/* 'copy-images', */ 'min-styles','min-scripts','process-html'));
 
