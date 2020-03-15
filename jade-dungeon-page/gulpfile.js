@@ -17,8 +17,6 @@ const processhtml = require('gulp-processhtml');  // html引用替换
 const clean = require('gulp-clean');              //清空文件夹
 const envs = require('./envs');              //清空文件夹
 
-const currEnv = envs.envs.dev;
-
 const cfg = {
 	path: {
 		src: {
@@ -33,7 +31,7 @@ const cfg = {
 			img : "./webroot/images/",
 			html: "./webroot/"
 		} },
-	env : currEnv
+	env : envs.deployEnvs.dev
 };
 
 // =======================
@@ -114,17 +112,35 @@ gulp.task('min-scripts', gulp.series('clean-scripts', 'check-scripts', () => {
 // html
 // =======================
 
-gulp.task('clean-html', () => {
+function configEnv(envEntry) {
+	currEnv = envEntry;
+	currEnv.buildversion = currEnv.buildversion + (new Date()).getTime();
+	console.log("buildversion : " + currEnv.buildversion);
+	console.log("webRoot      : " + currEnv.webRoot     );
+	console.log("apiRoot      : " + currEnv.apiRoot     );
+	console.log("cdnRoot      : " + currEnv.cdnRoot     );
+	console.log("cdn3rd       : " + currEnv.cdn3rd      );
+}
+
+
+gulp.task('clean-html-dev', () => {
+	configEnv(envs.deployEnvs.dev)
 	return gulp.src([cfg.path.dst.html + '**/*.html'], {read: false}).pipe(clean());
 });
 
-gulp.task('include-html', gulp.series('clean-html', async (callback) => {
+gulp.task('include-html', gulp.series('clean-html-dev', async (callback) => {
 	return gulp.src([cfg.path.src.html + "**/*.html"])
 		.pipe(fileinclude({prefix: '@@', basepath: '@root', context: cfg.env}))
 		.pipe(gulp.dest(cfg.path.dst.html));
 }));
 
-gulp.task('process-html', gulp.series('clean-html', async (callback) => {
+gulp.task('clean-html-rls', () => {
+	configEnv(envs.deployEnvs.rls)
+	currEnv.buildversion = currEnv.buildversion + (new Date()).getTime();
+	return gulp.src([cfg.path.dst.html + '**/*.html'], {read: false}).pipe(clean());
+});
+
+gulp.task('process-html', gulp.series('clean-html-rls', async (callback) => {
 	return gulp.src([cfg.path.src.html + "**/*.html", cfg.path.src.tpls + "**/*.html"])
 		.pipe(fileinclude({prefix: '@@', basepath: '@root', context: cfg.env}))
     .pipe(processhtml())
