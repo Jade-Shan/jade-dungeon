@@ -1,23 +1,18 @@
-exports.envs = {
+exports.deployEnvs = {
 	dev: {
-		buildversion: "0.0.1-dev",
-		webRoot: "//localhost:8080",
+		buildversion: "dev-0.0.1-",
+		webRoot: ".",
+		staticRoot: ".",
 		apiRoot: "//localhost:8082",
-		cdnRoot: "//localhost:8081/jadeutils.v2",
+		cdnRoot: "//localhost:8081",
 		cdn3rd : "//cdn.bootcss.com"
 	},
-	fat: {
-		buildversion: "0.0.1-fat",
-		webRoot: "//127.0.0.1:8080",
-		apiRoot: "//127.0.0.1:8082/src/mock-backend",
-		cdnRoot: "//127.0.0.1:8081/jadeutils.v2",
-		cdn3rd : "//127.0.0.1:8081/3rd.v2"
-	},
-	prd: {
-		buildversion: "0.0.1",
-		webRoot: "//127.0.0.1:8080",
-		apiRoot: "//127.0.0.1:8082/src/mock-backend",
-		cdnRoot: "//127.0.0.1:8081/jadeutils.v2",
-		cdn3rd : "//127.0.0.1:8081/3rd.v2"
+	rls: {
+		buildversion: "rls-0.0.1-",
+		webRoot: ".",
+		staticRoot: ".",
+		apiRoot: "//:8082/src/mock-backend",
+		cdnRoot: "//:8081/jadeutils.v2",
+		cdn3rd : "//:8081/3rd.v2"
 	}
 };

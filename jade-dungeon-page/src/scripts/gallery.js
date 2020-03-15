@@ -17,11 +17,22 @@
 		$.each(data.articles, function (i, itm) {
 			html = html + net.jadedungeon.renderArticle(itm);
 		});
-		html = html + net.jadedungeon.renderPagination(data.page, data.count, "page.loadPage");
+		html = html + net.jadedungeon.renderPagination(
+			data.page, data.count, "page.loadPage");
 		$("#articles").html(html);
+		$("#articles>.item>.body>p>img").each(function (idx, item) {
+			var img = $(item);
+			img.unbind("click").bind("click", function (evt) {
+				net.jadedungeon.viewPic(item);
+			});
+		});
 	};
 
-	self.loadPage = function (author, page) {
+	self.loadPage = function (page) {
+		var author = self.initCfg.author;
+		self.loadGallery(author, page);
+	};
+	self.loadGallery = function (author, page) {
 		$.ajax({ 
 			url: encodeURI(self.initCfg.apiRoot + "findGallery/" + author +"/" + 
 						 page),

@@ -28,7 +28,11 @@
 		});
 	};
 
-	self.loadPage = function (author, page) {
+	self.loadPage = function (page) {
+		var author = self.initCfg.author;
+		self.loadBlog(author, page);
+	};
+	self.loadBlog = function (author, page) {
 		$.ajax({ 
 			url: encodeURI(self.initCfg.apiRoot + "findJournal/" + author + "/" + 
 						 page), 

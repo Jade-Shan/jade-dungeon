@@ -17,111 +17,156 @@ const processhtml = require('gulp-processhtml');  // html引用替换
 const clean = require('gulp-clean');              //清空文件夹
 const envs = require('./envs');              //清空文件夹
 
-const currEnv = envs.envs.dev;
-
 const cfg = {
 	path: {
 		src: {
 			js  : "./src/scripts/" ,
 			less: "./src/styles/"  ,
-			tplt: "./src/pagetemp/",
+			tpls: "./src/tpls/",
+			img : "./src/images/",
 			html: "./src/html/"
-		}, tmp: {
-			js  : "./tmp/scripts/" ,
-			css : "./tmp/styles/"  ,
-			html: "./tmp/html/"
 		}, dst: {
 			js  : "./webroot/scripts/" ,
 			css : "./webroot/styles/"  ,
+			img : "./webroot/images/",
 			html: "./webroot/"
 		} },
-	env : currEnv
+	env : envs.deployEnvs.dev
 };
+
+// =======================
+// images
+// =======================
+
+// gulp.task('clean-images', () => {
+// 		return gulp.src([cfg.path.dst.img + '**/*'], 
+// 			{read: false, allowEmpty: true}).pipe(clean());
+// });
+// 
+// gulp.task('copy-images', gulp.series('clean-images', () => {
+// 		return gulp.src([cfg.path.src.img], 
+// 			{read: false, allowEmpty: true})
+// 		.pipe(gulp.dest(cfg.path.dst.img))
+// }));
 
 // =======================
 // css
 // =======================
 
-gulp.task('clean-styles', async (callback) => {
-		await gulp.src([cfg.path.tmp.css + '**/*.css', cfg.path.dst.css + '**/*.css'], 
+gulp.task('clean-styles', () => {
+		return gulp.src([cfg.path.dst.css + '**/*.css'], 
 			{read: false, allowEmpty: true}).pipe(clean());
-		
-		await callback();
 });
 
-gulp.task('build-less', gulp.series('clean-styles', async (callback) => {
-	await gulp.src(cfg.path.src.less + '**/*.less')
-		.pipe(less({compress: true}))
-		.on('error', (e) => {console.log(e)})
-		.pipe(gulp.dest(cfg.path.tmp.css));
-	
-	await callback();
+gulp.task('build-styles', gulp.series('clean-styles', () => {
+	return gulp.src(cfg.path.src.less + '**/*.less')
+		.pipe(less({compress: true})).on('error', (e) => {console.log(e)})
+		.pipe(gulp.dest(cfg.path.dst.css));
 }));
 
-gulp.task('min-styles', gulp.series('build-less', async (callback) => {
-	await gulp.src([cfg.path.tmp.css + '*.css'])
-		.pipe(concat('all.css'))           // 合并文件为all.css
-		.pipe(gulp.dest(cfg.path.tmp.css))     // 输出all.css文件
-		.pipe(rename({suffix: '.min'}))    // 重命名all.css为 all.min.css
-		.pipe(minifycss())                 // 压缩css文件
-		.pipe(gulp.dest(cfg.path.dst.css));    // 输出all.min.css
-	
-	await callback();
+gulp.task('min-styles',   gulp.series('clean-styles', () => {
+	return gulp.src(cfg.path.src.less + '**/*.less')
+		.pipe(less({compress: true})).on('error', (e) => {console.log(e)})
+		.pipe(concat('blog.css'))            // 合并文件为all.css
+		.pipe(rename({suffix: '.min'}))      // 重命名all.css为 all.min.css
+		.pipe(minifycss())                   // 压缩css文件
+		.pipe(gulp.dest(cfg.path.dst.css));  // 输出all.min.css
 }));
 
 // =======================
 // javascript
 // =======================
 
-gulp.task('clean-scripts', async (callback) => {
-	await gulp.src([cfg.path.tmp.js + '**/*.js', cfg.path.dst.js + '**/*.js'], 
+gulp.task('clean-scripts', () => {
+	return gulp.src([cfg.path.dst.js + '**/*.js'], 
 		{read: false, allowEmpty: true}).pipe(clean());
-	
-	await callback();
 });
 
 // 检查javascript
-gulp.task('check-scripts', gulp.series('clean-scripts', async (callback) => {
-	await gulp.src(cfg.path.src.js + '**/*.js').pipe(jshint())
+gulp.task('check-scripts', () => {
+	return gulp.src(cfg.path.src.js + '**/*.js').pipe(jshint())
 		.pipe(jshint.reporter('default'));
-	
-	await callback();
+});
+
+// 复制末处理的源文件供调试用
+gulp.task('copy-scripts', gulp.series('clean-scripts', 'check-scripts', () => {
+	return gulp.src([
+			cfg.path.src.js + 'base.js',
+			cfg.path.src.js + 'journal.js',
+			cfg.path.src.js + 'gallery.js'
+	]).pipe(gulp.dest(cfg.path.dst.js))
 }));
 
 // 合并、压缩、重命名javascript
-gulp.task('min-scripts', gulp.series('check-scripts', async (callback) => {
-	await gulp.src(cfg.path.src.js + '**/*.js').pipe(concat('all.js'))
-		.pipe(gulp.dest(cfg.path.tmp.js))
+gulp.task('min-scripts', gulp.series('clean-scripts', 'check-scripts', () => {
+	return gulp.src([
+			cfg.path.src.js + 'base.js',
+			cfg.path.src.js + 'journal.js',
+			cfg.path.src.js + 'gallery.js'
+	]).pipe(concat('all.js'))
 		.pipe(rename({suffix: '.min'})).pipe(uglify())
 		.pipe(gulp.dest(cfg.path.dst.js));
-	
-	await callback();
 }));
 
 // =======================
-// javascript
+// html
 // =======================
 
-gulp.task('clean-html', async (callback) => {
-	await gulp.src([cfg.path.dst.html + '**/*.html'], {read: false}).pipe(clean());
-	await callback();
+function configEnv(envEntry) {
+	currEnv = envEntry;
+	currEnv.buildversion = currEnv.buildversion + (new Date()).getTime();
+	console.log("buildversion : " + currEnv.buildversion);
+	console.log("webRoot      : " + currEnv.webRoot     );
+	console.log("apiRoot      : " + currEnv.apiRoot     );
+	console.log("cdnRoot      : " + currEnv.cdnRoot     );
+	console.log("cdn3rd       : " + currEnv.cdn3rd      );
+}
+
+
+gulp.task('clean-html-dev', () => {
+	configEnv(envs.deployEnvs.dev)
+	return gulp.src([cfg.path.dst.html + '**/*.html'], {read: false}).pipe(clean());
 });
 
-gulp.task('include-html', gulp.series('clean-html', async (callback) => {
-	await gulp.src([cfg.path.src.html + "**/*.html"])
+gulp.task('include-html', gulp.series('clean-html-dev', async (callback) => {
+	return gulp.src([cfg.path.src.html + "**/*.html"])
 		.pipe(fileinclude({prefix: '@@', basepath: '@root', context: cfg.env}))
 		.pipe(gulp.dest(cfg.path.dst.html));
-	
-	await callback();
 }));
 
-gulp.task('process-html', gulp.series('clean-html', async (callback) => {
-	await gulp.src([cfg.path.src.html + "**/*.html", cfg.path.src.tpls + "**/*.html"])
+gulp.task('clean-html-rls', () => {
+	configEnv(envs.deployEnvs.rls)
+	currEnv.buildversion = currEnv.buildversion + (new Date()).getTime();
+	return gulp.src([cfg.path.dst.html + '**/*.html'], {read: false}).pipe(clean());
+});
+
+gulp.task('process-html', gulp.series('clean-html-rls', async (callback) => {
+	return gulp.src([cfg.path.src.html + "**/*.html", cfg.path.src.tpls + "**/*.html"])
 		.pipe(fileinclude({prefix: '@@', basepath: '@root', context: cfg.env}))
-    .pipe(processhtml()).pipe(gulp.dest(cfg.path.dst.html));
-	
-	await callback();
+    .pipe(processhtml())
+		.pipe(gulp.dest(cfg.path.dst.html));
 }));
 
-gulp.task('default', gulp.parallel('min-styles','min-scripts','include-html'));
+// gulp.task('clean-html', async (callback) => {
+// 	await gulp.src([cfg.path.dst.html + '**/*.html'], {read: false}).pipe(clean());
+// 	await callback();
+// });
+// 
+// gulp.task('include-html', gulp.series('clean-html', async (callback) => {
+// 	await gulp.src([cfg.path.src.html + "**/*.html"])
+// 		.pipe(fileinclude({prefix: '@@', basepath: '@root', context: cfg.env}))
+// 		.pipe(gulp.dest(cfg.path.dst.html));
+// 	await callback();
+// }));
+// 
+// gulp.task('process-html', gulp.series('clean-html', async (callback) => {
+// 	await gulp.src([cfg.path.src.html + "**/*.html", cfg.path.src.tpls + "**/*.html"])
+// 		.pipe(fileinclude({prefix: '@@', basepath: '@root', context: cfg.env}))
+//     .pipe(processhtml())
+// 		.pipe(gulp.dest(cfg.path.dst.html));
+// 	await callback();
+// }));
+
+gulp.task('default', gulp.parallel(/* 'copy-images', */ 'build-styles','copy-scripts','include-html'));
+gulp.task('release', gulp.parallel(/* 'copy-images', */ 'min-styles','min-scripts','process-html'));
 
