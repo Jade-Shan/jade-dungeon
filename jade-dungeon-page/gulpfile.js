@@ -16,7 +16,6 @@ const fileinclude = require('gulp-file-include'); //html模板
 const processhtml = require('gulp-processhtml');  // html引用替换
 const clean = require('gulp-clean');              //清空文件夹
 const envs = require('./envs');              //清空文件夹
-
 const cfg = {
 	path: {
 		src: {
@@ -31,7 +30,7 @@ const cfg = {
 			img : "./webroot/images/",
 			html: "./webroot/"
 		} },
-	env : envs.deployEnvs.dev
+	env : {} 
 };
 
 // =======================
@@ -113,13 +112,13 @@ gulp.task('min-scripts', gulp.series('clean-scripts', 'check-scripts', () => {
 // =======================
 
 function configEnv(envEntry) {
-	currEnv = envEntry;
-	currEnv.buildversion = currEnv.buildversion + (new Date()).getTime();
-	console.log("buildversion : " + currEnv.buildversion);
-	console.log("webRoot      : " + currEnv.webRoot     );
-	console.log("apiRoot      : " + currEnv.apiRoot     );
-	console.log("cdnRoot      : " + currEnv.cdnRoot     );
-	console.log("cdn3rd       : " + currEnv.cdn3rd      );
+	cfg.env = envEntry;
+	cfg.env.buildversion = cfg.env.buildversion + (new Date()).getTime();
+	console.log("buildversion : " + cfg.env.buildversion);
+	console.log("webRoot      : " + cfg.env.webRoot     );
+	console.log("apiRoot      : " + cfg.env.apiRoot     );
+	console.log("cdnRoot      : " + cfg.env.cdnRoot     );
+	console.log("cdn3rd       : " + cfg.env.cdn3rd      );
 }
 
 
@@ -136,7 +135,6 @@ gulp.task('include-html', gulp.series('clean-html-dev', async (callback) => {
 
 gulp.task('clean-html-rls', () => {
 	configEnv(envs.deployEnvs.rls)
-	currEnv.buildversion = currEnv.buildversion + (new Date()).getTime();
 	return gulp.src([cfg.path.dst.html + '**/*.html'], {read: false}).pipe(clean());
 });
 

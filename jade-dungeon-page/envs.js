@@ -11,8 +11,8 @@ exports.deployEnvs = {
 		buildversion: "rls-0.0.1-",
 		webRoot: ".",
 		staticRoot: ".",
-		apiRoot: "//:8082/src/mock-backend",
-		cdnRoot: "//:8081/jadeutils.v2",
-		cdn3rd : "//:8081/3rd.v2"
+		apiRoot: "//118.178.197.156:8082",
+		cdnRoot: "//118.178.197.156:8081",
+		cdn3rd : "//cdn.bootcss.com"
 	}
 };
