@@ -110,8 +110,9 @@ var net = net || {};
 		html = html + '<div class="title">' + itm.title + '</div>';
 		var t = (new Date());
 		t.setTime(itm.time);
-		html = html + '<div class="metadata">' + t.toLocaleString() +
-			' by ' + itm.auth + '</div>';
+		html = html + 
+			'<div class="metadata metadata-time">' + t.toLocaleString() + 
+			'</div><div class="metadata metadata-auth"> by ' + itm.auth + '</div>';
 		html = html + '<div class="body">' + 
 			net.jadedungeon.markdown.makeHtml(itm.text) + '</div>';
 		html = html + '</div>';
