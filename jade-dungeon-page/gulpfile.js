@@ -37,16 +37,15 @@ const cfg = {
 // images
 // =======================
 
-// gulp.task('clean-images', () => {
-// 		return gulp.src([cfg.path.dst.img + '**/*'], 
-// 			{read: false, allowEmpty: true}).pipe(clean());
-// });
-// 
-// gulp.task('copy-images', gulp.series('clean-images', () => {
-// 		return gulp.src([cfg.path.src.img], 
-// 			{read: false, allowEmpty: true})
-// 		.pipe(gulp.dest(cfg.path.dst.img))
-// }));
+gulp.task('clean-images', () => {
+		return gulp.src([cfg.path.dst.img + '**/*'], 
+			{read: false, allowEmpty: true}).pipe(clean());
+});
+
+gulp.task('copy-images', gulp.series('clean-images', () => {
+		return gulp.src([cfg.path.src.img + '**/*.*'])
+		.pipe(gulp.dest(cfg.path.dst.img))
+}));
 
 // =======================
 // css
@@ -165,6 +164,6 @@ gulp.task('process-html', gulp.series('clean-html-rls', async (callback) => {
 // 	await callback();
 // }));
 
-gulp.task('default', gulp.parallel(/* 'copy-images', */ 'build-styles','copy-scripts','include-html'));
-gulp.task('release', gulp.parallel(/* 'copy-images', */ 'min-styles','min-scripts','process-html'));
+gulp.task('default', gulp.parallel('copy-images', 'build-styles','copy-scripts','include-html'));
+gulp.task('release', gulp.parallel('copy-images', 'min-styles','min-scripts','process-html'));
 

@@ -4,7 +4,7 @@ exports.deployEnvs = {
 		webRoot: ".",
 		staticRoot: ".",
 		apiRoot: "//localhost:8082",
-		cdnRoot: "//localhost:8081",
+		cdnRoot: "//localhost:8081/webroot",
 		cdn3rd : "//cdn.bootcss.com"
 	},
 	rls: {
