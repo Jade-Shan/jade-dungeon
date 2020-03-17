@@ -1,0 +1,5 @@
+#!/bin/bash
+
+gulp release
+tar -cvf webroot.tar.gz webroot
+scp webroot.tar.gz   username@host:/webRootPath

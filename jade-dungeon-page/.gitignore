@@ -3,8 +3,9 @@
 # themes/hobbit/css/
 # styles/
 **/*.swp
-
+deploy-rls.sh
 envs.sample.js
+webroot.tar.gz
 tmp/
 webroot/
 
