@@ -23,15 +23,31 @@ const cfg = {
 			less: "./src/styles/"  ,
 			tpls: "./src/tpls/",
 			img : "./src/images/",
-			html: "./src/html/"
+			html: "./src/html/",
+			api : "./src/api/"
 		}, dst: {
 			js  : "./webroot/scripts/" ,
 			css : "./webroot/styles/"  ,
 			img : "./webroot/images/",
-			html: "./webroot/"
+			html: "./webroot/",
+			api : "./webroot/api/"
 		} },
 	env : {} 
 };
+
+// =======================
+// MockApi
+// =======================
+
+gulp.task('clean-mock-api', () => {
+		return gulp.src([cfg.path.dst.api + '**/*'], 
+			{read: false, allowEmpty: true}).pipe(clean());
+});
+
+gulp.task('copy-mock-api', gulp.series('clean-mock-api', () => {
+		return gulp.src([cfg.path.src.api + '**/*'])
+		.pipe(gulp.dest(cfg.path.dst.api))
+}));
 
 // =======================
 // images
@@ -164,6 +180,9 @@ gulp.task('process-html', gulp.series('clean-html-rls', async (callback) => {
 // 	await callback();
 // }));
 
-gulp.task('default', gulp.parallel('copy-images', 'build-styles','copy-scripts','include-html'));
-gulp.task('release', gulp.parallel('copy-images', 'min-styles','min-scripts','process-html'));
+gulp.task('default', gulp.parallel('copy-mock-api', 'copy-images', 
+'build-styles', 'copy-scripts', 'include-html'));
+
+gulp.task('release', gulp.parallel('copy-mock-api', 'copy-images', 
+'min-styles', 'min-scripts', 'process-html'));
 

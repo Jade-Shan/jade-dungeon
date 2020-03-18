@@ -3,7 +3,7 @@ exports.deployEnvs = {
 		buildversion: "dev-0.0.1-",
 		webRoot: ".",
 		staticRoot: ".",
-		apiRoot: "//localhost:8082",
+		apiRoot: ".",
 		cdnRoot: "//localhost:8081/webroot",
 		cdn3rd : "//cdn.bootcss.com"
 	},
@@ -11,7 +11,7 @@ exports.deployEnvs = {
 		buildversion: "rls-0.0.1-",
 		webRoot: ".",
 		staticRoot: ".",
-		apiRoot: "//118.178.197.156:8082",
+		apiRoot: ".",
 		cdnRoot: "//118.178.197.156:8081",
 		cdn3rd : "//cdn.bootcss.com"
 	}
