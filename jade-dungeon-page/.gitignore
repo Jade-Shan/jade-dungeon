@@ -5,7 +5,7 @@
 **/*.swp
 deploy-rls.sh
 envs.sample.js
-webroot.tar.gz
+*.tar.gz
 tmp/
 webroot/
 
