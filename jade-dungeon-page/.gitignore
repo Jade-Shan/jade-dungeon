@@ -8,4 +8,4 @@ envs.sample.js
 *.tar.gz
 tmp/
 webroot/
-
+*.tar.gz
