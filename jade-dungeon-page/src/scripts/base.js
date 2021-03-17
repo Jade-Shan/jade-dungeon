@@ -27,10 +27,10 @@ var net = net || {};
 				if (page && page.pageTitle === item.title) {
 					navhtml = navhtml + '<li class="active">';
 				} else { navhtml = navhtml + '<li>'; }
-				if (item.isNewWin) {
-					navhtml = navhtml + '<a target="_blank" href="' + item.link + '">';
-				} else { navhtml = navhtml + '<a href="' + item.link + '">'; }
-				navhtml = navhtml + item.title + '</a></li>';
+				navhtml = navhtml + '<a ' ;
+				if (item.isNewWin) { navhtml = navhtml + ' target="_blank" '; } 
+				if (item.id) { navhtml = navhtml + ' id="' + item.id + '" '; } 
+				navhtml = navhtml + ' href="' + item.link + '">' + item.title + '</a></li>';
 			}
 		};
 
