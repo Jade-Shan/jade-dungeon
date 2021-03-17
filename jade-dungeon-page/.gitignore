@@ -7,4 +7,4 @@
 envs.sample.js
 tmp/
 webroot/
-
+*.tar.gz
