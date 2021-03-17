@@ -11,9 +11,9 @@ var net = net || {};
 
 		self.data.nav = [ {title: "Journal", link: "/"},
 			{title: "Gallery", link: "/gallery.html"},
-			{title: "Note", link: "/study/study/wiki_html"},
+			{title: "Note", link: "./study/notes/wiki_html"},
 			{title: "About Me", subs: [
-				{title: "Github", link: "https://github.com/Jade-Shan/", isNewWin: true},
+				{title: "Github", link: "//github.com/Jade-Shan/", isNewWin: true},
 				{title: "", link: ""},
 				{title: "Resume", link: "/resume.html"}]
 		}];
@@ -27,10 +27,10 @@ var net = net || {};
 				if (page && page.pageTitle === item.title) {
 					navhtml = navhtml + '<li class="active">';
 				} else { navhtml = navhtml + '<li>'; }
-				if (item.isNewWin) {
-					navhtml = navhtml + '<a target="_blank" href="' + item.link + '">';
-				} else { navhtml = navhtml + '<a href="' + item.link + '">'; }
-				navhtml = navhtml + item.title + '</a></li>';
+				navhtml = navhtml + '<a ' ;
+				if (item.isNewWin) { navhtml = navhtml + ' target="_blank" '; } 
+				if (item.id) { navhtml = navhtml + ' id="' + item.id + '" '; } 
+				navhtml = navhtml + ' href="' + item.link + '">' + item.title + '</a></li>';
 			}
 		};
 
@@ -110,8 +110,9 @@ var net = net || {};
 		html = html + '<div class="title">' + itm.title + '</div>';
 		var t = (new Date());
 		t.setTime(itm.time);
-		html = html + '<div class="metadata">' + t.toLocaleString() +
-			' by ' + itm.auth + '</div>';
+		html = html + 
+			'<div class="metadata metadata-time">' + t.toLocaleString() + 
+			'</div><div class="metadata metadata-auth"> by ' + itm.auth + '</div>';
 		html = html + '<div class="body">' + 
 			net.jadedungeon.markdown.makeHtml(itm.text) + '</div>';
 		html = html + '</div>';

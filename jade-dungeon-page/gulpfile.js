@@ -16,7 +16,6 @@ const fileinclude = require('gulp-file-include'); //html模板
 const processhtml = require('gulp-processhtml');  // html引用替换
 const clean = require('gulp-clean');              //清空文件夹
 const envs = require('./envs');              //清空文件夹
-
 const cfg = {
 	path: {
 		src: {
@@ -24,30 +23,45 @@ const cfg = {
 			less: "./src/styles/"  ,
 			tpls: "./src/tpls/",
 			img : "./src/images/",
-			html: "./src/html/"
+			html: "./src/html/",
+			api : "./src/api/"
 		}, dst: {
 			js  : "./webroot/scripts/" ,
 			css : "./webroot/styles/"  ,
 			img : "./webroot/images/",
-			html: "./webroot/"
+			html: "./webroot/",
+			api : "./webroot/api/"
 		} },
-	env : envs.deployEnvs.dev
+	env : {} 
 };
+
+// =======================
+// MockApi
+// =======================
+
+gulp.task('clean-mock-api', () => {
+		return gulp.src([cfg.path.dst.api + '**/*'], 
+			{read: false, allowEmpty: true}).pipe(clean());
+});
+
+gulp.task('copy-mock-api', gulp.series('clean-mock-api', () => {
+		return gulp.src([cfg.path.src.api + '**/*'])
+		.pipe(gulp.dest(cfg.path.dst.api))
+}));
 
 // =======================
 // images
 // =======================
 
-// gulp.task('clean-images', () => {
-// 		return gulp.src([cfg.path.dst.img + '**/*'], 
-// 			{read: false, allowEmpty: true}).pipe(clean());
-// });
-// 
-// gulp.task('copy-images', gulp.series('clean-images', () => {
-// 		return gulp.src([cfg.path.src.img], 
-// 			{read: false, allowEmpty: true})
-// 		.pipe(gulp.dest(cfg.path.dst.img))
-// }));
+gulp.task('clean-images', () => {
+		return gulp.src([cfg.path.dst.img + '**/*'], 
+			{read: false, allowEmpty: true}).pipe(clean());
+});
+
+gulp.task('copy-images', gulp.series('clean-images', () => {
+		return gulp.src([cfg.path.src.img + '**/*.*'])
+		.pipe(gulp.dest(cfg.path.dst.img))
+}));
 
 // =======================
 // css
@@ -113,13 +127,13 @@ gulp.task('min-scripts', gulp.series('clean-scripts', 'check-scripts', () => {
 // =======================
 
 function configEnv(envEntry) {
-	currEnv = envEntry;
-	currEnv.buildversion = currEnv.buildversion + (new Date()).getTime();
-	console.log("buildversion : " + currEnv.buildversion);
-	console.log("webRoot      : " + currEnv.webRoot     );
-	console.log("apiRoot      : " + currEnv.apiRoot     );
-	console.log("cdnRoot      : " + currEnv.cdnRoot     );
-	console.log("cdn3rd       : " + currEnv.cdn3rd      );
+	cfg.env = envEntry;
+	cfg.env.buildversion = cfg.env.buildversion + (new Date()).getTime();
+	console.log("buildversion : " + cfg.env.buildversion);
+	console.log("webRoot      : " + cfg.env.webRoot     );
+	console.log("apiRoot      : " + cfg.env.apiRoot     );
+	console.log("cdnRoot      : " + cfg.env.cdnRoot     );
+	console.log("cdn3rd       : " + cfg.env.cdn3rd      );
 }
 
 
@@ -136,7 +150,6 @@ gulp.task('include-html', gulp.series('clean-html-dev', async (callback) => {
 
 gulp.task('clean-html-rls', () => {
 	configEnv(envs.deployEnvs.rls)
-	currEnv.buildversion = currEnv.buildversion + (new Date()).getTime();
 	return gulp.src([cfg.path.dst.html + '**/*.html'], {read: false}).pipe(clean());
 });
 
@@ -167,6 +180,9 @@ gulp.task('process-html', gulp.series('clean-html-rls', async (callback) => {
 // 	await callback();
 // }));
 
-gulp.task('default', gulp.parallel(/* 'copy-images', */ 'build-styles','copy-scripts','include-html'));
-gulp.task('release', gulp.parallel(/* 'copy-images', */ 'min-styles','min-scripts','process-html'));
+gulp.task('default', gulp.parallel('copy-mock-api', 'copy-images', 
+'build-styles', 'copy-scripts', 'include-html'));
+
+gulp.task('release', gulp.parallel('copy-mock-api', 'copy-images', 
+'min-styles', 'min-scripts', 'process-html'));
 
