@@ -9,14 +9,19 @@ var net = net || {};
 
 		self.markdown = new showdown.Converter();
 
-		self.data.nav = [ {title: "Journal", link: "/"},
+		self.data.nav = [
+			{title: "Journal", link: "/"},
 			{title: "Gallery", link: "/gallery.html"},
 			{title: "Note", link: "./study/notes/wiki_html"},
 			{title: "About Me", subs: [
 				{title: "Github", link: "//github.com/Jade-Shan/", isNewWin: true},
 				{title: "", link: ""},
-				{title: "Resume", link: "/resume.html"}]
-		}];
+				{title: "Resume", link: "/resume.html"}]},
+			{title: "Themes", subs: [
+				{title: "hobbit", id: "switch-theme-hobbit", link: "#"},
+				{title: "lo-fi",  id: "switch-theme-lo-fi", link: "#"},
+				{title: "paper",  id: "switch-theme-paper-print", link: "#"}]}
+		];
 	};
 
 	self.renderTopNav = function (page) {
