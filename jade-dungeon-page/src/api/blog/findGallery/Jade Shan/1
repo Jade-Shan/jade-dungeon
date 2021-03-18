@@ -1,6 +1,6 @@
 { "status": "success", "page": 1, "count": 3, "articles": [
 	{"time": 1452318852635, "auth": "Jade Shan", "title": "我在食堂学素描：第七周", "ablum": [
-		{"id":  7, "title": "", "desc": "", "url": "http://localhost:8081/jadeutils.v2/web-root/css-themes/hobbit/images/dungeon.png"},
+		{"id":  7, "title": "", "desc": "", "url": "http://localhost:8081/webroot/jadeutils.v2/themes/hobbit/images/dungeon.png"},
 		{"id": 14, "title": "老师的示范", "desc": "", "url": "http://localhost:8081/jadeutils.v2/web-root/css-themes/hobbit/images/dungeon.png"}],
 		"text": "\n" },
 	{"time": 1451714052635, "auth": "Jade Shan", "title": "我在食堂学素描：第六周", "ablum": [
