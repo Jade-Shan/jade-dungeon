@@ -3,34 +3,36 @@
 .widget { margin: auto; }
 
 .widget h2 {
-	text-align: left;
 	margin: auto;
 	padding: 10px 5px;
 	padding-left: 15px;
 	color: #fff;
+	background: #6D3D1B;
+	border: 1px solid #803530;
+	box-shadow: inset 0px 0px 10px RGBA(0,0,0,0.2), 10px  0px 5px RGBA(0,0,0,0.4);
+	text-align: left;
 	text-transform: uppercase;
 	font-size: 1.3em;
 	line-height: 1.5em;
 	font-weight: 200;
 	letter-spacing: 0.01em;
-	background: #6D3D1B;
-	border: 1px solid #803530;
-	box-shadow: inset 0px 0px 10px RGBA(0,0,0,0.2), 10px 0px 5px RGBA(0,0,0,0.4);
 }
 
 .widget-content	{
 	overflow: hidden;
 	margin-bottom: 15px;
 	padding: 10px 20px 20px 20px;
-	font-weight: 300;
-	font-size: 1em;
-	line-height: 1.2em;
-	letter-spacing: 0.02em;
 	background: #A86E48;
 	border: 1px solid #803530;
 	color: #fff;
-	box-shadow: inset 0px 0px 10px RGBA(0,0,0,0.4), 10px 10px 5px RGBA(0,0,0,0.4);
+	box-shadow: inset 0px 0px 10px RGBA(0,0,0,0.2), 10px 10px 5px RGBA(0,0,0,0.4);
+	font-weight: 200;
+	font-size: 1em;
+	font-smooth: always;
+	line-height: 1.2em;
+	letter-spacing: 0.02em;
 }
+
 .widget-item-control {
 	float: right;
 	height: 20px;
@@ -38,6 +40,7 @@
 	position: relative;
 	z-index: 10;
 }
+
 .img-text-lst {
 	list-style: none;
 	margin: 0;
@@ -61,21 +64,6 @@
 	outline: none;
 }
 
-.img-text-lst ul li a:link, 
-.img-text-lst ul li a:visited, 
-.img-text-lst ul li a:link, 
-{
-	-webkit-transition: all 0.5s ease-in-out;
-	-moz-transition: all 0.5s ease-in-out;
-	letter-spacing: 0.01em;
-	font-smooth: always;
-	color: #FFFFAA;
-	font-family: 'Segoe UI Light', 'Open Sans', Verdana, Arial, Helvetica, sans-serif;
-	font-weight: 200;
-	letter-spacing: 0.01em;
-}
-
-
 .img-text-itm {
 	margin: 0;
 	padding: 0;
@@ -95,8 +83,6 @@
 	padding: 0px;
 	margin-right: 8px;
 	border-radius: 5px;
-	-webkit-filter: saturate(0.0);
-	-moz-filter: saturate(0.0);
 	-moz-transition: all 0.2s ease-in-out;
 	-webkit-transition: all 0.2s ease-in-out;
 	-o-transition: all 0.2s ease-in-out;
@@ -104,7 +90,12 @@
 	box-shadow: 3px 3px 0px rgba(0, 0, 0, 0.1);
 }
 
-.item-thumbnail img:hover {
+.item-thumbnail img.img-hov {
+	-webkit-filter: saturate(0.0);
+	-moz-filter: saturate(0.0);
+}
+
+.item-thumbnail img.img-hov:hover {
 	-webkit-filter: saturate(1.1);
 	-moz-filter: saturate(1.1);
 }
@@ -114,11 +105,7 @@
 .img-text-lst .item-title a {
 	-webkit-transition: all 0.5s ease-in-out;
 	-moz-transition: all 0.5s ease-in-out;
-	letter-spacing: 0.01em;
-	font-smooth: always;
 	color: #FFFFAA;
-	font-weight: 200;
-	letter-spacing: 0.01em;
 	margin: 0;
 	padding: 0;
 	padding-bottom: 0px;
