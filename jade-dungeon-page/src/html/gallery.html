@@ -22,7 +22,8 @@
 		<aside class="hidden-xs hidden-sm col-md-4 col-lg-3 blog-sidebar container">
 			<div class="row">
 				<div class="side-blank-block hidden-xs hidden-sm col-md-12 col-lg-12"></div>
-				@@include('./src/tpls/side-index.html', { })
+				@@include('./src/tpls/side-user.html', { })
+				@@include('./src/tpls/side-recommand.html', { })
 			</div>
 		</aside><!-- /.blog-sidebar -->
 	</div><!-- /.row -->
@@ -40,7 +41,7 @@ var cfg = {
 	pageTitle: "Gallery", subTitle: "My Gallery"
 };
 
-cfg.author = 'Jade Shan';
+cfg.authorId = 'u001';
 var page = new net.jadedungeon.gallery(cfg);
 page.render();
 page.loadPage(1);
