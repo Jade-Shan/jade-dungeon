@@ -171,7 +171,7 @@ var net = net || {};
 
 	self.loadRecommadArticles = function (apiRoot) {
 		$.ajax({ 
-			url: encodeURI(apiRoot + "loadRecommadArticles"), 
+			url: encodeURI(apiRoot + "loadRecommandArticles"), 
 			type: 'GET', dataType: 'json', data: { },
 			timeout: net.jadedungeon.ajaxTimeout,
 			success: function(data, status, xhr) {

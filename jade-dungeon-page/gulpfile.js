@@ -40,7 +40,7 @@ const cfg = {
 // =======================
 
 gulp.task('clean-mock-api', () => {
-		return gulp.src([cfg.path.dst.api + '**/*'], 
+		return gulp.src([cfg.path.dst.api], 
 			{read: false, allowEmpty: true}).pipe(clean());
 });
 
