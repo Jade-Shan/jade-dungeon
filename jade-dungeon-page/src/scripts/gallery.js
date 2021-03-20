@@ -9,6 +9,8 @@
 	self.render = function () {
 		net.jadedungeon.renderTopNav(self.initCfg);
 		net.jadedungeon.renderSubTitle(self.initCfg);
+		net.jadedungeon.loadUserById(self.initCfg.apiRoot, self.initCfg.authorId);
+		net.jadedungeon.loadRecommadArticles(self.initCfg.apiRoot);
 		net.jadedungeon.renderPhotoFrame();
 	};
 
