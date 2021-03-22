@@ -140,4 +140,68 @@ var net = net || {};
 		$('#photo-frame').modal('show');
 	};
 
+	self.loadUserById = function (apiRoot, userId) {
+		$.ajax({ 
+			url: encodeURI(apiRoot + "loadUserById/" + userId), 
+			type: 'GET', dataType: 'json', data: { },
+			timeout: net.jadedungeon.ajaxTimeout,
+			success: function(data, status, xhr) {
+				if ('success' == data.status) {
+					var user = data.user;
+					$('#widget-username').html(user.userName);
+					$('#widget-avatar').attr('alt', user.userName);
+					$('#widget-avatar').attr('src', user.avatar);
+					$('#widget-user-desc').html(user.desc);
+					$('#widget-user-joined').html(user.joinTime);
+					$('#widget-user-group').html(user.group);
+					$('#widget-avatar-lnk').attr('href', user.homePageUrl);
+				} else {
+					console.error("加载用户信息失败");
+				}
+			},
+			error: function(xhr, errorType, error) {
+				console.error("加载用户信息失败");
+				console.debug(xhr);
+				console.debug(errorType);
+				console.debug(error);
+			},
+			complete: function(xhr, status) { }
+		});
+	};
+
+	self.loadRecommadArticles = function (apiRoot) {
+		$.ajax({ 
+			url: encodeURI(apiRoot + "loadRecommandArticles"), 
+			type: 'GET', dataType: 'json', data: { },
+			timeout: net.jadedungeon.ajaxTimeout,
+			success: function(data, status, xhr) {
+				if ('success' == data.status) {
+					self.renderRecommandArticles(data);
+				} else {
+					console.error("加载推荐文章失败");
+				}
+			},
+			error: function(xhr, errorType, error) {
+				console.error("加载推荐文章失败");
+				console.debug(xhr);
+				console.debug(errorType);
+				console.debug(error);
+			},
+			complete: function(xhr, status) { }
+		});
+	};
+
+	self.renderRecommandArticles = function (data) {
+		var html = '';
+		$.each(data.recommands, function (i, rec) {
+			html = html + '<li><div class="img-text-itm"><div class="item-thumbnail">' +
+					'<a href="' + rec.link + '" target="_blank">' + 
+					'<img class="img-hov" alt="" src="' + rec.thumbnail + '" border="0">' +
+					'</a></div>' +
+					'<div class="item-title"><a href="' + rec.link + '">' + rec.title + 
+					'</a></div></div><div style="clear: both;"></div></li>';
+		});
+		$("#widget-recommends-articles").html(html);
+	};
+
 })(jQuery);

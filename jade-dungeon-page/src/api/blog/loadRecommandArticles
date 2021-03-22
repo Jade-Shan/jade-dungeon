@@ -1,0 +1,13 @@
+{
+	"status": "success",
+	"recommands": [{
+		"title" : "Demo post with formatted elements and comments",
+		"thumbnail" : "http://152.32.139.17:8081/jadeutils.v2/themes/hobbit/images/atc-01.jpg",
+		"link": "#"
+	},{
+		"title" : "Images in this template",
+		"thumbnail" : "http://152.32.139.17:8081/jadeutils.v2/themes/hobbit/images/atc-02.jpg",
+		"link": "#"
+	}]
+}
+
