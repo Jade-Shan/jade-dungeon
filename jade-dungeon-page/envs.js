@@ -12,7 +12,7 @@ exports.deployEnvs = {
 		webRoot: ".",
 		staticRoot: ".",
 		apiRoot: ".",
-		cdnRoot: "//152.32.139.17:8081",
+		cdnRoot: "//www.jade-dungeon.net:8081",
 		cdn3rd : "//cdn.bootcss.com"
 	}
 };
