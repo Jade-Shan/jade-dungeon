@@ -1,3 +1,4 @@
+/* jshint esversion: 6 */
 (function ($) {
 	net.jadedungeon.gallery = function (cfg) { init(cfg); return this; };
 	var self = net.jadedungeon.gallery.prototype;
@@ -8,6 +9,7 @@
 
 	self.render = function () {
 		net.jadedungeon.renderTopNav(self.initCfg);
+		net.jadedungeon.renderThemeSwitcher(self.initCfg);
 		net.jadedungeon.renderSubTitle(self.initCfg);
 		net.jadedungeon.loadUserById(self.initCfg.apiRoot, self.initCfg.authorId);
 		net.jadedungeon.loadRecommadArticles(self.initCfg.apiRoot);
