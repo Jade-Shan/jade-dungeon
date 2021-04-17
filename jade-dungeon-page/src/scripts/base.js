@@ -1,3 +1,4 @@
+/* jshint esversion: 6 */
 var net = net || {};
 (function ($) {
 	net.jadedungeon = function () { init(); return this; };
@@ -22,6 +23,18 @@ var net = net || {};
 				{title: "lo-fi",  id: "switch-theme-lo-fi", link: "#"},
 				{title: "paper",  id: "switch-theme-paper-print", link: "#"}]}
 		];
+	};
+
+	self.renderThemeSwitcher = () => {
+		$("#switch-theme-hobbit").on("click", (t) => {
+			net.jadedungeon.changeTheme('hobbit');
+		});
+		$("#switch-theme-lo-fi").on("click", (t) => {
+			net.jadedungeon.changeTheme('lo-fi');
+		});
+		$("#switch-theme-paper-print").on("click", (t) => {
+			net.jadedungeon.changeTheme('paper-print');
+		});
 	};
 
 	self.renderTopNav = function (page) {
@@ -101,6 +114,13 @@ var net = net || {};
 		$("#photo-frame").html(html);
 	};
 
+	self.initUITheme = function () {
+		let currUITheme = jadeUtils.web.cookieOperator("ui.theme");
+		if (currUITheme) {
+			self.changeTheme(currUITheme);
+		}
+	};
+
 	self.renderPicItem = function (itm) {
 		var html = '<div class="col-sm-6 col-md-3"><div class="thumbnail">';
 		html = html + '<img onClick="javascript:net.jadedungeon.viewPic(this)" id="' + itm.id + '" src="' + itm.url +'" alt="' + 
@@ -138,6 +158,22 @@ var net = net || {};
 		$("#photo-frame-img").attr("src", m.attr("src"));
 		$("#photo-frame-img").attr("alt", m.attr("alt"));
 		$('#photo-frame').modal('show');
+	};
+
+	self.changeTheme = function (themeName) {
+		var styles = document.querySelectorAll('link[title]');
+		for (let i=0; i<styles.length; i++) {
+			var lnk = styles[i];
+			lnk.disabled = true;
+		}
+		for (let i=0; i<styles.length; i++) {
+			let lnk = styles[i];
+			let ttitle = lnk.title;
+			if (ttitle == themeName) { 
+				jadeUtils.web.cookieOperator("ui.theme", themeName, {SameSite:'Lax'});
+				lnk.disabled = false; 
+			}
+		}
 	};
 
 	self.loadUserById = function (apiRoot, userId) {
