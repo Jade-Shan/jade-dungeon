@@ -22,12 +22,14 @@ const cfg = {
 			js  : "./src/scripts/" ,
 			less: "./src/styles/"  ,
 			tpls: "./src/tpls/",
+			misc: "./src/misc/",
 			img : "./src/images/",
 			html: "./src/html/",
 			api : "./src/api/"
 		}, dst: {
 			js  : "./webroot/scripts/" ,
 			css : "./webroot/styles/"  ,
+			misc: "./webroot/misc/",
 			img : "./webroot/images/",
 			html: "./webroot/",
 			api : "./webroot/api/"
@@ -47,6 +49,20 @@ gulp.task('clean-mock-api', () => {
 gulp.task('copy-mock-api', gulp.series('clean-mock-api', () => {
 		return gulp.src([cfg.path.src.api + '**/*'])
 		.pipe(gulp.dest(cfg.path.dst.api))
+}));
+
+// =======================
+// misc-files 
+// =======================
+
+gulp.task('clean-misc', () => {
+		return gulp.src([cfg.path.dst.misc + '**/*'], 
+			{read: false, allowEmpty: true}).pipe(clean());
+});
+
+gulp.task('copy-misc', gulp.series('clean-misc', () => {
+		return gulp.src([cfg.path.src.misc+ '**/*.*'])
+		.pipe(gulp.dest(cfg.path.dst.misc))
 }));
 
 // =======================
@@ -180,9 +196,9 @@ gulp.task('process-html', gulp.series('clean-html-rls', async (callback) => {
 // 	await callback();
 // }));
 
-gulp.task('default', gulp.parallel('copy-mock-api', 'copy-images', 
+gulp.task('default', gulp.parallel('copy-mock-api', 'copy-misc', 'copy-images', 
 'build-styles', 'copy-scripts', 'include-html'));
 
-gulp.task('release', gulp.parallel('copy-mock-api', 'copy-images', 
+gulp.task('release', gulp.parallel('copy-mock-api', 'copy-misc', 'copy-images', 
 'min-styles', 'min-scripts', 'process-html'));
 
