@@ -5,17 +5,17 @@
 // gulp build-less：你会在目录下发现less目录下的less文件被编译成对应的css文件。
 // gulp min-styles：会在css目录下输出all.css和all.min.css文件。
 // gulp develop：会监听所有less文件，当有less文件改变时，会执行build-less和min-styles
-const gulp = require('gulp');
-const less = require('gulp-less');                //less编译
-const minifycss = require('gulp-minify-css');     //css压缩
-const jshint = require('gulp-jshint');            //js检查
-const uglify = require('gulp-uglify-es').default;  //js压缩，用于es2015以上版本
-const rename = require('gulp-rename');            //重命名
-const concat  = require('gulp-concat');           //合并文件
-const fileinclude = require('gulp-file-include'); //html模板
-const processhtml = require('gulp-processhtml');  // html引用替换
-const clean = require('gulp-clean');              //清空文件夹
-const envs = require('./envs');              //清空文件夹
+const gulp      = require('gulp');
+const less      = require('gulp-less');              //less编译
+const minifycss = require('gulp-minify-css');        //css压缩
+const jshint    = require('gulp-jshint');            //js检查
+const uglify    = require('gulp-uglify-es').default; //js压缩，用于es2015以上版本
+const rename    = require('gulp-rename');            //重命名
+const concat    = require('gulp-concat');            //合并文件
+const fileinclude = require('gulp-file-include');    //html模板
+const processhtml = require('gulp-processhtml');     // html引用替换
+const clean       = require('gulp-clean');           //清空文件夹
+const envs        = require('./envs');               //清空文件夹
 const cfg = {
 	path: {
 		src: {
