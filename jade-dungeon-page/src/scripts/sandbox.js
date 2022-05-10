@@ -1,4 +1,6 @@
 /* jshint esversion: 8 */
+let imgResources = [];
+let mapDatas     = [];
 let scene  = {
 	width: 0, height: 0, lighteness: 'rgba(0, 0, 0, 0.7)',
 	creaters : [], teams: [], walls: [], doors: [], furnishing: [], images:[]};
@@ -9,13 +11,24 @@ let viewRange = 500;
 var canvas = document.getElementById("canvas");
 var ctx    = canvas.getContext("2d");
 
-let loadResources = async () => {
-	for (let i=0; i<imgResources.length; i++) {
-		let rec = imgResources[i];
-		scene.images[rec.key] = await loadImage(new Image(), rec.url).catch((img, url) => { 
-			// alert('加载图片失败：' + url);
+// let loadResources = async () => { };
+
+let requestMapDatas = async (mapId, userId) => {
+	return new Promise((resolve, reject) => {
+		$.ajax({ 
+			url: encodeURI(apiRoot + "view-map/" + mapId + "/" + userId), 
+			type: 'GET', dataType: 'json', data: { },
+			timeout: 30000,
+			success: function(data, status, xhr) {
+				if ('success' == data.status) {
+					// console.log(data);
+					resolve(data);
+				} else { reject(data); }
+			},
+			error: function(xhr, errorType, error) { reject(xhr); },
+			complete: function(xhr, status) { }
 		});
-	}
+	});
 };
 
 let loadMapDataRec = (ctx, rec) => {
@@ -30,7 +43,17 @@ let loadMapDataRec = (ctx, rec) => {
 	}
 };
 
-let loadMapDatas = (ctx, mapDatas) => {
+let loadMapDatas = async (ctx, mapId, userId) => {
+	await requestMapDatas(mapId, userId).then((data) => { 
+		imgResources = data.imgResources;
+		mapDatas     = data.mapDatas;
+	});	
+	for (let i = 0; i < imgResources.length; i++) {
+		let rec = imgResources[i];
+		scene.images[rec.key] = await loadImage(new Image(), rec.url).catch((img, url) => { 
+			// alert('加载图片失败：' + url);
+		});
+	}
 	if (mapDatas.walls) {
 		for (let i = 0; i< mapDatas.walls.length; i++) {
 			let obj = loadMapDataRec(ctx, mapDatas.walls[i]);
@@ -57,8 +80,15 @@ let loadMapDatas = (ctx, mapDatas) => {
 	}
 	if (mapDatas.teams) {
 		for (let i = 0; i< mapDatas.teams.length; i++) {
-			let obj = loadMapDataRec(ctx, mapDatas.teams[i]);
-			if (obj) { scene.teams.push(obj); }
+			// console.log(mapDatas.teams[i].id + " <> " +  userId);
+			if (mapDatas.teams[i].id == userId) {
+				observer = new Observer(ctx, mapDatas.teams[i].x, mapDatas.teams[i].y,
+					viewRange, "#0000FF", "#FFFFFF", scene.images[mapDatas.teams[i].imgKey], 
+					true, false);
+			} else {
+				let obj = loadMapDataRec(ctx, mapDatas.teams[i]);
+				if (obj) { scene.teams.push(obj); }
+			}
 		}
 	}
 };
@@ -70,9 +100,6 @@ let initSence = async () => {
 	canvas.setAttribute( 'width', scene.width );
 	canvas.setAttribute('height', scene.height);
 
-	observer = new Observer(ctx, 250, 300, viewRange, "#0000FF", "#FFFFFF", scene.images.chrt, true, false);
-
-	loadMapDatas(ctx, mapDatas);
 
 };
 
@@ -137,7 +164,10 @@ let drawSence = async () => {
 
 
 let drawSandTable = async () => {
-	await loadResources();
+	let mapId  = "map-01-01";
+	let userId = "u001";
+	// await loadResources();
+	await loadMapDatas(ctx, mapId, userId);
 	await initSence();
 	await drawSence();
 	resizeLayout();
