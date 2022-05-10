@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" dir="dir">
+	<head>
+		<style>
+			div#hideImgs { display: none;}
+			div#mapArea {width: 900px; height: 700px; overflow: auto;}	
+			button {
+				width : 150px; height: 50px;
+				border-radius: 20%; font-size: 15px;}
+			/* button {border-radius: 20%;} */
+			button.clicked { background-color: #141E27; color: #EEEDDE;}
+		</style>
+		<meta charset="UTF-8">
+		<title>sand box</title>
+	</head>
+	<body>
+		<div id="mapArea">
+			<canvas id="canvas" height="300" width="300"></canvas>	
+		</div>
+
+		<div id="ctrlPanel">
+			<table>
+				<tr>
+					<td></td>
+					<td><button id="k" onClick="javascript:moveObs(0,-10);">K &nbsp &#x2191</button></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td><button id="h" onClick="javascript:moveObs(-10,0);">&#8592 &nbsp; H</button></td>
+					<td></td>
+					<td><button id="l" onClick="javascript:moveObs(10,0);">L &nbsp &#x2192</button></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td><button id="j" onClick="javascript:moveObs(0,10);">J &nbsp; &#x2193</button></td>
+					<td></td>
+				</tr>
+			</table>
+		</div>
+
+		<div id="hideImgs">
+			<canvas id="finalCanvas" height="300" width="300"></canvas>	
+		</div>
+
+		<script src="@@webRoot/scripts/control.js?v=@@buildversion" ></script>
+		<script src="@@webRoot/scripts/canvas2dutils.js?v=@@buildversion" ></script>
+		<script src="@@webRoot/scripts/index.js?v=@@buildversion" ></script>
+	</body>
+	<script type="text/javascript">
+
+	</script>
+</html>
+  
