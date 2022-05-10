@@ -81,11 +81,11 @@ let loadMapDatas = async (ctx, mapId, userId) => {
 	if (mapDatas.teams) {
 		for (let i = 0; i< mapDatas.teams.length; i++) {
 			// console.log(mapDatas.teams[i].id + " <> " +  userId);
-			if (mapDatas.teams[i].id == userId) {
+			if (mapDatas.teams[i].id == userId) { // 名字和当前用户相同的是第一视角
 				observer = new Observer(ctx, mapDatas.teams[i].x, mapDatas.teams[i].y,
 					viewRange, "#0000FF", "#FFFFFF", scene.images[mapDatas.teams[i].imgKey], 
 					true, false);
-			} else {
+			} else {  // 其他的是队友视角
 				let obj = loadMapDataRec(ctx, mapDatas.teams[i]);
 				if (obj) { scene.teams.push(obj); }
 			}
