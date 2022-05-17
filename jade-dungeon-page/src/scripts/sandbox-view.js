@@ -1,22 +1,11 @@
 /* jshint esversion: 8 */
-let imgResources = [];
-let mapDatas     = [];
-let scene  = {
-	width: 0, height: 0, lighteness: 'rgba(0, 0, 0, 0.7)',
-	creaters : [], teams: [], walls: [], doors: [], furnishing: [], images:[]};
-let observer = {};
-
-let viewRange = 500;
-
-var canvas = document.getElementById("canvas");
-var ctx    = canvas.getContext("2d");
 
 // let loadResources = async () => { };
 
-let requestMapDatas = async (mapId, userId) => {
+let requestMapDatas = async (campaign, place, scene) => {
 	return new Promise((resolve, reject) => {
 		$.ajax({ 
-			url: encodeURI(apiRoot + "view-map/" + mapId + "/" + userId), 
+			url: encodeURI(apiRoot + "maps/" + campaign + "/" + place + "/" + scene), 
 			type: 'GET', dataType: 'json', data: { },
 			timeout: 30000,
 			success: function(data, status, xhr) {
