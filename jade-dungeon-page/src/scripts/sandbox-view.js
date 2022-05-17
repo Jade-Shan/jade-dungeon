@@ -2,24 +2,6 @@
 
 // let loadResources = async () => { };
 
-let requestMapDatas = async (campaignId, placeId, sceneId) => {
-	return new Promise((resolve, reject) => {
-		$.ajax({ 
-			url: encodeURI(apiRoot + "maps/" + campaignId + "/" + placeId + "/" + sceneId), 
-			type: 'GET', dataType: 'json', data: { },
-			timeout: 30000,
-			success: function(data, status, xhr) {
-				if ('success' == data.status) {
-					// console.log(data);
-					resolve(data);
-				} else { reject(data); }
-			},
-			error: function(xhr, errorType, error) { reject(xhr); },
-			complete: function(xhr, status) { }
-		});
-	});
-};
-
 let loadMapDataRec = (ctx, rec) => {
 	if ('Line' === rec.type) {
 		return new Line(ctx, rec.x, rec.y, rec.x2, rec.y2, rec.color, rec.visiable, rec.blockView);

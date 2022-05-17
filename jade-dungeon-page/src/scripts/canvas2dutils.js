@@ -541,27 +541,3 @@ class Observer {
 }
 
 
-
-let loadImage = async (image, imageURL) => {
-	return new Promise((resolve, reject) => {
-		image.onload  = () => { 
-			resolve(image, imageURL); 
-		};
-		image.onabort = () => { 
-			reject(image, imageURL); 
-		};
-		image.onerror = () => { 
-			reject(image, imageURL); 
-		};
-		image.src = imageURL;
-		image.crossOrigin='Anonymous';
-	});
-};
-
-let sleepMS = async (ms) =>  {
-	return new Promise((resolve, reject) => {
-		setTimeout(() => { resolve(); }, ms);
-	});
-};
-
-
