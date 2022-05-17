@@ -460,17 +460,17 @@ class Circle extends Canvas2dShape {
 
 class Observer {
 
-	constructor(canvasContext, id, x, y, viewRange, selfColor, rayColor, imageURL, visiable, blockView) {
+	constructor(canvasContext, id, x, y, viewRange, body, rayColor, visiable, blockView) {
 		this.id = id;
 		this.x  = x;
 		this.y  = y;
-		this.selfColor = selfColor;
 		this.rayColor  = rayColor;
 		this.rayRange  = viewRange + 5;
 		// this.rays      = [];
 
 		this.cvsCtx = canvasContext;
-		this.body  = new Circle(canvasContext, id, x, y, 25, selfColor, imageURL, visiable, blockView);	
+		this.body   = body;
+		// this.body  = new Circle(canvasContext, id, x, y, 25, selfColor, visiable, blockView);	
 	}
 
 	move(rangeX, rangeY) { 
@@ -480,9 +480,9 @@ class Observer {
 
 	draw() {
 		this.cvsCtx.save();
-		this.body.draw();
+		// this.body.draw();
 		this.cvsCtx.beginPath();
-		this.cvsCtx.moveTo(this.body.x, this.body.y);
+		this.cvsCtx.moveTo(this.x, this.y);
 
 		this.cvsCtx.stroke();
 		this.cvsCtx.fillStyle = this.rayColor;

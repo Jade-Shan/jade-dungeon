@@ -3,6 +3,19 @@
 let observer = {};
 // let loadResources = async () => { };
 
+let replaceObserverOnMap = (userId) => {
+	if (scene.teams) {
+		for (let i = 0; i < scene.teams.length; i++) {
+			// console.log(mapDatas.teams[i].id + " <> " +  userId);
+			if (scene.teams[i].id == userId) { // 名字和当前用户相同的是第一视角
+				let obtm = scene.teams[i];
+				observer = new Observer(ctx, userId, obtm.x, obtm.y, viewRange, 
+					obtm, "#FFFFFF", true, false);
+			}
+		}
+	}
+};
+
 let loadMapDatas = async (ctx, campaignId, placeId, sceneId, userId) => {
 	await requestMapDatas(campaignId, placeId, sceneId).then((data) => { 
 		imgResources = data.imgResources;
@@ -20,20 +33,46 @@ let loadMapDatas = async (ctx, campaignId, placeId, sceneId, userId) => {
 	loadItemsOnMap(ctx, scene.doors,      mapDatas.doors     );
 	loadItemsOnMap(ctx, scene.furnishing, mapDatas.furnishing);
 	loadItemsOnMap(ctx, scene.creaters,   mapDatas.creaters  );
-	// loadItemsOnMap(ctx, scene.teams,      mapDatas.teams     );
+	loadItemsOnMap(ctx, scene.teams,      mapDatas.teams     );
+	/*
+	if (mapDatas.walls) {
+		for (let i = 0; i< mapDatas.walls.length; i++) {
+			let obj = loadMapDataRec(ctx, mapDatas.walls[i]);
+			if (obj) { scene.walls.push(obj); }
+		}
+	}
+	if (mapDatas.doors) {
+		for (let i = 0; i< mapDatas.doors.length; i++) {
+			let obj = loadMapDataRec(ctx, mapDatas.doors[i]);
+			if (obj) { scene.doors.push(obj); }
+		}
+	}
+	if (mapDatas.furnishing) {
+		for (let i = 0; i< mapDatas.furnishing.length; i++) {
+			let obj = loadMapDataRec(ctx, mapDatas.furnishing[i]);
+			if (obj) { scene.furnishing.push(obj); }
+		}
+	}
+	if (mapDatas.creaters) {
+		for (let i = 0; i< mapDatas.creaters.length; i++) {
+			let obj = loadMapDataRec(ctx, mapDatas.creaters[i]);
+			if (obj) { scene.creaters.push(obj); }
+		}
+	}
 	if (mapDatas.teams) {
 		for (let i = 0; i< mapDatas.teams.length; i++) {
 			// console.log(mapDatas.teams[i].id + " <> " +  userId);
 			if (mapDatas.teams[i].id == userId) { // 名字和当前用户相同的是第一视角
-				observer = new Observer(ctx, userId, mapDatas.teams[i].x, mapDatas.teams[i].y,
+				observer = new Observer(ctx, mapDatas.teams[i].x, mapDatas.teams[i].y,
 					viewRange, "#0000FF", "#FFFFFF", scene.images[mapDatas.teams[i].imgKey], 
 					true, false);
 			} else {  // 其他的是队友视角
-				let obj = dataToItem(ctx, mapDatas.teams[i]);
+				let obj = loadMapDataRec(ctx, mapDatas.teams[i]);
 				if (obj) { scene.teams.push(obj); }
 			}
 		}
 	}
+	*/
 };
 
 let initSence = async () => {
@@ -109,6 +148,7 @@ let drawSence = async () => {
 let drawSandTable = async () => {
 	// await loadResources();
 	await loadMapDatas(ctx, campaignId, placeId, sceneId, userId);
+	replaceObserverOnMap(userId);
 	await initSence();
 	await drawSence();
 	resizeLayout();
