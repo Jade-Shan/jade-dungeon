@@ -1,18 +1,7 @@
 /* jshint esversion: 8 */
 
+let observer = {};
 // let loadResources = async () => { };
-
-let loadMapDataRec = (ctx, rec) => {
-	if ('Line' === rec.type) {
-		return new Line(ctx, rec.x, rec.y, rec.x2, rec.y2, rec.color, rec.visiable, rec.blockView);
-	} else if ('Rectangle' === rec.type) {
-		return new Rectangle(ctx, rec.x, rec.y, rec.width, rec.height, 
-			rec.color, scene.images[rec.imgKey], rec.visiable, rec.blockView);
-	} else if ('Circle' === rec.type) {
-		return new Circle(ctx, rec.x, rec.y, rec.radius, 
-			rec.color, scene.images[rec.imgKey], rec.visiable, rec.blockView);
-	}
-};
 
 let loadMapDatas = async (ctx, campaignId, placeId, sceneId, userId) => {
 	await requestMapDatas(campaignId, placeId, sceneId).then((data) => { 
@@ -27,39 +16,20 @@ let loadMapDatas = async (ctx, campaignId, placeId, sceneId, userId) => {
 			// alert('加载图片失败：' + url);
 		});
 	}
-	if (mapDatas.walls) {
-		for (let i = 0; i< mapDatas.walls.length; i++) {
-			let obj = loadMapDataRec(ctx, mapDatas.walls[i]);
-			if (obj) { scene.walls.push(obj); }
-		}
-	}
-	if (mapDatas.doors) {
-		for (let i = 0; i< mapDatas.doors.length; i++) {
-			let obj = loadMapDataRec(ctx, mapDatas.doors[i]);
-			if (obj) { scene.doors.push(obj); }
-		}
-	}
-	if (mapDatas.furnishing) {
-		for (let i = 0; i< mapDatas.furnishing.length; i++) {
-			let obj = loadMapDataRec(ctx, mapDatas.furnishing[i]);
-			if (obj) { scene.furnishing.push(obj); }
-		}
-	}
-	if (mapDatas.creaters) {
-		for (let i = 0; i< mapDatas.creaters.length; i++) {
-			let obj = loadMapDataRec(ctx, mapDatas.creaters[i]);
-			if (obj) { scene.creaters.push(obj); }
-		}
-	}
+	loadItemsOnMap(ctx, scene.walls,      mapDatas.walls     );
+	loadItemsOnMap(ctx, scene.doors,      mapDatas.doors     );
+	loadItemsOnMap(ctx, scene.furnishing, mapDatas.furnishing);
+	loadItemsOnMap(ctx, scene.creaters,   mapDatas.creaters  );
+	// loadItemsOnMap(ctx, scene.teams,      mapDatas.teams     );
 	if (mapDatas.teams) {
 		for (let i = 0; i< mapDatas.teams.length; i++) {
 			// console.log(mapDatas.teams[i].id + " <> " +  userId);
 			if (mapDatas.teams[i].id == userId) { // 名字和当前用户相同的是第一视角
-				observer = new Observer(ctx, mapDatas.teams[i].x, mapDatas.teams[i].y,
+				observer = new Observer(ctx, userId, mapDatas.teams[i].x, mapDatas.teams[i].y,
 					viewRange, "#0000FF", "#FFFFFF", scene.images[mapDatas.teams[i].imgKey], 
 					true, false);
 			} else {  // 其他的是队友视角
-				let obj = loadMapDataRec(ctx, mapDatas.teams[i]);
+				let obj = dataToItem(ctx, mapDatas.teams[i]);
 				if (obj) { scene.teams.push(obj); }
 			}
 		}

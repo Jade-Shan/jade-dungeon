@@ -4,7 +4,6 @@ let mapDatas     = [];
 let scene  = {
 	width: 0, height: 0, lighteness: 'rgba(0, 0, 0, 0.7)',
 	creaters : [], teams: [], walls: [], doors: [], furnishing: [], images:{}};
-let observer = {};
 
 let viewRange = 500;
 
@@ -31,6 +30,27 @@ let sleepMS = async (ms) =>  {
 	return new Promise((resolve, reject) => {
 		setTimeout(() => { resolve(); }, ms);
 	});
+};
+
+let dataToItem = (ctx, rec) => {
+	if ('Line' === rec.type) {
+		return new Line(ctx, rec.id, rec.x, rec.y, rec.x2, rec.y2, rec.color, rec.visiable, rec.blockView);
+	} else if ('Rectangle' === rec.type) {
+		return new Rectangle(ctx, rec.id, rec.x, rec.y, rec.width, rec.height, 
+			rec.color, scene.images[rec.imgKey], rec.visiable, rec.blockView);
+	} else if ('Circle' === rec.type) {
+		return new Circle(ctx, rec.id, rec.x, rec.y, rec.radius, 
+			rec.color, scene.images[rec.imgKey], rec.visiable, rec.blockView);
+	}
+};
+
+let loadItemsOnMap = (ctx, itemsOnScene, itemDatas) => {
+	if (itemDatas) {
+		for (let i = 0; i < itemDatas.length; i++) {
+			let obj = dataToItem(ctx, itemDatas[i]);
+			if (obj) { itemsOnScene.push(obj); }
+		}
+	}
 };
 
 let requestMapDatas = async (campaignId, placeId, sceneId) => {

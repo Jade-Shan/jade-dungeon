@@ -113,8 +113,9 @@ class Ray {
 
 class Canvas2dShape {
 
-	constructor(canvasContext, x, y, color, visiable, blockView) {
+	constructor(canvasContext, id, x, y, color, visiable, blockView) {
 		this.cvsCtx = canvasContext;
+		this.id     = id;
 		this.x      = x;
 		this.y      = y;
 		this.color  = color;
@@ -184,8 +185,8 @@ class Canvas2dShape {
 /* 线段 */
 class Line extends Canvas2dShape {
 
-	constructor(canvasContext, x, y, x2, y2, color, visiable, blockView) {
-		super(canvasContext, x, y, color, visiable, blockView);
+	constructor(canvasContext, id, x, y, x2, y2, color, visiable, blockView) {
+		super(canvasContext, id, x, y, color, visiable, blockView);
 		this.x2 = x2;
 		this.y2 = y2;
 		this.vtx = [[x,y], [x2, y2]];
@@ -260,8 +261,8 @@ class Line extends Canvas2dShape {
 
 class Rectangle extends Canvas2dShape {
 
-	constructor(canvasContext, x, y, width, height, color, image, visiable, blockView) {
-		super(canvasContext, x, y, color, visiable, blockView);
+	constructor(canvasContext, id, x, y, width, height, color, image, visiable, blockView) {
+		super(canvasContext, id, x, y, color, visiable, blockView);
 		this.height = height > 10 ? height : 10;
 		this.width  = width  > 10 ? width  : 10;
 		this.color  = color;
@@ -342,8 +343,8 @@ class Rectangle extends Canvas2dShape {
 
 class Circle extends Canvas2dShape {
 
-	constructor(canvasContext, x, y, radius, color, imageURL, visiable, blockView) {
-		super(canvasContext, x, y, color, visiable, blockView);
+	constructor(canvasContext, id, x, y, radius, color, imageURL, visiable, blockView) {
+		super(canvasContext, id, x, y, color, visiable, blockView);
 		this.radius = radius < 10 ? 10 : radius;
 		this.imageURL = imageURL;
 	}
@@ -459,16 +460,17 @@ class Circle extends Canvas2dShape {
 
 class Observer {
 
-	constructor(canvasContext, x, y, viewRange, selfColor, rayColor, imageURL, visiable, blockView) {
-		this.x = x;
-		this.y = y;
+	constructor(canvasContext, id, x, y, viewRange, selfColor, rayColor, imageURL, visiable, blockView) {
+		this.id = id;
+		this.x  = x;
+		this.y  = y;
 		this.selfColor = selfColor;
 		this.rayColor  = rayColor;
 		this.rayRange  = viewRange + 5;
 		// this.rays      = [];
 
 		this.cvsCtx = canvasContext;
-		this.body  = new Circle(canvasContext, x, y, 25, selfColor, imageURL, visiable, blockView);	
+		this.body  = new Circle(canvasContext, id, x, y, 25, selfColor, imageURL, visiable, blockView);	
 	}
 
 	move(rangeX, rangeY) { 
