@@ -2,10 +2,10 @@
 
 // let loadResources = async () => { };
 
-let requestMapDatas = async (campaign, place, scene) => {
+let requestMapDatas = async (campaignId, placeId, sceneId) => {
 	return new Promise((resolve, reject) => {
 		$.ajax({ 
-			url: encodeURI(apiRoot + "maps/" + campaign + "/" + place + "/" + scene), 
+			url: encodeURI(apiRoot + "maps/" + campaignId + "/" + placeId + "/" + sceneId), 
 			type: 'GET', dataType: 'json', data: { },
 			timeout: 30000,
 			success: function(data, status, xhr) {
@@ -32,14 +32,16 @@ let loadMapDataRec = (ctx, rec) => {
 	}
 };
 
-let loadMapDatas = async (ctx, mapId, userId) => {
-	await requestMapDatas(mapId, userId).then((data) => { 
+let loadMapDatas = async (ctx, campaignId, placeId, sceneId, userId) => {
+	await requestMapDatas(campaignId, placeId, sceneId).then((data) => { 
 		imgResources = data.imgResources;
 		mapDatas     = data.mapDatas;
 	});	
 	for (let i = 0; i < imgResources.length; i++) {
 		let rec = imgResources[i];
-		scene.images[rec.key] = await loadImage(new Image(), rec.url).catch((img, url) => { 
+		scene.images[rec.key] = await loadImage(new Image(), rec.url).then((img, url) => {
+			return img;
+		}).catch((img, url) => { 
 			// alert('加载图片失败：' + url);
 		});
 	}
@@ -153,10 +155,8 @@ let drawSence = async () => {
 
 
 let drawSandTable = async () => {
-	let mapId  = "map-01-01";
-	let userId = "u001";
 	// await loadResources();
-	await loadMapDatas(ctx, mapId, userId);
+	await loadMapDatas(ctx, campaignId, placeId, sceneId, userId);
 	await initSence();
 	await drawSence();
 	resizeLayout();
