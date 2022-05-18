@@ -218,6 +218,10 @@ class Canvas2dShape {
 		return rays;
 	}
 
+	move(dx, dy) {}
+
+	scaling(num) {}
+
 	isHit(x, y) {}
 
 	draw() { }
@@ -287,6 +291,18 @@ class Line extends Canvas2dShape {
 			new Ray(pos2[0], pos2[1], 0, 0, angl2, cAngl2, range2)] : [
 				new Ray(pos2[0], pos2[1], 0, 0, angl2, cAngl2, range2),
 				new Ray(pos1[0], pos1[1], 0, 0, angl1, cAngl1, range1)];
+	}
+
+	move(dx, dy) {
+		this.x  += dx;
+		this.y  += dy;
+		this.x2 += dx;
+		this.y2 += dy;
+	}
+
+	scaling(dx, dy) {
+		this.x2 += dx;
+		this.y2 += dy;
 	}
 
 	isHit(x, y) {
@@ -388,6 +404,16 @@ class Rectangle extends Canvas2dShape {
 			this.calVtxDstAngle(this.vtx[1][0], this.vtx[1][1], x, y, quad), 
 			this.calVtxDstAngle(this.vtx[2][0], this.vtx[2][1], x, y, quad), 
 			this.calVtxDstAngle(this.vtx[3][0], this.vtx[3][1], x, y, quad)];
+	}
+
+	move(dx, dy) {
+		this.x  += dx;
+		this.y  += dy;
+	}
+
+	scaling(dx, dy) {
+		this.width  += dx;
+		this.height += dy;
 	}
 
 	isHit(x, y) {
@@ -524,6 +550,15 @@ class Circle extends Canvas2dShape {
 		this.cvsCtx.restore();
 	}
 
+	move(dx, dy) {
+		this.x  += dx;
+		this.y  += dy;
+	}
+
+	scaling(dx, dy) {
+		this.radius += Math.sqrt(dx*dx + dy*dy);
+	}
+
 	isHit(x, y) {
 		let g = x - this.x;
 		let j = y - this.y;
@@ -573,8 +608,8 @@ class Observer {
 		// this.body  = new Circle(canvasContext, id, x, y, 25, selfColor, visiable, blockView);	
 	}
 
-	move(rangeX, rangeY) { 
-		this.x += rangeX; this.y += rangeY; 
+	move(dx, dy) { 
+		this.x += dx; this.y += dy; 
 		this.body.x = this.x; this.body.y = this.y; 
 	}
 

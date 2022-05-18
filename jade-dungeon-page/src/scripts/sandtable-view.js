@@ -67,7 +67,6 @@ class SandTableView {
 
 	async drawSence() {
 
-		// 无光效果
 		this.ctx.clearRect(0, 0, canvas.width, canvas.height);
 		this.ctx.drawImage(this.scene.images.map, 0, 0);
 		this.ctx.fillStyle = this.scene.shadowColor;

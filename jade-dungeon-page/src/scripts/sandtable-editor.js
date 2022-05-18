@@ -32,14 +32,41 @@ class SandTableEditor {
 		this.scene.height = this.scene.images.map.height;
 		this.canvas.setAttribute( 'width', this.scene.width );
 		this.canvas.setAttribute('height', this.scene.height);
+
+		this.isMovingItem  = false;
+		this.isScalingItem = false;
 		let self = this;
 		this.canvas.onmousedown = (e) => {
 			let offset = self.sumCanvasOffset(self.canvas, {x:0, y:0});
 			// console.log(`${offset.x}, ${offset.y}`);
-			let x = e.pageX - offset.x;
-			let y = e.pageY - offset.y;
-			self.clickCanvas(x, y);
+			self.startX = e.pageX - offset.x;
+			self.startY = e.pageY - offset.y;
+			self.canvasMouseDown(self.startX, self.startY);
 		};
+		this.canvas.onmouseup = (e) => {
+			let offset = self.sumCanvasOffset(self.canvas, {x:0, y:0});
+			// console.log(`${offset.x}, ${offset.y}`);
+			self.endX = e.pageX - offset.x;
+			self.endY = e.pageY - offset.y;
+			self.canvasMouseUp(self.endX, self.endY);
+		};
+		document.addEventListener("keydown", (e) => {
+			// console.log(`${e.key} - ${e.key == 'Control'} - ${e.key == 'Alt'}`);
+			if (e.key == 'Control'){
+				self.isMovingItem  = true;
+			} else if (e.key == 'Alt'){
+				self.isScalingItem = true;
+			}
+		});
+		document.addEventListener("keyup", (e) => {
+			// console.log(`${e.key} - ${e.key == 'Control'} - ${e.key == 'Alt'}`);
+			if (e.key == 'Control'){
+				self.isMovingItem  = false;
+			} else if (e.key == 'Alt'){
+				self.isScalingItem = false;
+			}
+		});
+
 	}
 
 	resizeLayout() {
@@ -79,14 +106,31 @@ class SandTableEditor {
 		this.scene.allTokens.forEach((e, i) => { e.drawDesign(); });
 	}
 
-	clickCanvas(x, y) {
+	canvasMouseDown(x, y) {
 		// console.log(`click: ${x}, ${y}`);
+		this.currSelected = undefined;
 		for(let i=0; i < this.scene.allTokens.length; i++) {
 			let obj = this.scene.allTokens[i];
 			if (obj.isHit(x, y)) {
 				console.log(`hit: ${obj.id}`);
+				this.currSelected = obj;
 				break;
 			}
+		}
+	}
+
+	canvasMouseUp(x, y) {
+		console.log(`click up: ${x - this.startX}, ${y - this.startY}`);
+		if (this.currSelected) {
+			console.log(`click up: ${this.currSelected.x}, ${this.currSelected.y}`);
+			if (this.isMovingItem) {
+				this.currSelected.move(x - this.startX, y - this.startY);
+			} else if (this.isScalingItem) {
+				this.currSelected.scaling(x - this.startX, y - this.startY);
+			}
+			console.log(`click up: ${this.currSelected.x}, ${this.currSelected.y}`);
+			this.currSelected = undefined;
+			this.drawSence();
 		}
 	}
 
