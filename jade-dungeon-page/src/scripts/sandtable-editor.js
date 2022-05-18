@@ -35,7 +35,7 @@ class SandTableEditor {
 		let self = this;
 		this.canvas.onmousedown = (e) => {
 			let offset = self.sumCanvasOffset(self.canvas, {x:0, y:0});
-			console.log(`${offset.x}, ${offset.y}`);
+			// console.log(`${offset.x}, ${offset.y}`);
 			let x = e.pageX - offset.x;
 			let y = e.pageY - offset.y;
 			self.clickCanvas(x, y);
@@ -80,7 +80,7 @@ class SandTableEditor {
 	}
 
 	clickCanvas(x, y) {
-		console.log(`click: ${x}, ${y}`);
+		// console.log(`click: ${x}, ${y}`);
 		for(let i=0; i < this.scene.allTokens.length; i++) {
 			let obj = this.scene.allTokens[i];
 			if (obj.isHit(x, y)) {

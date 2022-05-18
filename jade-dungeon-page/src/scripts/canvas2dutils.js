@@ -9,7 +9,7 @@ function pointOfLineSide(ax, ay, bx, by, x, y) {
 	return (ay - by) * x + (bx - ax) * y + ax * ay - bx * ay;
 }
 
-/* 判断点px,py是在线段ax,ay->bx,by的垂直交点 */
+/* 判断点x,y是在线段ax,ay->bx,by的垂直交点 */
 function pointToLine(ax, ay, bx, by, x, y) {
 	if (ax == bx && ay == by) {
 		return {x: ax, y: by};
@@ -18,21 +18,29 @@ function pointToLine(ax, ay, bx, by, x, y) {
 	} else if (ay == by) {
 		return {x: x, y: ay};
 	} else {
-		let k = (ay - by) / (ax - bx);
-		let m = ay - k * ax;
-		let n = x  - k * y;
+		// ay = ak * ax + ab
+		let ak = (ay - by) / (ax - bx);
+		let ab = ay - (ak * ax);
+		let angle1  = Math.atan(ak);
 		//
-		let rx = (n - k * m) / (k * k);
-		let ry = k * rx + m;
+		let angle2 = angle1 + PI_HALF;
+		let k = Math.tan(angle2);
+		let b = ak * ax + ab - kx;
+		// 
+		let rx = (ak * ax + ab - b) / k;
+		let ry = k * rx + b;
+
 		return {x: rx, y: ry};
 	}
 }
 
 function pointToLineDistence(ax, ay, bx, by, x, y) {
 	let p = pointToLine(ax, ay, bx, by, x, y);
-	let g = ax - bx;
-	let j = ay - by;
-	return Math.sqrt(g * g + j * j);
+	let g = x - p.x;
+	let j = y - p.y;
+	let distance = Math.sqrt(g * g + j * j);
+	// console.log(`${p.x},${p.y} - ${x},${y} = ${distance}`);
+	return distance;
 }
 
 /* 检查两条线段a-b与c-d是否相交，交点的坐标*/
@@ -282,17 +290,18 @@ class Line extends Canvas2dShape {
 	}
 
 	isHit(x, y) {
-		if (this.x < this.x2 && (x < this.x || x > this.x2)) {
+		// console.log(`${this.id} - ${this.x},${this.y} - ${this.x2},${this.y2} : ${x},${y}`);
+		if (this.x < this.x2 && (x < (this.x - 5) || x > (this.x2 + 5))) {
 			return false;
-		} else if (x < this.x2 || x > this.x) {
+		} else if (this.x > this.x2 && (x < (this.x2 - 5) || x > (this.x  + 5))) { 
 			return false;
-		} else if (this.y < this.y2 && (y < this.y || y > this.y2)) {
+		} else if (this.y < this.y2 && (y < (this.y  - 5) || y > (this.y2 + 5))) { 
 			return false;
-		} else if (y < this.y2 || y > this.y) {
+		} else if (this.y > this.y2 && (y < (this.y2 - 5) || y > (this.y  + 5))) { 
 			return false;
 		} else {
 			let dist = pointToLineDistence(this.x, this.y, this.x2, this.y2, x, y);
-			return dist > 5;
+			return dist < 10;
 		}
 	}
 
@@ -518,9 +527,9 @@ class Circle extends Canvas2dShape {
 	isHit(x, y) {
 		let g = x - this.x;
 		let j = y - this.y;
-		let distence = Math.sqrt(g*g + j*j);
-		console.log(`${this.id} - ${this.x},${this.y} - ${distence}`);
-		return distence < this.radius;
+		let distance = Math.sqrt(g*g + j*j);
+		// console.log(`${this.id} - ${this.x},${this.y} - ${distance}`);
+		return distance < this.radius;
 	}
 
 	draw() {
