@@ -1,7 +1,18 @@
 /* jshint esversion: 8 */
+let viewRange = 500;
+
+let imgResources = [];
+let mapDatas     = [];
+let scene  = {
+	width: 0, height: 0, lighteness: 'rgba(0, 0, 0, 0.7)',
+	creaters : [], teams: [], walls: [], doors: [], furnishing: [], images:{}};
 
 let observer = {};
 // let loadResources = async () => { };
+
+let canvas = document.getElementById("canvas");
+let ctx    = canvas.getContext("2d");
+
 
 let replaceObserverOnMap = (userId) => {
 	if (scene.teams) {
@@ -16,73 +27,11 @@ let replaceObserverOnMap = (userId) => {
 	}
 };
 
-let loadMapDatas = async (ctx, campaignId, placeId, sceneId, userId) => {
-	await requestMapDatas(campaignId, placeId, sceneId).then((data) => { 
-		imgResources = data.imgResources;
-		mapDatas     = data.mapDatas;
-	});	
-	for (let i = 0; i < imgResources.length; i++) {
-		let rec = imgResources[i];
-		scene.images[rec.key] = await loadImage(new Image(), rec.url).then((img, url) => {
-			return img;
-		}).catch((img, url) => { 
-			// alert('加载图片失败：' + url);
-		});
-	}
-	loadItemsOnMap(ctx, scene.walls,      mapDatas.walls     );
-	loadItemsOnMap(ctx, scene.doors,      mapDatas.doors     );
-	loadItemsOnMap(ctx, scene.furnishing, mapDatas.furnishing);
-	loadItemsOnMap(ctx, scene.creaters,   mapDatas.creaters  );
-	loadItemsOnMap(ctx, scene.teams,      mapDatas.teams     );
-	/*
-	if (mapDatas.walls) {
-		for (let i = 0; i< mapDatas.walls.length; i++) {
-			let obj = loadMapDataRec(ctx, mapDatas.walls[i]);
-			if (obj) { scene.walls.push(obj); }
-		}
-	}
-	if (mapDatas.doors) {
-		for (let i = 0; i< mapDatas.doors.length; i++) {
-			let obj = loadMapDataRec(ctx, mapDatas.doors[i]);
-			if (obj) { scene.doors.push(obj); }
-		}
-	}
-	if (mapDatas.furnishing) {
-		for (let i = 0; i< mapDatas.furnishing.length; i++) {
-			let obj = loadMapDataRec(ctx, mapDatas.furnishing[i]);
-			if (obj) { scene.furnishing.push(obj); }
-		}
-	}
-	if (mapDatas.creaters) {
-		for (let i = 0; i< mapDatas.creaters.length; i++) {
-			let obj = loadMapDataRec(ctx, mapDatas.creaters[i]);
-			if (obj) { scene.creaters.push(obj); }
-		}
-	}
-	if (mapDatas.teams) {
-		for (let i = 0; i< mapDatas.teams.length; i++) {
-			// console.log(mapDatas.teams[i].id + " <> " +  userId);
-			if (mapDatas.teams[i].id == userId) { // 名字和当前用户相同的是第一视角
-				observer = new Observer(ctx, mapDatas.teams[i].x, mapDatas.teams[i].y,
-					viewRange, "#0000FF", "#FFFFFF", scene.images[mapDatas.teams[i].imgKey], 
-					true, false);
-			} else {  // 其他的是队友视角
-				let obj = loadMapDataRec(ctx, mapDatas.teams[i]);
-				if (obj) { scene.teams.push(obj); }
-			}
-		}
-	}
-	*/
-};
-
 let initSence = async () => {
-
 	scene.width  = scene.images.map.width;
 	scene.height = scene.images.map.height;
 	canvas.setAttribute( 'width', scene.width );
 	canvas.setAttribute('height', scene.height);
-
-
 };
 
 let drawSence = async () => {
@@ -147,7 +96,7 @@ let drawSence = async () => {
 
 let drawSandTable = async () => {
 	// await loadResources();
-	await loadMapDatas(ctx, campaignId, placeId, sceneId, userId);
+	await loadMapDatas(ctx, scene, campaignId, placeId, sceneId, userId);
 	replaceObserverOnMap(userId);
 	await initSence();
 	await drawSence();

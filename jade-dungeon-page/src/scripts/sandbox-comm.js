@@ -1,14 +1,4 @@
 /* jshint esversion: 8 */
-let imgResources = [];
-let mapDatas     = [];
-let scene  = {
-	width: 0, height: 0, lighteness: 'rgba(0, 0, 0, 0.7)',
-	creaters : [], teams: [], walls: [], doors: [], furnishing: [], images:{}};
-
-let viewRange = 500;
-
-let canvas = document.getElementById("canvas");
-let ctx    = canvas.getContext("2d");
 
 let loadImage = async (image, imageURL) => {
 	return new Promise((resolve, reject) => {
@@ -32,7 +22,7 @@ let sleepMS = async (ms) =>  {
 	});
 };
 
-let dataToItem = (ctx, rec) => {
+let dataToItem = (ctx, scene, rec) => {
 	if ('Line' === rec.type) {
 		return new Line(ctx, rec.id, rec.x, rec.y, rec.x2, rec.y2, rec.color, rec.visiable, rec.blockView);
 	} else if ('Rectangle' === rec.type) {
@@ -44,10 +34,10 @@ let dataToItem = (ctx, rec) => {
 	}
 };
 
-let loadItemsOnMap = (ctx, itemsOnScene, itemDatas) => {
+let loadItemsOnMap = (ctx, scene, itemsOnScene, itemDatas) => {
 	if (itemDatas) {
 		for (let i = 0; i < itemDatas.length; i++) {
-			let obj = dataToItem(ctx, itemDatas[i]);
+			let obj = dataToItem(ctx, scene, itemDatas[i]);
 			if (obj) { itemsOnScene.push(obj); }
 		}
 	}
@@ -71,3 +61,23 @@ let requestMapDatas = async (campaignId, placeId, sceneId) => {
 	});
 };
 
+
+let loadMapDatas = async (ctx, scene, campaignId, placeId, sceneId, userId) => {
+	await requestMapDatas(campaignId, placeId, sceneId).then((data) => { 
+		imgResources = data.imgResources;
+		mapDatas     = data.mapDatas;
+	});	
+	for (let i = 0; i < imgResources.length; i++) {
+		let rec = imgResources[i];
+		scene.images[rec.key] = await loadImage(new Image(), rec.url).then((img, url) => {
+			return img;
+		}).catch((img, url) => { 
+			// alert('加载图片失败：' + url);
+		});
+	}
+	loadItemsOnMap(ctx, scene, scene.walls,      mapDatas.walls     );
+	loadItemsOnMap(ctx, scene, scene.doors,      mapDatas.doors     );
+	loadItemsOnMap(ctx, scene, scene.furnishing, mapDatas.furnishing);
+	loadItemsOnMap(ctx, scene, scene.creaters,   mapDatas.creaters  );
+	loadItemsOnMap(ctx, scene, scene.teams,      mapDatas.teams     );
+};
