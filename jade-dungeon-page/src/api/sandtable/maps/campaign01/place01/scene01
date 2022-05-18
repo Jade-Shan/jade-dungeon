@@ -1,14 +1,14 @@
 {
 	"status": "success", 
 	"imgResources": [
-	{"key":"chrt",         "url": "./images/sandbox/char.png"        },
-	{"key":"sdr1",         "url": "./images/sandbox/solider01.png"   },
-	{"key":"mos1",         "url": "./images/sandbox/moster.01.png"   },
-	{"key":"mos2",         "url": "./images/sandbox/moster.02.png"   },
-	{"key":"door",         "url": "./images/sandbox/door-wood.png"   },
-	{"key":"trsuBox-01-c", "url": "./images/sandbox/trsuBox-01-c.png"},
-	{"key":"trsuBox-02-c", "url": "./images/sandbox/trsuBox-02-c.png"},
-	{"key":"map",          "url": "./images/sandbox/map.png"         }],
+	{"key":"chrt",         "url": "./images/sandtable/char.png"        },
+	{"key":"sdr1",         "url": "./images/sandtable/solider01.png"   },
+	{"key":"mos1",         "url": "./images/sandtable/moster.01.png"   },
+	{"key":"mos2",         "url": "./images/sandtable/moster.02.png"   },
+	{"key":"door",         "url": "./images/sandtable/door-wood.png"   },
+	{"key":"trsuBox-01-c", "url": "./images/sandtable/trsuBox-01-c.png"},
+	{"key":"trsuBox-02-c", "url": "./images/sandtable/trsuBox-02-c.png"},
+	{"key":"map",          "url": "./images/sandtable/map.png"         }],
 	"mapDatas" : {
 		"teams": [
 		{"id": "u001", "type":"Circle", "x":250, "y":300, "radius":25, "color":"#0000FF", "imgKey":"chrt", "visiable":  true, "blockView":  false},

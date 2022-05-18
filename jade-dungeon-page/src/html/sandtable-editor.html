@@ -1,58 +1,100 @@
 <!DOCTYPE html>
 <html lang="en" dir="dir">
 	<head>
+<link rel="stylesheet" href="@@cdn3rd/bootstrap/3.3.6/css/bootstrap.min.css" />
+<link rel="stylesheet" href="@@cdn3rd/bootstrap/3.3.6/css/bootstrap-theme.min.css" />
 		<style>
 			div#hideImgs { display: none;}
-			div#mapArea {width: 900px; height: 700px; overflow: auto;}	
-			button {
-				width : 150px; height: 50px;
-				border-radius: 20%; font-size: 15px;}
-			/* button {border-radius: 20%;} */
-			button.clicked { background-color: #141E27; color: #EEEDDE;}
+			div#mapArea {overflow: auto;}	
 		</style>
 		<meta charset="UTF-8">
 		<title>sand box</title>
 	</head>
-	<body>
-		<div id="mapArea">
-			<canvas id="canvas" height="300" width="300"></canvas>	
+	<body class="container">
+		<div class="row">
+			<div id="mapArea" class="col-lg-9 col-md-8 col-sm-6 col-xs-6">
+				<canvas id="canvas" height="300" width="300"></canvas>	
+			</div>
+			<div class="container col-lg-3 col-md-4 col-sm-6 col-xs-6">
+				<div class="btn-group col-12">
+					<button type="button"	id="btn-lst-teams"      class="btn btn-default">&#128100</button>
+					<button type="button"	id="btn-lst-creaters"   class="btn btn-default">&#128126</button>
+					<button type="button"	id="btn-lst-furnishing" class="btn btn-default">&#128452</button>
+					<button type="button"	id="btn-lst-doors"      class="btn btn-default">&#128682</button>
+					<button type="button"	id="btn-lst-walls"      class="btn btn-default">&#127959</button>
+					<button type="button"	id="btn-lst-images"     class="btn btn-default">&#127756</button>
+				</div>
+				<div class="col-12">
+					<table id="item-lst" class="table table-striped">
+						<tbody>
+							<tr>
+								<td>&#128100</td><td>友方</td>
+								<td><button type="button" class="btn btn-xs btn-danger">&#10062</button></td>
+							</tr>
+							<tr>
+								<td>&#128126</td><td>敌方</td>
+								<td><button type="button" class="btn btn-xs btn-danger">&#10062</button></td>
+							</tr>
+							<tr>
+								<td>&#128452</td><td>物品</td>
+								<td><button type="button" class="btn btn-xs btn-danger">&#10062</button></td>
+							</tr>
+							<tr>
+								<td>&#128682</td><td>门</td>
+								<td><button type="button" class="btn btn-xs btn-danger">&#10062</button></td>
+							</tr>
+							<tr>
+								<td>&#127959</td><td>墙</td>
+								<td><button type="button" class="btn btn-xs btn-danger">&#10062</button></td>
+							</tr>
+							<tr>
+								<td>&#127756</td><td>图片</td>
+								<td><button type="button" class="btn btn-xs btn-danger">&#10062</button></td>
+							</tr>
+						</tbody>
+					</table>	
+				</div>
+			</div>
+		</div>
+		<div class="row">
 		</div>
 
-		<div id="ctrlPanel">
-			<table>
-				<tr>
-					<td></td>
-					<td><button id="k" onClick="javascript:moveObs(0,-10);">K &nbsp &#x2191</button></td>
-					<td></td>
-				</tr>
-				<tr>
-					<td><button id="h" onClick="javascript:moveObs(-10,0);">&#8592 &nbsp; H</button></td>
-					<td></td>
-					<td><button id="l" onClick="javascript:moveObs(10,0);">L &nbsp &#x2192</button></td>
-				</tr>
-				<tr>
-					<td></td>
-					<td><button id="j" onClick="javascript:moveObs(0,10);">J &nbsp; &#x2193</button></td>
-					<td></td>
-				</tr>
-			</table>
-		</div>
 
 		<div id="hideImgs">
 			<canvas id="finalCanvas" height="300" width="300"></canvas>	
 		</div>
 
 		<script src="@@cdn3rd/jquery/2.1.4/jquery.min.js"></script>
+		<script src="@@cdn3rd/bootstrap/3.3.6/js/bootstrap.min.js" ></script>
 <!--build:js @@webRoot/scripts/trpg.min.js?v=@@buildversion-->
 		<script src="@@webRoot/scripts/control.js?v=@@buildversion" ></script>
 		<script src="@@webRoot/scripts/canvas2dutils.js?v=@@buildversion" ></script>
-		<script src="@@webRoot/scripts/sandbox.js?v=@@buildversion" ></script>
-		<script src="@@webRoot/scripts/sandbox-editor.js?v=@@buildversion" ></script>
+		<script src="@@webRoot/scripts/sandtable-comm.js?v=@@buildversion" ></script>
+		<script src="@@webRoot/scripts/sandtable-view.js?v=@@buildversion" ></script>
+		<script src="@@webRoot/scripts/sandtable-editor.js?v=@@buildversion" ></script>
 <!--/build -->
 	</body>
 	<script type="text/javascript">
-		let apiRoot = '@@apiRoot/api/sandbox/';
-		drawSandTable();
+let apiRoot = '@@apiRoot/api/sandtable/';
+
+let canvas = document.getElementById("canvas"); 
+let ctx = canvas.getContext("2d");
+let image = new Image();
+image.onload = () => {
+		canvas.setAttribute( 'width', image.width );
+		canvas.setAttribute('height', image.height);
+		ctx.drawImage(image, 0, 0);
+};
+image.crossOrigin='Anonymous';
+image.src = './images/sandtable/map.png'; // 设置图片源地址
+
 	</script>
 </html>
   
+
+	 
+	 
+	 
+	 
+	 
+	  
