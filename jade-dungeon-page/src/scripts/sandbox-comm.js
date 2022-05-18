@@ -62,8 +62,8 @@ let requestMapDatas = async (campaignId, placeId, sceneId) => {
 };
 
 
-let loadMapDatas = async (ctx, scene, campaignId, placeId, sceneId, userId) => {
-	await requestMapDatas(campaignId, placeId, sceneId).then((data) => { 
+let loadMapDatas = async (ctx, scene) => {
+	await requestMapDatas(scene.campaignId, scene.placeId, scene.sceneId).then((data) => { 
 		imgResources = data.imgResources;
 		mapDatas     = data.mapDatas;
 	});	
@@ -81,3 +81,10 @@ let loadMapDatas = async (ctx, scene, campaignId, placeId, sceneId, userId) => {
 	loadItemsOnMap(ctx, scene, scene.creaters,   mapDatas.creaters  );
 	loadItemsOnMap(ctx, scene, scene.teams,      mapDatas.teams     );
 };
+
+
+
+
+
+
+

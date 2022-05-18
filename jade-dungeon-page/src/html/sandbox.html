@@ -51,14 +51,33 @@
 <!--/build -->
 	</body>
 	<script type="text/javascript">
-		let apiRoot = '@@apiRoot/api/sandbox/';
+let apiRoot = '@@apiRoot/api/sandbox/';
 
-		let userId = "u001";
-		let campaignId = "campaign01"; 
-		let placeId    = "place01"; 
-		let sceneId    = "scene01";
+let sandtable = new SandTableView(
+	document.getElementById("canvas"), 
+	{
+		viewRange: 500, shadowColor: 'rgba(0, 0, 0, 0.7)',
+		campaignId: "campaign01", placeId: "place01", sceneId: "scene01"
+	}, "u001");
 
-		drawSandTable();
+
+window.addEventListener('resize', sandtable.resizeLayout);
+
+function moveObs(dx, dy) { sandtable.moveObs(dx, dy); };
+
+document.addEventListener("keydown", (event) => {
+	if (event.key == 'h') { 
+		moveObs(-10,   0);
+	} else if (event.key == 'j') { 
+		moveObs(  0,  10);
+	} else if (event.key == 'k') { 
+		moveObs(  0, -10);
+	} else if (event.key == 'l') { 
+		moveObs( 10,   0);
+	}
+});
+
+sandtable.drawSandTable();
 	</script>
 </html>
   

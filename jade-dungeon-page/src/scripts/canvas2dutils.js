@@ -536,7 +536,7 @@ class Observer {
 	}
 
 	renderTokensOnSandboxInView(mapImage, tokens) {
-		let vTokens = observer.filterTokensInView(tokens);
+		let vTokens = this.filterTokensInView(tokens);
 		this.renderTokensOnSandbox(mapImage, vTokens);
 	}
 
