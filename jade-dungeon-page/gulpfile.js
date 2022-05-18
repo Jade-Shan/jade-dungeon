@@ -124,9 +124,9 @@ gulp.task('copy-scripts', gulp.series('clean-scripts', 'check-scripts', () => {
 			cfg.path.src.js + 'base.js',
 			cfg.path.src.js + 'canvas2dutils.js',
 			cfg.path.src.js + 'control.js',
-			cfg.path.src.js + 'sandbox-comm.js',
-			cfg.path.src.js + 'sandbox-view.js',
-			cfg.path.src.js + 'sandbox-editor.js',
+			cfg.path.src.js + 'sandtable-comm.js',
+			cfg.path.src.js + 'sandtable-view.js',
+			cfg.path.src.js + 'sandtable-editor.js',
 			cfg.path.src.js + 'journal.js',
 			cfg.path.src.js + 'gallery.js'
 	]).pipe(gulp.dest(cfg.path.dst.js))
@@ -147,9 +147,9 @@ gulp.task('min-scripts', gulp.series('clean-scripts', 'check-scripts', () => {
 gulp.task('min-scripts-trpg', gulp.series('clean-scripts', 'check-scripts', () => {
 	return gulp.src([
 			cfg.path.src.js + 'control.js',
-			cfg.path.src.js + 'sandbox-comm.js',
-			cfg.path.src.js + 'sandbox-view.js',
-			cfg.path.src.js + 'sandbox-editor.js'
+			cfg.path.src.js + 'sandtable-comm.js',
+			cfg.path.src.js + 'sandtable-view.js',
+			cfg.path.src.js + 'sandtable-editor.js'
 	]).pipe(concat('trpg.js'))
 		.pipe(rename({suffix: '.min'})).pipe(uglify())
 		.pipe(gulp.dest(cfg.path.dst.js));
