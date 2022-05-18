@@ -11,7 +11,7 @@
 		<title>sand box</title>
 	</head>
 	<body class="container">
-		<div class="row">
+		<div id="most-out" class="row">
 			<div id="mapArea" class="col-lg-9 col-md-8 col-sm-6 col-xs-6">
 				<canvas id="canvas" height="300" width="300"></canvas>	
 			</div>
@@ -98,6 +98,7 @@
 	<script type="text/javascript">
 let apiRoot = '@@apiRoot/api/sandtable/';
 
+/*
 let canvas = document.getElementById("canvas"); 
 let ctx = canvas.getContext("2d");
 let image = new Image();
@@ -108,6 +109,19 @@ image.onload = () => {
 };
 image.crossOrigin='Anonymous';
 image.src = './images/sandtable/map.png'; // 设置图片源地址
+*/
+
+
+let sandtable = new SandTableEditor(
+	document.getElementById("canvas"), 
+	{
+		viewRange: 500, shadowColor: 'rgba(0, 0, 0, 0.7)',
+		campaignId: "campaign01", placeId: "place01", sceneId: "scene01"
+	}, "u001");
+
+window.addEventListener('resize', sandtable.resizeLayout);
+
+sandtable.drawSandTable();
 
 	</script>
 </html>

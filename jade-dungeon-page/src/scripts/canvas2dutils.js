@@ -3,6 +3,38 @@ const PI_HALF     = Math.PI / 2;
 const PI_ONE_HALF = Math.PI + PI_HALF;
 const PI_DOUBLE   = Math.PI * 2;
 
+/* 判断点px,py是在线段ax,ay->bx,by左边还是右边的 */
+/* result > 0为左， < 0为右， =0为线上 */
+function pointOfLineSide(ax, ay, bx, by, x, y) {
+	return (ay - by) * x + (bx - ax) * y + ax * ay - bx * ay;
+}
+
+/* 判断点px,py是在线段ax,ay->bx,by的垂直交点 */
+function pointToLine(ax, ay, bx, by, x, y) {
+	if (ax == bx && ay == by) {
+		return {x: ax, y: by};
+	} else if (ax == bx) {
+		return {x: ax, y: y};
+	} else if (ay == by) {
+		return {x: x, y: ay};
+	} else {
+		let k = (ay - by) / (ax - bx);
+		let m = ay - k * ax;
+		let n = x  - k * y;
+		//
+		let rx = (n - k * m) / (k * k);
+		let ry = k * rx + m;
+		return {x: rx, y: ry};
+	}
+}
+
+function pointToLineDistence(ax, ay, bx, by, x, y) {
+	let p = pointToLine(ax, ay, bx, by, x, y);
+	let g = ax - bx;
+	let j = ay - by;
+	return Math.sqrt(g * g + j * j);
+}
+
 /* 检查两条线段a-b与c-d是否相交，交点的坐标*/
 function segmentsIntr(a, b, c, d) { 
 	let isCross = false;
@@ -178,8 +210,11 @@ class Canvas2dShape {
 		return rays;
 	}
 
+	isHit(x, y) {}
+
 	draw() { }
 
+	drawDesign () {}
 }
 
 /* 线段 */
@@ -246,15 +281,42 @@ class Line extends Canvas2dShape {
 				new Ray(pos1[0], pos1[1], 0, 0, angl1, cAngl1, range1)];
 	}
 
+	isHit(x, y) {
+		if (this.x < this.x2 && (x < this.x || x > this.x2)) {
+			return false;
+		} else if (x < this.x2 || x > this.x) {
+			return false;
+		} else if (this.y < this.y2 && (y < this.y || y > this.y2)) {
+			return false;
+		} else if (y < this.y2 || y > this.y) {
+			return false;
+		} else {
+			let dist = pointToLineDistence(this.x, this.y, this.x2, this.y2, x, y);
+			return dist > 5;
+		}
+	}
+
 	draw() {
 		this.cvsCtx.save();
 		this.cvsCtx.strokeStyle = "#00FF00";
+		this.cvsCtx.lineWidth = 3;
 		this.cvsCtx.beginPath();
 		this.cvsCtx.moveTo(this.x, this.y);
-		this.cvsCtx.lineTo(this.x, this.y, this.x2, this.y2);
-		this.cvsCtx.lineWidth = 3;
+		this.cvsCtx.lineTo(this.x2, this.y2);
 		this.cvsCtx.stroke();
 		this.cvsCtx.restore();
+	}
+
+	drawDesign() {
+		this.cvsCtx.save();
+		this.cvsCtx.strokeStyle = "#0000FF";
+		this.cvsCtx.lineWidth = 8;
+		this.cvsCtx.beginPath();
+		this.cvsCtx.moveTo(this.x, this.y);
+		this.cvsCtx.lineTo(this.x2, this.y2);
+		this.cvsCtx.stroke();
+		this.cvsCtx.restore();
+		this.draw();
 	}
 
 }
@@ -319,6 +381,18 @@ class Rectangle extends Canvas2dShape {
 			this.calVtxDstAngle(this.vtx[3][0], this.vtx[3][1], x, y, quad)];
 	}
 
+	isHit(x, y) {
+		if (x < this.x || y < this.y) {
+			return false;
+		} else if (x > (this.x + this.width)) {
+			return false;
+		} else if (y > (this.y + this.height)) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
 	draw() {
 		this.cvsCtx.save();
 		this.cvsCtx.lineWidth = 0;
@@ -337,6 +411,10 @@ class Rectangle extends Canvas2dShape {
 		this.cvsCtx.clip();
 		this.cvsCtx.drawImage(this.image, this.x, this.y);
 		this.cvsCtx.restore();
+	}
+
+	drawDesign() {
+		this.draw();
 	}
 
 }
@@ -437,6 +515,14 @@ class Circle extends Canvas2dShape {
 		this.cvsCtx.restore();
 	}
 
+	isHit(x, y) {
+		let g = x - this.x;
+		let j = y - this.y;
+		let distence = Math.sqrt(g*g + j*j);
+		console.log(`${this.id} - ${this.x},${this.y} - ${distence}`);
+		return distence < this.radius;
+	}
+
 	draw() {
 		this.cvsCtx.save();
 		this.cvsCtx.lineWidth = 0;
@@ -456,6 +542,11 @@ class Circle extends Canvas2dShape {
 		this.cvsCtx.drawImage(this.imageURL, this.x - this.radius, this.y - this.radius);
 		this.cvsCtx.restore();
 	}
+
+	drawDesign() {
+		this.draw();
+	}
+
 }
 
 class Observer {
