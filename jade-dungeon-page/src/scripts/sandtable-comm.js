@@ -34,11 +34,14 @@ let dataToItem = (ctx, scene, rec) => {
 	}
 };
 
-let loadItemsOnMap = (ctx, scene, itemsOnScene, itemDatas) => {
+let loadItemsOnMap = (ctx, scene, itemList, itemMap, itemDatas) => {
 	if (itemDatas) {
 		for (let i = 0; i < itemDatas.length; i++) {
 			let obj = dataToItem(ctx, scene, itemDatas[i]);
-			if (obj) { itemsOnScene.push(obj); }
+			if (obj) { 
+				itemList.push(obj); 
+				itemMap.set(obj.id, obj);
+			}
 		}
 	}
 };
@@ -75,11 +78,11 @@ let loadMapDatas = async (ctx, scene) => {
 			// alert('加载图片失败：' + url);
 		});
 	}
-	loadItemsOnMap(ctx, scene, scene.walls,      mapDatas.walls     );
-	loadItemsOnMap(ctx, scene, scene.doors,      mapDatas.doors     );
-	loadItemsOnMap(ctx, scene, scene.furnishing, mapDatas.furnishing);
-	loadItemsOnMap(ctx, scene, scene.creaters,   mapDatas.creaters  );
-	loadItemsOnMap(ctx, scene, scene.teams,      mapDatas.teams     );
+	loadItemsOnMap(ctx, scene, scene.walls,      scene.wallMap,      mapDatas.walls     );
+	loadItemsOnMap(ctx, scene, scene.doors,      scene.doorMap,      mapDatas.doors     );
+	loadItemsOnMap(ctx, scene, scene.furnishing, scene.furnishingMap, mapDatas.furnishing);
+	loadItemsOnMap(ctx, scene, scene.creaters,   scene.createrMap,   mapDatas.creaters  );
+	loadItemsOnMap(ctx, scene, scene.teams,      scene.teamMap,      mapDatas.teams     );
 };
 
 

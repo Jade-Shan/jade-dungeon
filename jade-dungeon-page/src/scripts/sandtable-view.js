@@ -11,6 +11,11 @@ class SandTableView {
 			campaignId: scene.campaignId, placeId: scene.placeId, sceneId: scene.sceneId,
 			shadowColor: scene.shadowColor, viewRange: scene.viewRange,
 			creaters : [], teams: [], walls: [], doors: [], furnishing: [], images:{}};
+		this.scene.createrMap    = new Map();
+		this.scene.teamMap       = new Map();
+		this.scene.wallMap       = new Map();
+		this.scene.doorMap       = new Map();
+		this.scene.furnishingMap = new Map();
 	}
 
 	moveObs(dx, dy) {
