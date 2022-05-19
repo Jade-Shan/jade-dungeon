@@ -20,7 +20,6 @@ class SandTableEditor {
 		this.scene.imageMap      = new Map();
 		// 目前选中正在编辑的目标
 		this.currSelected = undefined;
-		this.currGroup    = undefined;
 	}
 
 	listGroupTokens(groupName) {
@@ -146,6 +145,7 @@ class SandTableEditor {
 		await this.initSence();
 		await this.drawSence();
 		this.resizeLayout();
+		this.listGroupTokens('teams');
 	}
 
 	async drawSence() {

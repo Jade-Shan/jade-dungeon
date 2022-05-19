@@ -58,7 +58,7 @@ let loadItemsOnMap = (ctx, scene, itemList, itemMap, itemDatas) => {
 let requestMapDatas = async (campaignId, placeId, sceneId) => {
 	return new Promise((resolve, reject) => {
 		$.ajax({ 
-			url: encodeURI(apiRoot + "maps/" + campaignId + "/" + placeId + "/" + sceneId), 
+			url: encodeURI(apiRoot + "maps/" + campaignId + "/" + placeId + "/" + sceneId + "?t=" + (new Date()).getTime()), 
 			type: 'GET', dataType: 'json', data: { },
 			timeout: 30000,
 			success: function(data, status, xhr) {
