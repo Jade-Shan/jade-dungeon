@@ -23,14 +23,20 @@ let sleepMS = async (ms) =>  {
 };
 
 let dataToItem = (ctx, scene, rec) => {
+	let tkImg = {};
+	if (rec.img && rec.img.imgKey) { tkImg.img    = scene.images[rec.img.imgKey]; }
+	if (rec.img && rec.img.sx    ) { tkImg.sx     = rec.img.sx    ; }
+	if (rec.img && rec.img.sy    ) { tkImg.sy     = rec.img.sy    ; }
+	if (rec.img && rec.img.width ) { tkImg.width  = rec.img.width ; }
+	if (rec.img && rec.img.height) { tkImg.height = rec.img.height; }
 	if ('Line' === rec.type) {
 		return new Line(ctx, rec.id, rec.x, rec.y, rec.x2, rec.y2, rec.color, rec.visiable, rec.blockView);
 	} else if ('Rectangle' === rec.type) {
 		return new Rectangle(ctx, rec.id, rec.x, rec.y, rec.width, rec.height, 
-			rec.color, scene.images[rec.imgKey], rec.visiable, rec.blockView);
+			rec.color, tkImg, rec.visiable, rec.blockView);
 	} else if ('Circle' === rec.type) {
 		return new Circle(ctx, rec.id, rec.x, rec.y, rec.radius, 
-			rec.color, scene.images[rec.imgKey], rec.visiable, rec.blockView);
+			rec.color, tkImg, rec.visiable, rec.blockView);
 	}
 };
 

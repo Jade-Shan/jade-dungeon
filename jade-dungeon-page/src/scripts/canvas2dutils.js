@@ -444,7 +444,14 @@ class Rectangle extends Canvas2dShape {
 		this.cvsCtx.lineTo(x, y + height);
 		this.cvsCtx.lineTo(x, y);
 		this.cvsCtx.clip();
-		this.cvsCtx.drawImage(this.image, this.x, this.y);
+		if (this.image && this.image.img) {
+			let sx      = this.image.sx ? this.image.sx : 0;
+			let sy      = this.image.sy ? this.image.sy : 0;
+			let swidth   = this.image.width ? this.image.width: this.width;
+			let sheight  = this.image.height ? this.image.height: this.height;
+			this.cvsCtx.drawImage(this.image.img, sx, sy, swidth, sheight, 
+				this.x, this.y, this.width, this.height);
+		}
 		this.cvsCtx.restore();
 	}
 
@@ -456,10 +463,10 @@ class Rectangle extends Canvas2dShape {
 
 class Circle extends Canvas2dShape {
 
-	constructor(canvasContext, id, x, y, radius, color, imageURL, visiable, blockView) {
+	constructor(canvasContext, id, x, y, radius, color, image, visiable, blockView) {
 		super(canvasContext, id, x, y, color, visiable, blockView);
 		this.radius = radius < 10 ? 10 : radius;
-		this.imageURL = imageURL;
+		this.image= image;
 	}
 
 	/* 外部点到当前图像内个关键点的最近距离 */
@@ -581,9 +588,18 @@ class Circle extends Canvas2dShape {
 		this.cvsCtx.arc(this.x, this.y, this.radius - 3, 0, PI_DOUBLE, true);
 		this.cvsCtx.stroke();
 		this.cvsCtx.clip();
-		// let img = document.querySelector('#' + this.imageURL);
-		// this.cvsCtx.drawImage(img, this.x - this.radius, this.y - this.radius);
-		this.cvsCtx.drawImage(this.imageURL, this.x - this.radius, this.y - this.radius);
+		if (this.image && this.image.img) {
+			let dx = this.x - this.radius;
+			let dy = this.y - this.radius;
+			let dwidth  = this.radius * 2;
+			let dheight = dwidth;
+			let sx      = this.image.sx ? this.image.sx : 0;
+			let sy      = this.image.sy ? this.image.sy : 0;
+			let swidth   = this.image.width ? this.image.width: dwidth;
+			let sheight  = this.image.height ? this.image.height: dheight;
+			this.cvsCtx.drawImage(this.image.img, sx, sy, swidth, sheight, 
+				dx, dy, dwidth, dheight);
+		}
 		this.cvsCtx.restore();
 	}
 
