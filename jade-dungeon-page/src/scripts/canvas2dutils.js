@@ -25,7 +25,7 @@ function pointToLine(ax, ay, bx, by, x, y) {
 		//
 		let angle2 = angle1 + PI_HALF;
 		let k = Math.tan(angle2);
-		let b = ak * ax + ab - kx;
+		let b = ak * ax + ab - k * x;
 		// 
 		let rx = (ak * ax + ab - b) / k;
 		let ry = k * rx + b;
@@ -222,6 +222,10 @@ class Canvas2dShape {
 
 	scale(num) {}
 
+	onMoveing(dx, dy) {}
+
+	onScaleing(dx, dy) {}
+
 	isHit(x, y) {}
 
 	draw() { }
@@ -291,6 +295,44 @@ class Line extends Canvas2dShape {
 			new Ray(pos2[0], pos2[1], 0, 0, angl2, cAngl2, range2)] : [
 				new Ray(pos2[0], pos2[1], 0, 0, angl2, cAngl2, range2),
 				new Ray(pos1[0], pos1[1], 0, 0, angl1, cAngl1, range1)];
+	}
+
+	onMoveing(dx, dy) {
+		this.cvsCtx.save();
+		this.cvsCtx.strokeStyle = 'rgba(0, 0, 255, 0.6)';
+		this.cvsCtx.lineWidth = 8;
+		this.cvsCtx.beginPath();
+		this.cvsCtx.moveTo(dx + this.x , dy + this.y );
+		this.cvsCtx.lineTo(dx + this.x2, dy + this.y2);
+		this.cvsCtx.stroke();
+		this.draw();
+		this.cvsCtx.strokeStyle = 'rgba(0, 255, 0, 0.6)';
+		this.cvsCtx.lineWidth = 3;
+		this.cvsCtx.beginPath();
+		this.cvsCtx.moveTo(dx + this.x , dy + this.y );
+		this.cvsCtx.lineTo(dx + this.x2, dy + this.y2);
+		this.cvsCtx.stroke();
+		this.draw();
+		this.cvsCtx.restore();
+	}
+
+	onScaleing(dx, dy) {
+		this.cvsCtx.save();
+		this.cvsCtx.strokeStyle = 'rgba(0, 0, 255, 0.6)';
+		this.cvsCtx.lineWidth = 8;
+		this.cvsCtx.beginPath();
+		this.cvsCtx.moveTo(this.x , this.y );
+		this.cvsCtx.lineTo(dx + this.x2, dy + this.y2);
+		this.cvsCtx.stroke();
+		this.draw();
+		this.cvsCtx.strokeStyle = 'rgba(0, 255, 0, 0.6)';
+		this.cvsCtx.lineWidth = 3;
+		this.cvsCtx.beginPath();
+		this.cvsCtx.moveTo(this.x , this.y );
+		this.cvsCtx.lineTo(dx + this.x2, dy + this.y2);
+		this.cvsCtx.stroke();
+		this.draw();
+		this.cvsCtx.restore();
 	}
 
 	move(dx, dy) {
@@ -405,6 +447,10 @@ class Rectangle extends Canvas2dShape {
 			this.calVtxDstAngle(this.vtx[2][0], this.vtx[2][1], x, y, quad), 
 			this.calVtxDstAngle(this.vtx[3][0], this.vtx[3][1], x, y, quad)];
 	}
+
+	onMoveing(dx, dy) {}
+
+	onScaleing(dx, dy) {}
 
 	move(dx, dy) {
 		this.x  += dx;
@@ -556,6 +602,10 @@ class Circle extends Canvas2dShape {
 		this.cvsCtx.stroke();
 		this.cvsCtx.restore();
 	}
+
+	onMoveing(dx, dy) {}
+
+	onScaleing(dx, dy) {}
 
 	move(dx, dy) {
 		this.x  += dx;

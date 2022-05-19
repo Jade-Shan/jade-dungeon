@@ -43,6 +43,13 @@ class SandTableEditor {
 			self.startY = e.pageY - offset.y;
 			self.canvasMouseDown(self.startX, self.startY);
 		};
+		this.canvas.onmousemove = (e) => {
+			let offset = self.sumCanvasOffset(self.canvas, {x:0, y:0});
+			// console.log(`${offset.x}, ${offset.y}`);
+			self.endX = e.pageX - offset.x;
+			self.endY = e.pageY - offset.y;
+			self.canvasMouseDrag(self.endX, self.endY);
+		};
 		this.canvas.onmouseup = (e) => {
 			let offset = self.sumCanvasOffset(self.canvas, {x:0, y:0});
 			// console.log(`${offset.x}, ${offset.y}`);
@@ -104,6 +111,15 @@ class SandTableEditor {
 						this.scene.furnishing);
 
 		this.scene.allTokens.forEach((e, i) => { e.drawDesign(); });
+
+		// 缓存当前图片
+		let brightMap = new Image();
+		await loadImage(brightMap, canvas.toDataURL({
+			format: 'image/png', quality: 1, 
+			width: this.scene.width, height: this.scene.height})
+		).catch((img, url) => { alert('加载图形失败：' + url); });
+		brightMap.crossOrigin='Anonymous';
+		this.brightMap = brightMap;
 	}
 
 	canvasMouseDown(x, y) {
@@ -115,6 +131,20 @@ class SandTableEditor {
 				console.log(`hit: ${obj.id}`);
 				this.currSelected = obj;
 				break;
+			}
+		}
+	}
+
+	canvasMouseDrag(x, y) {
+		if (this.currSelected) {
+			if (this.isMovingItem) {
+				this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+				this.ctx.drawImage(this.brightMap, 0, 0);
+				this.currSelected.onMoveing(x - this.startX, y - this.startY);
+			} else if (this.isScalingItem) {
+				this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+				this.ctx.drawImage(this.brightMap, 0, 0);
+				this.currSelected.onScaleing(x - this.startX, y - this.startY);
 			}
 		}
 	}
