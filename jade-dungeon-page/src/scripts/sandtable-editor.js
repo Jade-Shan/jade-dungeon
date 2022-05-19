@@ -1,9 +1,11 @@
 /* jshint esversion: 8 */
 class SandTableEditor {
 
-	constructor(canvas, scene, userId) {
+	constructor(canvas, tkImgCanvas,scene, userId) {
 		this.canvas    = canvas;
 		this.ctx       = this.canvas.getContext("2d");
+		this.tkImgCanvas = tkImgCanvas;
+		this.tkImgCtx    = tkImgCanvas.getContext("2d");
 		this.userId    = userId;
 		this.observer  = {};
 		this.scene     = { width: 0, height: 0, 
@@ -77,12 +79,13 @@ class SandTableEditor {
 	}
 
 	resizeLayout() {
-		let wHeight   = parseInt(window.innerHeight);
-		let mapArea   = document.querySelector("#mapArea");
-		let ctrlPanel = document.querySelector("#ctrlPanel");
-		let cpHeight  = parseInt(ctrlPanel.clientHeight);
+		let wHeight     = parseInt(window.innerHeight);
+		let mapArea     = document.querySelector("#mapArea");
+		// let ctrlPanel   = document.querySelector("#ctrlPanel");
+		let propImgArea = document.querySelector("#propImgArea");
+		let cpHeight  = parseInt(propImgArea.clientHeight);
 
-		let maHeight = wHeight - cpHeight - 30;
+		let maHeight = wHeight - cpHeight;
 		// mapArea.style.width  = maWidth  + "px";
 		mapArea.style.height = maHeight + "px";
 	}
@@ -122,14 +125,64 @@ class SandTableEditor {
 		this.brightMap = brightMap;
 	}
 
+	selectToken(token) {
+		this.currSelected = token;
+		if ("canvas.shape.2d.Rectangle" == token.classType) {
+			$('#tk-prop-editer').html(editorHtmlRect);
+			$('#tkId'       ).val(token.id          );
+			$('#tkX'        ).val(token.x           );
+			$('#tkY'        ).val(token.y           );
+			$('#tkWidth'    ).val(token.width       );
+			$('#tkHeigh'    ).val(token.height      );
+			$('#tkImgKey'   ).val(token.image.key   );
+			$('#tkImgX'     ).val(token.image.sx    );
+			$('#tkImgY'     ).val(token.image.sy    );
+			$('#tkImgWidth' ).val(token.image.width );
+			$('#tkImgHeight').val(token.image.height);
+			this.tkImgCanvas.setAttribute( 'width', token.image.img.width );
+			this.tkImgCanvas.setAttribute('height', token.image.img.height);
+			this.tkImgCtx.clearRect(0, 0, token.image.img.width, token.image.img.height);
+			this.tkImgCtx.drawImage(token.image.img, 0, 0);
+			this.tkImgCtx.save();
+			this.tkImgCtx.lineWidth = 3;
+			this.tkImgCtx.fillStyle   = "rgba(0, 0, 255, 0.5)";
+			this.tkImgCtx.fillRect(token.image.sx, token.image.sy, token.image.width,  token.image.height);
+			this.tkImgCtx.strokeStyle = "rgba(255, 0, 0, 0.7)";
+			this.tkImgCtx.strokeRect(token.image.sx, token.image.sy, token.image.width,  token.image.height);
+			this.tkImgCtx.restore();
+		} else if ("canvas.shape.2d.Circle" == token.classType) {
+			$('#tk-prop-editer').html(editorHtmlCirc);
+			$('#tkId'       ).val(token.id          );
+			$('#tkX'        ).val(token.x           );
+			$('#tkY'        ).val(token.y           );
+			$('#tkRadius'   ).val(token.radius      );
+			$('#tkImgKey'   ).val(token.image.key   );
+			$('#tkImgX'     ).val(token.image.sx    );
+			$('#tkImgY'     ).val(token.image.sy    );
+			$('#tkImgWidth' ).val(token.image.width );
+			$('#tkImgHeight').val(token.image.height);
+			this.tkImgCanvas.setAttribute( 'width', token.image.img.width );
+			this.tkImgCanvas.setAttribute('height', token.image.img.height);
+			this.tkImgCtx.clearRect(0, 0, token.image.img.width, token.image.img.height);
+			this.tkImgCtx.drawImage(token.image.img, 0, 0);
+			this.tkImgCtx.save();
+			this.tkImgCtx.lineWidth = 3;
+			this.tkImgCtx.fillStyle   = "rgba(0, 0, 255, 0.5)";
+			this.tkImgCtx.fillRect(token.image.sx, token.image.sy, token.image.width,  token.image.height);
+			this.tkImgCtx.strokeStyle = "rgba(255, 0, 0, 0.7)";
+			this.tkImgCtx.strokeRect(token.image.sx, token.image.sy, token.image.width,  token.image.height);
+			this.tkImgCtx.restore();
+		} 
+	}
+
 	canvasMouseDown(x, y) {
 		// console.log(`click: ${x}, ${y}`);
 		this.currSelected = undefined;
 		for(let i=0; i < this.scene.allTokens.length; i++) {
-			let obj = this.scene.allTokens[i];
-			if (obj.isHit(x, y)) {
-				console.log(`hit: ${obj.id}`);
-				this.currSelected = obj;
+			let token = this.scene.allTokens[i];
+			if (token.isHit(x, y)) {
+				console.log(`hit: ${token.id}`);
+				this.selectToken(token);
 				break;
 			}
 		}

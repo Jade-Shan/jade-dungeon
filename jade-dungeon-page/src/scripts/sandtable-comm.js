@@ -24,7 +24,10 @@ let sleepMS = async (ms) =>  {
 
 let dataToItem = (ctx, scene, rec) => {
 	let tkImg = {};
-	if (rec.img && rec.img.imgKey) { tkImg.img    = scene.images[rec.img.imgKey]; }
+	if (rec.img && rec.img.imgKey) { 
+		tkImg.key = rec.img.imgKey; 
+		tkImg.img = scene.images[rec.img.imgKey]; 
+	}
 	if (rec.img && rec.img.sx    ) { tkImg.sx     = rec.img.sx    ; }
 	if (rec.img && rec.img.sy    ) { tkImg.sy     = rec.img.sy    ; }
 	if (rec.img && rec.img.width ) { tkImg.width  = rec.img.width ; }

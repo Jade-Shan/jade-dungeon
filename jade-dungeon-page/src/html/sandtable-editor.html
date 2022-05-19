@@ -6,6 +6,7 @@
 		<style>
 			div#hideImgs { display: none;}
 			div#mapArea {overflow: auto;}	
+			div#propImgArea {overflow: auto; height: 150px;}	
 		</style>
 		<meta charset="UTF-8">
 		<title>sand box</title>
@@ -65,26 +66,13 @@
 			</div>
 		</div>
 		<div class="row">
-				<div id="ctrlPanel" class="col-12">
-					<table id="editor-rect" class="table table-striped">
-						<tbody>
-							<tr>
-								<td>&#128100</td><td>友方</td><td>&#128100</td><td>友方</td>
-							</tr>
-							<tr>
-								<td>&#128100</td><td>友方</td><td>&#128100</td><td>友方</td>
-							</tr>
-							<tr>
-								<td>&#128100</td><td>友方</td><td>&#128100</td><td>友方</td>
-							</tr>
-							<tr>
-								<td>&#128100</td><td>友方</td><td>&#128100</td><td>友方</td>
-							</tr>
-							<tr>
-								<td>&#128100</td><td>友方</td><td>&#128100</td><td>友方</td>
-							</tr>
-						</tbody>
-					</table>	
+			<div id="ctrlPanel" class="col-lg-8 col-md-8 col-sm-6 col-xs-6">
+				<table class="table table-striped">
+					<tbody id="tk-prop-editer"></tbody>
+				</table>
+			</div>
+			<div id="propImgArea" class="col-lg-4 col-md-4 col-sm-6 col-xs-6">
+				<canvas id="tkImgCanvas" height="100" width="100"></canvas>	
 			</div>
 		</div>
 
@@ -96,7 +84,6 @@
 		<script src="@@cdn3rd/jquery/2.1.4/jquery.min.js"></script>
 		<script src="@@cdn3rd/bootstrap/3.3.6/js/bootstrap.min.js" ></script>
 <!--build:js @@webRoot/scripts/trpg.min.js?v=@@buildversion-->
-		<script src="@@webRoot/scripts/control.js?v=@@buildversion" ></script>
 		<script src="@@webRoot/scripts/canvas2dutils.js?v=@@buildversion" ></script>
 		<script src="@@webRoot/scripts/sandtable-comm.js?v=@@buildversion" ></script>
 		<script src="@@webRoot/scripts/sandtable-view.js?v=@@buildversion" ></script>
@@ -106,22 +93,44 @@
 	<script type="text/javascript">
 let apiRoot = '@@apiRoot/api/sandtable/';
 
-/*
-let canvas = document.getElementById("canvas"); 
-let ctx = canvas.getContext("2d");
-let image = new Image();
-image.onload = () => {
-		canvas.setAttribute( 'width', image.width );
-		canvas.setAttribute('height', image.height);
-		ctx.drawImage(image, 0, 0);
-};
-image.crossOrigin='Anonymous';
-image.src = './images/sandtable/map.png'; // 设置图片源地址
-*/
 
+let editorHtmlRect =  '<tr>' +
+	'<td style=\'width:60px\'>编号：</td><td><input type="text" id="tkId" class="tkPropIpt" style="width:100px"></td>'
+	+ '<td>x：</td><td><input type="text" id="tkX" class="tkPropIpt" style="width:80px"></td>'
+	+ '<td>y：</td><td><input type="text" id="tkY" class="tkPropIpt" style="width:80px"></td>'
+	+ '<td>宽：</td><td><input type="text" id="tkWidth" class="tkPropIpt" style="width:80px"></td>'
+	+ '<td>高：</td><td><input type="text" id="tkHeigh" class="tkPropIpt" style="width:80px"></td>'
+	+ '</tr><tr>'
+	+ '<td>图片：</td><td><input type="text" id="tkImgKey" class="tkPropIpt" style="width:100px"></td>'
+	+ '<td>x：</td><td><input type="text" id="tkImgX" class="tkPropIpt" style="width:80px"></td>'
+	+ '<td>y：</td><td><input type="text" id="tkImgY" class="tkPropIpt" style="width:80px"></td>'
+	+ '<td>宽：</td><td><input type="text" id="tkImgWidth" class="tkPropIpt" style="width:80px"></td>'
+	+ '<td>高：</td><td><input type="text" id="tkImgHeight" class="tkPropIpt" style="width:80px"></td>'
+	+ '</tr><tr>'
+	+ '<td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>'
+	+ '<td><button type="button" class="btn btn-primary">修改</button></td>'
+	+ '</tr>';
+
+let editorHtmlCirc =  '<tr>' +
+	'<td style=\'width:60px\'>棋子：</td><td><input type="text" id="tkId" class="tkPropIpt" style="width:100px"></td>'
+	+ '<td>x：</td><td><input type="text" id="tkX" class="tkPropIpt" style="width:80px"></td>'
+	+ '<td>y：</td><td><input type="text" id="tkY" class="tkPropIpt" style="width:80px"></td>'
+	+ '<td>半径：</td><td><input type="text" id="tkRadius" class="tkPropIpt" style="width:80px"></td>'
+	+ '<td></td></td>'
+	+ '</tr><tr>'
+	+ '<td>图片：</td><td><input type="text" id="tkImgKey" class="tkPropIpt" style="width:100px"></td>'
+	+ '<td>x：</td><td><input type="text" id="tkImgX" class="tkPropIpt" style="width:80px"></td>'
+	+ '<td>y：</td><td><input type="text" id="tkImgY" class="tkPropIpt" style="width:80px"></td>'
+	+ '<td>宽：</td><td><input type="text" id="tkImgWidth" class="tkPropIpt" style="width:80px"></td>'
+	+ '<td>高：</td><td><input type="text" id="tkImgHeight" class="tkPropIpt" style="width:80px"></td>'
+	+ '</tr><tr>'
+	+ '<td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>'
+	+ '<td><button type="button" class="btn btn-primary">修改</button></td>'
+	+ '</tr>';
 
 let sandtable = new SandTableEditor(
 	document.getElementById("canvas"), 
+	document.getElementById("tkImgCanvas"), 
 	{
 		viewRange: 500, shadowColor: 'rgba(0, 0, 0, 0.7)',
 		campaignId: "campaign01", placeId: "place01", sceneId: "scene01"

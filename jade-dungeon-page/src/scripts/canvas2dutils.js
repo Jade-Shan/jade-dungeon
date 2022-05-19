@@ -154,6 +154,7 @@ class Ray {
 class Canvas2dShape {
 
 	constructor(canvasContext, id, x, y, color, visiable, blockView) {
+		this.classType = 'canvas.shape.2d';
 		this.cvsCtx = canvasContext;
 		this.id     = id;
 		this.x      = x;
@@ -238,6 +239,7 @@ class Line extends Canvas2dShape {
 
 	constructor(canvasContext, id, x, y, x2, y2, color, visiable, blockView) {
 		super(canvasContext, id, x, y, color, visiable, blockView);
+		this.classType = this.classType + '.Line';
 		this.x2 = x2;
 		this.y2 = y2;
 		this.vtx = [[x,y], [x2, y2]];
@@ -392,10 +394,15 @@ class Rectangle extends Canvas2dShape {
 
 	constructor(canvasContext, id, x, y, width, height, color, image, visiable, blockView) {
 		super(canvasContext, id, x, y, color, visiable, blockView);
+		this.classType = this.classType + '.Rectangle';
 		this.height = height > 10 ? height : 10;
 		this.width  = width  > 10 ? width  : 10;
 		this.color  = color;
 		this.image  = image;
+		this.image.sx     = image.sx     ? image.sx    : 0;
+		this.image.sy     = image.sy     ? image.sy    : 0;
+		this.image.width  = image.width  ? image.width : this.width;
+		this.image.height = image.height ? image.height: this.height;
 		this.vtx = [[x,y], [x + width,y], [x + width, y + height], [x, y + height]];
 	}
 
@@ -507,11 +514,8 @@ class Rectangle extends Canvas2dShape {
 		this.cvsCtx.lineTo(x, y);
 		this.cvsCtx.clip();
 		if (this.image && this.image.img) {
-			let sx      = this.image.sx ? this.image.sx : 0;
-			let sy      = this.image.sy ? this.image.sy : 0;
-			let swidth   = this.image.width ? this.image.width: this.width;
-			let sheight  = this.image.height ? this.image.height: this.height;
-			this.cvsCtx.drawImage(this.image.img, sx, sy, swidth, sheight, 
+			this.cvsCtx.drawImage(this.image.img, this.image.sx, this.image.sy, 
+				this.image.width, this.image.height, 
 				this.x, this.y, this.width, this.height);
 		}
 		this.cvsCtx.restore();
@@ -527,8 +531,13 @@ class Circle extends Canvas2dShape {
 
 	constructor(canvasContext, id, x, y, radius, color, image, visiable, blockView) {
 		super(canvasContext, id, x, y, color, visiable, blockView);
+		this.classType = this.classType + '.Circle';
 		this.radius = radius < 10 ? 10 : radius;
 		this.image= image;
+		this.image.sx     = image.sx     ? image.sx     : 0;
+		this.image.sy     = image.sy     ? image.sy     : 0;
+		this.image.width  = image.width  ? image.width  : 2 * radius;
+		this.image.height = image.height ? image.height : 2 * radius;
 	}
 
 	/* 外部点到当前图像内个关键点的最近距离 */
@@ -680,11 +689,8 @@ class Circle extends Canvas2dShape {
 			let dy = this.y - this.radius;
 			let dwidth  = this.radius * 2;
 			let dheight = dwidth;
-			let sx      = this.image.sx ? this.image.sx : 0;
-			let sy      = this.image.sy ? this.image.sy : 0;
-			let swidth   = this.image.width ? this.image.width: dwidth;
-			let sheight  = this.image.height ? this.image.height: dheight;
-			this.cvsCtx.drawImage(this.image.img, sx, sy, swidth, sheight, 
+			this.cvsCtx.drawImage(this.image.img, this.image.sx, this.image.sy, 
+				this.image.width, this.image.height, 
 				dx, dy, dwidth, dheight);
 		}
 		this.cvsCtx.restore();
