@@ -123,7 +123,6 @@ gulp.task('copy-scripts', gulp.series('clean-scripts', 'check-scripts', () => {
 	return gulp.src([
 			cfg.path.src.js + 'base.js',
 			cfg.path.src.js + 'canvas2dutils.js',
-			cfg.path.src.js + 'control.js',
 			cfg.path.src.js + 'sandtable-comm.js',
 			cfg.path.src.js + 'sandtable-view.js',
 			cfg.path.src.js + 'sandtable-editor.js',
@@ -146,7 +145,7 @@ gulp.task('min-scripts', gulp.series('clean-scripts', 'check-scripts', () => {
 // 合并、压缩、重命名javascript
 gulp.task('min-scripts-trpg', gulp.series('clean-scripts', 'check-scripts', () => {
 	return gulp.src([
-			cfg.path.src.js + 'control.js',
+			cfg.path.src.js + 'canvas2dutils.js',
 			cfg.path.src.js + 'sandtable-comm.js',
 			cfg.path.src.js + 'sandtable-view.js',
 			cfg.path.src.js + 'sandtable-editor.js'
