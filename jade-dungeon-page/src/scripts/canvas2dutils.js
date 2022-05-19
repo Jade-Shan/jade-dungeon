@@ -299,14 +299,14 @@ class Line extends Canvas2dShape {
 
 	onMoveing(dx, dy) {
 		this.cvsCtx.save();
-		this.cvsCtx.strokeStyle = 'rgba(0, 0, 255, 0.6)';
+		this.cvsCtx.strokeStyle = 'rgba(0, 0, 255, 0.7)';
 		this.cvsCtx.lineWidth = 8;
 		this.cvsCtx.beginPath();
 		this.cvsCtx.moveTo(dx + this.x , dy + this.y );
 		this.cvsCtx.lineTo(dx + this.x2, dy + this.y2);
 		this.cvsCtx.stroke();
 		this.draw();
-		this.cvsCtx.strokeStyle = 'rgba(0, 255, 0, 0.6)';
+		this.cvsCtx.strokeStyle = 'rgba(0, 255, 0, 0.7)';
 		this.cvsCtx.lineWidth = 3;
 		this.cvsCtx.beginPath();
 		this.cvsCtx.moveTo(dx + this.x , dy + this.y );
@@ -318,14 +318,14 @@ class Line extends Canvas2dShape {
 
 	onScaleing(dx, dy) {
 		this.cvsCtx.save();
-		this.cvsCtx.strokeStyle = 'rgba(0, 0, 255, 0.6)';
+		this.cvsCtx.strokeStyle = 'rgba(0, 0, 255, 0.7)';
 		this.cvsCtx.lineWidth = 8;
 		this.cvsCtx.beginPath();
 		this.cvsCtx.moveTo(this.x , this.y );
 		this.cvsCtx.lineTo(dx + this.x2, dy + this.y2);
 		this.cvsCtx.stroke();
 		this.draw();
-		this.cvsCtx.strokeStyle = 'rgba(0, 255, 0, 0.6)';
+		this.cvsCtx.strokeStyle = 'rgba(0, 255, 0, 0.7)';
 		this.cvsCtx.lineWidth = 3;
 		this.cvsCtx.beginPath();
 		this.cvsCtx.moveTo(this.x , this.y );
@@ -451,18 +451,20 @@ class Rectangle extends Canvas2dShape {
 	onMoveing(dx, dy) {
 		this.cvsCtx.save();
 		this.cvsCtx.lineWidth = 5;
-		this.cvsCtx.fillStyle   = "rgba(0, 0, 255, 0.6)";
-		this.cvsCtx.strokeStyle = "rgba(0, 255, 0, 0.6)";
+		this.cvsCtx.fillStyle   = "rgba(0, 0, 255, 0.7)";
 		this.cvsCtx.fillRect(this.x + dx, this.y + dy, this.width, this.height);
+		this.cvsCtx.strokeStyle = "rgba(0, 255, 0, 0.7)";
+		this.cvsCtx.strokeRect(this.x + dx, this.y + dy, this.width, this.height);
 		this.cvsCtx.restore();
 	}
 
 	onScaleing(dx, dy) {
 		this.cvsCtx.save();
 		this.cvsCtx.lineWidth = 5;
-		this.cvsCtx.fillStyle   = "rgba(0, 0, 255, 0.6)";
-		this.cvsCtx.strokeStyle = "rgba(0, 255, 0, 0.6)";
+		this.cvsCtx.fillStyle   = "rgba(0, 0, 255, 0.7)";
 		this.cvsCtx.fillRect(this.x, this.y, this.width + dx, this.height + dy);
+		this.cvsCtx.strokeStyle = "rgba(0, 255, 0, 0.7)";
+		this.cvsCtx.strokeRect(this.x, this.y, this.width + dx, this.height + dy);
 		this.cvsCtx.restore();
 	}
 
@@ -622,9 +624,9 @@ class Circle extends Canvas2dShape {
 		this.cvsCtx.lineWidth = 5;
 		this.cvsCtx.beginPath();
 		this.cvsCtx.arc(this.x + dx, this.y + dy, this.radius, 0, PI_DOUBLE, true);
-		this.cvsCtx.fillStyle   = "rgba(0, 0, 255, 0.6)";
+		this.cvsCtx.fillStyle   = "rgba(0, 0, 255, 0.7)";
 		this.cvsCtx.fill();
-		this.cvsCtx.strokeStyle = "rgba(0, 255, 0, 0.6)";
+		this.cvsCtx.strokeStyle = "rgba(0, 255, 0, 0.7)";
 		this.cvsCtx.stroke();
 		this.cvsCtx.restore();
 	}
@@ -634,10 +636,10 @@ class Circle extends Canvas2dShape {
 		this.cvsCtx.save();
 		this.cvsCtx.lineWidth = 5;
 		this.cvsCtx.beginPath();
-		this.cvsCtx.arc(this.x + dx, this.y + dy, this.radius + nr, 0, PI_DOUBLE, true);
-		this.cvsCtx.fillStyle   = "rgba(0, 0, 255, 0.6)";
+		this.cvsCtx.arc(this.x, this.y, this.radius + nr, 0, PI_DOUBLE, true);
+		this.cvsCtx.fillStyle   = "rgba(0, 0, 255, 0.7)";
 		this.cvsCtx.fill();
-		this.cvsCtx.strokeStyle = "rgba(0, 255, 0, 0.6)";
+		this.cvsCtx.strokeStyle = "rgba(0, 255, 0, 0.7)";
 		this.cvsCtx.stroke();
 		this.cvsCtx.restore();
 	}
