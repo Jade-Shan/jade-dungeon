@@ -448,9 +448,23 @@ class Rectangle extends Canvas2dShape {
 			this.calVtxDstAngle(this.vtx[3][0], this.vtx[3][1], x, y, quad)];
 	}
 
-	onMoveing(dx, dy) {}
+	onMoveing(dx, dy) {
+		this.cvsCtx.save();
+		this.cvsCtx.lineWidth = 5;
+		this.cvsCtx.fillStyle   = "rgba(0, 0, 255, 0.6)";
+		this.cvsCtx.strokeStyle = "rgba(0, 255, 0, 0.6)";
+		this.cvsCtx.fillRect(this.x + dx, this.y + dy, this.width, this.height);
+		this.cvsCtx.restore();
+	}
 
-	onScaleing(dx, dy) {}
+	onScaleing(dx, dy) {
+		this.cvsCtx.save();
+		this.cvsCtx.lineWidth = 5;
+		this.cvsCtx.fillStyle   = "rgba(0, 0, 255, 0.6)";
+		this.cvsCtx.strokeStyle = "rgba(0, 255, 0, 0.6)";
+		this.cvsCtx.fillRect(this.x, this.y, this.width + dx, this.height + dy);
+		this.cvsCtx.restore();
+	}
 
 	move(dx, dy) {
 		this.x  += dx;
