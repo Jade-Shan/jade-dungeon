@@ -11,7 +11,7 @@ class SandTableEditor {
 		this.scene     = { width: 0, height: 0, 
 			campaignId: scene.campaignId, placeId: scene.placeId, sceneId: scene.sceneId,
 			shadowColor: scene.shadowColor, viewRange: scene.viewRange, allTokens: [],
-			creaters : [], teams: [], walls: [], doors: [], furnishing: [], images:{}};
+			creaters : [], teams: [], walls: [], doors: [], furnishings: [], images:{}};
 		this.scene.teamMap       = new Map();
 		this.scene.createrMap    = new Map();
 		this.scene.furnishingMap = new Map();
@@ -146,7 +146,7 @@ class SandTableEditor {
 			this.scene.teams) .concat( 
 				this.scene.walls).concat( 
 					this.scene.doors).concat( 
-						this.scene.furnishing);
+						this.scene.furnishings);
 
 		this.scene.allTokens.forEach((e, i) => { e.drawDesign(); });
 
@@ -259,6 +259,19 @@ class SandTableEditor {
 			}
 		}
 	}
+
+	deleteToken(groupName, id) {
+		this.currSelected = undefined;
+		this.currEditing  = undefined;
+		$('#tk-prop-editer').html('');
+		let group = this.scene[groupName + 'Map'];
+		group.delete(id);
+		this.scene[groupName + 's'] = [];
+		for (let e of group) { this.scene[groupName + 's'].push(e[1]); }
+		this.drawSence();
+		this.listGroupTokens(groupName);
+	}
+
 
 	selectTokenOnList(groupName, id) {
 		let group = this.scene[groupName + 'Map'];

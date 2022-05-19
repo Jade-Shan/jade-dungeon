@@ -91,11 +91,11 @@ let loadMapDatas = async (ctx, scene) => {
 			x:0, y:0, width: img.width, height: img.height,
 			image: {key: rec.id, sx:0, sy: 0, width: img.width, height: img.height, img: img}});
 	}
-	loadItemsOnMap(ctx, scene, scene.walls,      scene.wallMap,       mapDatas.walls     );
-	loadItemsOnMap(ctx, scene, scene.doors,      scene.doorMap,       mapDatas.doors     );
-	loadItemsOnMap(ctx, scene, scene.furnishing, scene.furnishingMap, mapDatas.furnishing);
-	loadItemsOnMap(ctx, scene, scene.creaters,   scene.createrMap,    mapDatas.creaters  );
-	loadItemsOnMap(ctx, scene, scene.teams,      scene.teamMap,       mapDatas.teams     );
+	loadItemsOnMap(ctx, scene, scene.walls,       scene.wallMap,       mapDatas.walls      );
+	loadItemsOnMap(ctx, scene, scene.doors,       scene.doorMap,       mapDatas.doors      );
+	loadItemsOnMap(ctx, scene, scene.furnishings, scene.furnishingMap, mapDatas.furnishings);
+	loadItemsOnMap(ctx, scene, scene.creaters,    scene.createrMap,    mapDatas.creaters   );
+	loadItemsOnMap(ctx, scene, scene.teams,       scene.teamMap,       mapDatas.teams      );
 };
 
 

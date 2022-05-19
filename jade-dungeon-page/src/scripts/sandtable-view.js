@@ -10,7 +10,7 @@ class SandTableView {
 		this.scene     = { width: 0, height: 0, 
 			campaignId: scene.campaignId, placeId: scene.placeId, sceneId: scene.sceneId,
 			shadowColor: scene.shadowColor, viewRange: scene.viewRange,
-			creaters : [], teams: [], walls: [], doors: [], furnishing: [], images:{}};
+			creaters : [], teams: [], walls: [], doors: [], furnishings: [], images:{}};
 		this.scene.createrMap    = new Map();
 		this.scene.teamMap       = new Map();
 		this.scene.wallMap       = new Map();
@@ -87,7 +87,7 @@ class SandTableView {
 		// 渲染队友
 		this.observer.renderTokensOnSandboxInView(darkMap, this.scene.teams);
 		// 渲染陈设物
-		this.observer.renderTokensOnSandboxInView(darkMap, this.scene.furnishing);
+		this.observer.renderTokensOnSandboxInView(darkMap, this.scene.furnishings);
 		// 渲染敌人
 		this.observer.renderTokensOnSandboxInView(darkMap, this.scene.creaters);
 		// 渲染墙壁

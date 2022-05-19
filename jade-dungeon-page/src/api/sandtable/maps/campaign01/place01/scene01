@@ -21,7 +21,7 @@
 		{"id":"Bhd01", "type":"Circle", "x":150, "y":550, "radius":50, "color":"#FF0000", "img":{"imgKey":"mos2", "sx":0, "sy":0, "width":100, "height":100}, "visiable":  true, "blockView":  true},
 		{"id":"Bhd02", "type":"Circle", "x":450, "y":550, "radius":50, "color":"#FF0000", "img":{"imgKey":"mos2", "sx":0, "sy":0, "width":100, "height":100}, "visiable":  true, "blockView":  true},
 		{"id":"Bhd03", "type":"Circle", "x":900, "y":600, "radius":50, "color":"#FF0000", "img":{"imgKey":"mos2", "sx":0, "sy":0, "width":100, "height":100}, "visiable":  true, "blockView":  true}],
-		"furnishing": [
+		"furnishings": [
 		{"id":"trsubox01", "type":"Rectangle", "x": 150, "y": 600, "width":50, "height": 50, "color":"#FF0000", "img":{"imgKey":"trsuBox-01-c", "sx":0, "sy":0, "width": 50, "height":50}, "visiable":  true, "blockView":  true},
 		{"id":"trsubox02", "type":"Rectangle", "x": 200, "y": 600, "width":50, "height": 50, "color":"#FF0000", "img":{"imgKey":"trsuBox-02-c", "sx":0, "sy":0, "width": 50, "height":50}, "visiable":  true, "blockView":  true}],
 		"doors": [
