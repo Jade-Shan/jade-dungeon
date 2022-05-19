@@ -243,6 +243,7 @@ class Line extends Canvas2dShape {
 		this.x2 = x2;
 		this.y2 = y2;
 		this.vtx = [[x,y], [x2, y2]];
+		this.image = {key: 'unknow', sx: 0, sy: 0, width: 1, height: 1};  
 	}
 
 	/* 外部点到当前图像内个关键点的最近距离 */
