@@ -126,7 +126,7 @@ class SandTableEditor {
 			if (this.isMovingItem) {
 				this.currSelected.move(x - this.startX, y - this.startY);
 			} else if (this.isScalingItem) {
-				this.currSelected.scaling(x - this.startX, y - this.startY);
+				this.currSelected.scale(x - this.startX, y - this.startY);
 			}
 			console.log(`click up: ${this.currSelected.x}, ${this.currSelected.y}`);
 			this.currSelected = undefined;

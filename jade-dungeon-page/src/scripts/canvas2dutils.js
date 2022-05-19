@@ -220,7 +220,7 @@ class Canvas2dShape {
 
 	move(dx, dy) {}
 
-	scaling(num) {}
+	scale(num) {}
 
 	isHit(x, y) {}
 
@@ -300,7 +300,7 @@ class Line extends Canvas2dShape {
 		this.y2 += dy;
 	}
 
-	scaling(dx, dy) {
+	scale(dx, dy) {
 		this.x2 += dx;
 		this.y2 += dy;
 	}
@@ -411,7 +411,7 @@ class Rectangle extends Canvas2dShape {
 		this.y  += dy;
 	}
 
-	scaling(dx, dy) {
+	scale(dx, dy) {
 		this.width  += dx;
 		this.height += dy;
 	}
@@ -562,7 +562,7 @@ class Circle extends Canvas2dShape {
 		this.y  += dy;
 	}
 
-	scaling(dx, dy) {
+	scale(dx, dy) {
 		this.radius += Math.sqrt(dx*dx + dy*dy);
 	}
 
