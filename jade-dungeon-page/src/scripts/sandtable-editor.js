@@ -125,8 +125,49 @@ class SandTableEditor {
 		this.brightMap = brightMap;
 	}
 
+	async updateToken() {
+		if (this.currEditing) {
+			let token = this.currEditing;
+			if ("canvas.shape.2d.Rectangle" == token.classType) {
+				token.id           = $('#tkId'       ).val();
+				token.x            = $('#tkX'        ).val();
+				token.y            = $('#tkY'        ).val();
+				token.width        = $('#tkWidth'    ).val();
+				token.height       = $('#tkHeigh'    ).val();
+				token.image.key    = $('#tkImgKey'   ).val();
+				token.image.sx     = $('#tkImgX'     ).val();
+				token.image.sy     = $('#tkImgY'     ).val();
+				token.image.width  = $('#tkImgWidth' ).val();
+				token.image.height = $('#tkImgHeight').val();
+			} else if ("canvas.shape.2d.Circle" == token.classType) {
+				token.id           = $('#tkId'       ).val();
+				token.x            = $('#tkX'        ).val();
+				token.y            = $('#tkY'        ).val();
+				token.radius       = $('#tkRadius'   ).val();
+				token.image.key    = $('#tkImgKey'   ).val();
+				token.image.sx     = $('#tkImgX'     ).val();
+				token.image.sy     = $('#tkImgY'     ).val();
+				token.image.width  = $('#tkImgWidth' ).val();
+				token.image.height = $('#tkImgHeight').val();
+			} 
+			this.tkImgCanvas.setAttribute( 'width', token.image.img.width );
+			this.tkImgCanvas.setAttribute('height', token.image.img.height);
+			this.tkImgCtx.clearRect(0, 0, token.image.img.width, token.image.img.height);
+			this.tkImgCtx.drawImage(token.image.img, 0, 0);
+			this.tkImgCtx.save();
+			this.tkImgCtx.lineWidth = 3;
+			this.tkImgCtx.fillStyle   = "rgba(0, 0, 255, 0.5)";
+			this.tkImgCtx.fillRect(token.image.sx, token.image.sy, token.image.width,  token.image.height);
+			this.tkImgCtx.strokeStyle = "rgba(255, 0, 0, 0.7)";
+			this.tkImgCtx.strokeRect(token.image.sx, token.image.sy, token.image.width,  token.image.height);
+			this.tkImgCtx.restore();
+			// 
+			await this.drawSence();
+		}
+	}
+
 	selectToken(token) {
-		this.currSelected = token;
+		this.currEditing = token;
 		if ("canvas.shape.2d.Rectangle" == token.classType) {
 			$('#tk-prop-editer').html(editorHtmlRect);
 			$('#tkId'       ).val(token.id          );
@@ -139,17 +180,17 @@ class SandTableEditor {
 			$('#tkImgY'     ).val(token.image.sy    );
 			$('#tkImgWidth' ).val(token.image.width );
 			$('#tkImgHeight').val(token.image.height);
-			this.tkImgCanvas.setAttribute( 'width', token.image.img.width );
-			this.tkImgCanvas.setAttribute('height', token.image.img.height);
-			this.tkImgCtx.clearRect(0, 0, token.image.img.width, token.image.img.height);
-			this.tkImgCtx.drawImage(token.image.img, 0, 0);
-			this.tkImgCtx.save();
-			this.tkImgCtx.lineWidth = 3;
-			this.tkImgCtx.fillStyle   = "rgba(0, 0, 255, 0.5)";
-			this.tkImgCtx.fillRect(token.image.sx, token.image.sy, token.image.width,  token.image.height);
-			this.tkImgCtx.strokeStyle = "rgba(255, 0, 0, 0.7)";
-			this.tkImgCtx.strokeRect(token.image.sx, token.image.sy, token.image.width,  token.image.height);
-			this.tkImgCtx.restore();
+			// this.tkImgCanvas.setAttribute( 'width', token.image.img.width );
+			// this.tkImgCanvas.setAttribute('height', token.image.img.height);
+			// this.tkImgCtx.clearRect(0, 0, token.image.img.width, token.image.img.height);
+			// this.tkImgCtx.drawImage(token.image.img, 0, 0);
+			// this.tkImgCtx.save();
+			// this.tkImgCtx.lineWidth = 3;
+			// this.tkImgCtx.fillStyle   = "rgba(0, 0, 255, 0.5)";
+			// this.tkImgCtx.fillRect(token.image.sx, token.image.sy, token.image.width,  token.image.height);
+			// this.tkImgCtx.strokeStyle = "rgba(255, 0, 0, 0.7)";
+			// this.tkImgCtx.strokeRect(token.image.sx, token.image.sy, token.image.width,  token.image.height);
+			// this.tkImgCtx.restore();
 		} else if ("canvas.shape.2d.Circle" == token.classType) {
 			$('#tk-prop-editer').html(editorHtmlCirc);
 			$('#tkId'       ).val(token.id          );
@@ -161,18 +202,18 @@ class SandTableEditor {
 			$('#tkImgY'     ).val(token.image.sy    );
 			$('#tkImgWidth' ).val(token.image.width );
 			$('#tkImgHeight').val(token.image.height);
-			this.tkImgCanvas.setAttribute( 'width', token.image.img.width );
-			this.tkImgCanvas.setAttribute('height', token.image.img.height);
-			this.tkImgCtx.clearRect(0, 0, token.image.img.width, token.image.img.height);
-			this.tkImgCtx.drawImage(token.image.img, 0, 0);
-			this.tkImgCtx.save();
-			this.tkImgCtx.lineWidth = 3;
-			this.tkImgCtx.fillStyle   = "rgba(0, 0, 255, 0.5)";
-			this.tkImgCtx.fillRect(token.image.sx, token.image.sy, token.image.width,  token.image.height);
-			this.tkImgCtx.strokeStyle = "rgba(255, 0, 0, 0.7)";
-			this.tkImgCtx.strokeRect(token.image.sx, token.image.sy, token.image.width,  token.image.height);
-			this.tkImgCtx.restore();
 		} 
+		this.tkImgCanvas.setAttribute( 'width', token.image.img.width );
+		this.tkImgCanvas.setAttribute('height', token.image.img.height);
+		this.tkImgCtx.clearRect(0, 0, token.image.img.width, token.image.img.height);
+		this.tkImgCtx.drawImage(token.image.img, 0, 0);
+		this.tkImgCtx.save();
+		this.tkImgCtx.lineWidth = 3;
+		this.tkImgCtx.fillStyle   = "rgba(0, 0, 255, 0.5)";
+		this.tkImgCtx.fillRect(token.image.sx, token.image.sy, token.image.width,  token.image.height);
+		this.tkImgCtx.strokeStyle = "rgba(255, 0, 0, 0.7)";
+		this.tkImgCtx.strokeRect(token.image.sx, token.image.sy, token.image.width,  token.image.height);
+		this.tkImgCtx.restore();
 	}
 
 	canvasMouseDown(x, y) {
