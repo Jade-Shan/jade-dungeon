@@ -12,41 +12,31 @@ class SandTableEditor {
 			campaignId: scene.campaignId, placeId: scene.placeId, sceneId: scene.sceneId,
 			shadowColor: scene.shadowColor, viewRange: scene.viewRange, allTokens: [],
 			creaters : [], teams: [], walls: [], doors: [], furnishing: [], images:{}};
-		this.scene.createrMap    = new Map();
 		this.scene.teamMap       = new Map();
-		this.scene.wallMap       = new Map();
-		this.scene.doorMap       = new Map();
+		this.scene.createrMap    = new Map();
 		this.scene.furnishingMap = new Map();
+		this.scene.doorMap       = new Map();
+		this.scene.wallMap       = new Map();
 		this.scene.imageMap      = new Map();
+		this.scene.tokenGroupIcons = {}; 
+		this.scene.tokenGroupIcons.team       = '&#128100';
+		this.scene.tokenGroupIcons.creater    = '&#128126';
+		this.scene.tokenGroupIcons.furnishing = '&#128452';
+		this.scene.tokenGroupIcons.door       = '&#128682';
+		this.scene.tokenGroupIcons.wall       = '&#127959';
+		this.scene.tokenGroupIcons.image      = '&#127756';
 		// 目前选中正在编辑的目标
 		this.currSelected = undefined;
 	}
 
 	listGroupTokens(groupName) {
-		let icon = '&#128100';
-		let group = this.scene.teamMap;
-		if      (groupName == 'creaters') {
-			icon = '&#128126'; 
-			group = this.scene.createrMap;
-		} else if (groupName == 'teams')  {
-			icon = '&#128100'; 
-			group = this.scene.teamMap;
-		} else if (groupName == 'walls')  {
-			icon = '&#127959'; 
-			group = this.scene.wallMap;
-		} else if (groupName == 'doors')  {
-			icon = '&#128682'; 
-			group = this.scene.doorMap;
-		} else if (groupName == 'furnishing') {
-			icon = '&#128452'; 
-			group = this.scene.furnishingMap;
-		} else if (groupName == 'images') {
-			icon = '&#127756'; 
-			group = this.scene.imageMap;
-		}
+		let icon  = this.scene.tokenGroupIcons[groupName];
+		let group = this.scene[groupName + 'Map'];
 		let html = '';
 		for (let e of group) {
-			html = html + '<tr><td>' + icon + '</td><td>' + e[0] + '</td><td>' + 
+			html = html + '<tr><td>' + icon + '</td><td ' + 
+				'onClick="javascript:sandtable.selectTokenOnList(\'' + 
+				groupName + '\',\'' + e[0] + '\');">' + e[0] + '</td><td>' + 
 				'<button type="button" onClick="javascript:sandtable.deleteToken(\'' + 
 				groupName + '\',\'' + e[0] + '\');" class="btn btn-xs btn-danger">' + 
 				'&#10062</button></td></tr>';
@@ -145,7 +135,7 @@ class SandTableEditor {
 		await this.initSence();
 		await this.drawSence();
 		this.resizeLayout();
-		this.listGroupTokens('teams');
+		this.listGroupTokens('team');
 	}
 
 	async drawSence() {
@@ -224,6 +214,9 @@ class SandTableEditor {
 		} else if ("canvas.shape.2d.Circle" == token.classType) {
 			$('#tk-prop-editer').html(editorHtmlCirc);
 			$('#tkRadius').val(token.radius);
+		} else if ("Image" == token.classType) {
+			$('#tk-prop-editer').html(editorHtmlImg);
+			$('#tkURL'       ).val(token.url          );
 		} 
 		$('#tkId'       ).val(token.id          );
 		$('#tkX'        ).val(token.x           );
@@ -265,6 +258,12 @@ class SandTableEditor {
 				break;
 			}
 		}
+	}
+
+	selectTokenOnList(groupName, id) {
+		let group = this.scene[groupName + 'Map'];
+		let token = group.get(id);
+		this.selectToken(token);
 	}
 
 	canvasMouseDrag(x, y) {
