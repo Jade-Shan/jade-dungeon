@@ -10,16 +10,60 @@ class SandTableEditor {
 		this.observer  = {};
 		this.scene     = { width: 0, height: 0, 
 			campaignId: scene.campaignId, placeId: scene.placeId, sceneId: scene.sceneId,
-			shadowColor: scene.shadowColor, viewRange: scene.viewRange,
+			shadowColor: scene.shadowColor, viewRange: scene.viewRange, allTokens: [],
 			creaters : [], teams: [], walls: [], doors: [], furnishing: [], images:{}};
 		this.scene.createrMap    = new Map();
 		this.scene.teamMap       = new Map();
 		this.scene.wallMap       = new Map();
 		this.scene.doorMap       = new Map();
 		this.scene.furnishingMap = new Map();
+		this.scene.imageMap      = new Map();
 		// 目前选中正在编辑的目标
 		this.currSelected = undefined;
+		this.currGroup    = undefined;
 	}
+
+	listGroupTokens(groupName) {
+		let icon = '&#128100';
+		let group = this.scene.teamMap;
+		if      (groupName == 'creaters') {
+			icon = '&#128126'; 
+			group = this.scene.createrMap;
+		} else if (groupName == 'teams')  {
+			icon = '&#128100'; 
+			group = this.scene.teamMap;
+		} else if (groupName == 'walls')  {
+			icon = '&#127959'; 
+			group = this.scene.wallMap;
+		} else if (groupName == 'doors')  {
+			icon = '&#128682'; 
+			group = this.scene.doorMap;
+		} else if (groupName == 'furnishing') {
+			icon = '&#128452'; 
+			group = this.scene.furnishingMap;
+		} else if (groupName == 'images') {
+			icon = '&#127756'; 
+			group = this.scene.imageMap;
+		}
+		let html = '';
+		for (let e of group) {
+			html = html + '<tr><td>' + icon + '</td><td>' + e[0] + '</td><td>' + 
+				'<button type="button" onClick="javascript:sandtable.deleteToken(\'' + 
+				groupName + '\',\'' + e[0] + '\');" class="btn btn-xs btn-danger">' + 
+				'&#10062</button></td></tr>';
+		}
+		$('#token-list').html(html);
+		// 
+		html = '';
+		html = html + '<button type="button" onClick="javascript:sandtable.createToken(\'' +
+			groupName + '\');" class="btn btn-default">&#9585</button>';
+		html = html + '<button type="button" onClick="javascript:sandtable.createToken(\'' + 
+			groupName + '\');" class="btn btn-default">&#9634</button>';
+		html = html + '<button type="button" onClick="javascript:sandtable.createToken(\'' + 
+			groupName + '\');" class="btn btn-default">&#9711</button>';
+		$('#tokenCreateBtns').html(html);
+	}
+
 
 	sumCanvasOffset(docNode, result) {
 		result.x = result.x + docNode.offsetLeft - docNode.scrollLeft;
@@ -81,13 +125,20 @@ class SandTableEditor {
 	resizeLayout() {
 		let wHeight     = parseInt(window.innerHeight);
 		let mapArea     = document.querySelector("#mapArea");
-		// let ctrlPanel   = document.querySelector("#ctrlPanel");
 		let propImgArea = document.querySelector("#propImgArea");
+		let tokenGroupBtns  = document.querySelector("#tokenGroupBtns");
+		let tokenListArea   = document.querySelector("#tokenListArea");
+		let tokenCreateBtns = document.querySelector("#tokenCreateBtns");
+
 		let cpHeight  = parseInt(propImgArea.clientHeight);
+		let tgbHeight = parseInt(tokenGroupBtns.clientHeight);
+		let tlaHeight = parseInt(tokenListArea.clientHeight);
+		let tcbHeight = parseInt(tokenCreateBtns.clientHeight);
 
 		let maHeight = wHeight - cpHeight;
-		// mapArea.style.width  = maWidth  + "px";
 		mapArea.style.height = maHeight + "px";
+		let tlHeight = maHeight - tgbHeight - tcbHeight;
+		tokenListArea.style.height = tlHeight + 'px';
 	}
 
 	async drawSandTable() {
@@ -95,12 +146,6 @@ class SandTableEditor {
 		await this.initSence();
 		await this.drawSence();
 		this.resizeLayout();
-	}
-
-	drawTokens(tokens) {
-		for (let e in tokenMap) {
-			e[1].drawDesign();
-		}
 	}
 
 	async drawSence() {

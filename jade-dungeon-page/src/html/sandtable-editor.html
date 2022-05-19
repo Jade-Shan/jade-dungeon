@@ -6,6 +6,7 @@
 		<style>
 			div#hideImgs { display: none;}
 			div#mapArea {overflow: auto;}	
+			div#tokenListArea {overflow: auto;}	
 			div#propImgArea {overflow: auto; height: 150px;}	
 		</style>
 		<meta charset="UTF-8">
@@ -16,52 +17,21 @@
 			<div id="mapArea" class="col-lg-9 col-md-8 col-sm-6 col-xs-6">
 				<canvas id="canvas" height="300" width="300"></canvas>	
 			</div>
-			<div class="container col-lg-3 col-md-4 col-sm-6 col-xs-6">
+			<div id='tokenGroupBtns' class="container col-lg-3 col-md-4 col-sm-6 col-xs-6">
 				<div class="btn-group col-12">
-					<button type="button"	id="btn-lst-teams"      class="btn btn-default">&#128100</button>
-					<button type="button"	id="btn-lst-creaters"   class="btn btn-default">&#128126</button>
-					<button type="button"	id="btn-lst-furnishing" class="btn btn-default">&#128452</button>
-					<button type="button"	id="btn-lst-doors"      class="btn btn-default">&#128682</button>
-					<button type="button"	id="btn-lst-walls"      class="btn btn-default">&#127959</button>
-					<button type="button"	id="btn-lst-images"     class="btn btn-default">&#127756</button>
+					<button type="button"	id="btn-lst-teams"      onClick="javascript:sandtable.listGroupTokens('teams');" class="btn btn-default">&#128100</button>
+					<button type="button"	id="btn-lst-creaters"   onClick="javascript:sandtable.listGroupTokens('creaters');" class="btn btn-default">&#128126</button>
+					<button type="button"	id="btn-lst-furnishing" onClick="javascript:sandtable.listGroupTokens('furnishing');" class="btn btn-default">&#128452</button>
+					<button type="button"	id="btn-lst-doors"      onClick="javascript:sandtable.listGroupTokens('doors');" class="btn btn-default">&#128682</button>
+					<button type="button"	id="btn-lst-walls"      onClick="javascript:sandtable.listGroupTokens('walls');" class="btn btn-default">&#127959</button>
+					<button type="button"	id="btn-lst-images"     onClick="javascript:sandtable.listGroupTokens('images');" class="btn btn-default">&#127756</button>
 				</div>
-				<div class="col-12">
-					<table id="item-lst" class="table table-striped">
-						<tbody>
-							<tr>
-								<td>&#128100</td><td>友方</td>
-								<td><button type="button" class="btn btn-xs btn-danger">&#10062</button></td>
-							</tr>
-							<tr>
-								<td>&#128126</td><td>敌方</td>
-								<td><button type="button" class="btn btn-xs btn-danger">&#10062</button></td>
-							</tr>
-							<tr>
-								<td>&#128452</td><td>物品</td>
-								<td><button type="button" class="btn btn-xs btn-danger">&#10062</button></td>
-							</tr>
-							<tr>
-								<td>&#128682</td><td>门</td>
-								<td><button type="button" class="btn btn-xs btn-danger">&#10062</button></td>
-							</tr>
-							<tr>
-								<td>&#127959</td><td>墙</td>
-								<td><button type="button" class="btn btn-xs btn-danger">&#10062</button></td>
-							</tr>
-							<tr>
-								<td>&#127756</td><td>图片</td>
-								<td><button type="button" class="btn btn-xs btn-danger">&#10062</button></td>
-							</tr>
-							<tr>
-								<td>&#10133</td>
-								<td colspan='2'>   
-							  <button type="button" class="btn btn-primary btn-xs">&#9585</button>	
-							  <button type="button" class="btn btn-primary btn-xs">&#9634</button>	
-							  <button type="button" class="btn btn-primary btn-xs">&#9711</button>	
-								</td>
-							</tr>
-						</tbody>
+				<div id="tokenListArea" class="col-12">
+					<table class="table table-striped">
+						<tbody id="token-list"></tbody>
 					</table>	
+				</div>
+				<div id="tokenCreateBtns" class="btn-group col-12">
 				</div>
 			</div>
 		</div>

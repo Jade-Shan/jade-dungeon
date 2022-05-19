@@ -16,6 +16,7 @@ class SandTableView {
 		this.scene.wallMap       = new Map();
 		this.scene.doorMap       = new Map();
 		this.scene.furnishingMap = new Map();
+		this.scene.imageMap      = new Map();
 	}
 
 	moveObs(dx, dy) {

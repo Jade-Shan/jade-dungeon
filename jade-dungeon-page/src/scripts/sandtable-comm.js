@@ -81,17 +81,18 @@ let loadMapDatas = async (ctx, scene) => {
 	});	
 	for (let i = 0; i < imgResources.length; i++) {
 		let rec = imgResources[i];
-		scene.images[rec.key] = await loadImage(new Image(), rec.url).then((img, url) => {
+		scene.images[rec.id] = await loadImage(new Image(), rec.url).then((img, url) => {
 			return img;
 		}).catch((img, url) => { 
 			// alert('加载图片失败：' + url);
 		});
+		scene.imageMap.set(rec.id, scene.images[rec.id]);
 	}
-	loadItemsOnMap(ctx, scene, scene.walls,      scene.wallMap,      mapDatas.walls     );
-	loadItemsOnMap(ctx, scene, scene.doors,      scene.doorMap,      mapDatas.doors     );
+	loadItemsOnMap(ctx, scene, scene.walls,      scene.wallMap,       mapDatas.walls     );
+	loadItemsOnMap(ctx, scene, scene.doors,      scene.doorMap,       mapDatas.doors     );
 	loadItemsOnMap(ctx, scene, scene.furnishing, scene.furnishingMap, mapDatas.furnishing);
-	loadItemsOnMap(ctx, scene, scene.creaters,   scene.createrMap,   mapDatas.creaters  );
-	loadItemsOnMap(ctx, scene, scene.teams,      scene.teamMap,      mapDatas.teams     );
+	loadItemsOnMap(ctx, scene, scene.creaters,   scene.createrMap,    mapDatas.creaters  );
+	loadItemsOnMap(ctx, scene, scene.teams,      scene.teamMap,       mapDatas.teams     );
 };
 
 
