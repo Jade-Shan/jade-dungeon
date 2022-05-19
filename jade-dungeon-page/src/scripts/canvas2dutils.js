@@ -617,9 +617,30 @@ class Circle extends Canvas2dShape {
 		this.cvsCtx.restore();
 	}
 
-	onMoveing(dx, dy) {}
+	onMoveing(dx, dy) {
+		this.cvsCtx.save();
+		this.cvsCtx.lineWidth = 5;
+		this.cvsCtx.beginPath();
+		this.cvsCtx.arc(this.x + dx, this.y + dy, this.radius, 0, PI_DOUBLE, true);
+		this.cvsCtx.fillStyle   = "rgba(0, 0, 255, 0.6)";
+		this.cvsCtx.fill();
+		this.cvsCtx.strokeStyle = "rgba(0, 255, 0, 0.6)";
+		this.cvsCtx.stroke();
+		this.cvsCtx.restore();
+	}
 
-	onScaleing(dx, dy) {}
+	onScaleing(dx, dy) {
+		let nr = Math.sqrt(dx * dx + dy * dy);
+		this.cvsCtx.save();
+		this.cvsCtx.lineWidth = 5;
+		this.cvsCtx.beginPath();
+		this.cvsCtx.arc(this.x + dx, this.y + dy, this.radius + nr, 0, PI_DOUBLE, true);
+		this.cvsCtx.fillStyle   = "rgba(0, 0, 255, 0.6)";
+		this.cvsCtx.fill();
+		this.cvsCtx.strokeStyle = "rgba(0, 255, 0, 0.6)";
+		this.cvsCtx.stroke();
+		this.cvsCtx.restore();
+	}
 
 	move(dx, dy) {
 		this.x  += dx;
