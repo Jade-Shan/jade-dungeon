@@ -331,7 +331,7 @@ class SandTableEditor {
 		let g = x - this.startX;
 		let j = y - this.startY;
 		let r = Math.sqrt(g*g + j*j);
-		if (this.currDragging && r > 10) {
+		if (this.currDragging /* && r > 10 */) {
 			if (this.isMovingItem) {
 				this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 				this.ctx.drawImage(this.brightMap, 0, 0);
@@ -345,9 +345,8 @@ class SandTableEditor {
 	}
 
 	canvasMouseUp(x, y) {
-		console.log(`click up: ${x - this.startX}, ${y - this.startY}`);
 		if (this.currDragging) {
-			console.log(`click up: ${this.currDragging.x}, ${this.currDragging.y}`);
+			// console.log(`click up: ${this.currDragging.x}, ${this.currDragging.y}`);
 			if (this.isMovingItem) {
 				this.currDragging.move(this.startX, this.startY, x, y);
 			} else if (this.isScalingItem) {

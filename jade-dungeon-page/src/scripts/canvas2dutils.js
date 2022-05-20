@@ -3,6 +3,13 @@ const PI_HALF     = Math.PI / 2;
 const PI_ONE_HALF = Math.PI + PI_HALF;
 const PI_DOUBLE   = Math.PI * 2;
 
+function distanceP2P(x1, y1, x2, y2) {
+	let g = x1 - x2;
+	let j = y1 - y2;
+	console.log(`${x1},${x2} -> ${g} ~ ${y1},${y2} -> ${j}`);
+	return Math.sqrt(g*g + j*j);
+}
+
 /* 判断点px,py是在线段ax,ay->bx,by左边还是右边的 */
 /* result > 0为左， < 0为右， =0为线上 */
 function pointOfLineSide(ax, ay, bx, by, x, y) {
@@ -300,7 +307,9 @@ class Line extends Canvas2dShape {
 				new Ray(pos1[0], pos1[1], 0, 0, angl1, cAngl1, range1)];
 	}
 
-	onMoveing(dx, dy) {
+	onMoveing(x, y, x1, y1) {
+		let dx = x1 - x;
+		let dy = y1 - y;
 		this.cvsCtx.save();
 		this.cvsCtx.strokeStyle = 'rgba(0, 0, 255, 0.7)';
 		this.cvsCtx.lineWidth = 8;
@@ -319,35 +328,55 @@ class Line extends Canvas2dShape {
 		this.cvsCtx.restore();
 	}
 
-	onScaleing(dx, dy) {
+	onScaleing(x, y, x2, y2) {
+		let d1 = parseInt(distanceP2P(x, y, this.x , this.y ));
+		let d2 = parseInt(distanceP2P(x, y, this.x2, this.y2));
 		this.cvsCtx.save();
 		this.cvsCtx.strokeStyle = 'rgba(0, 0, 255, 0.7)';
 		this.cvsCtx.lineWidth = 8;
 		this.cvsCtx.beginPath();
-		this.cvsCtx.moveTo(this.x , this.y );
-		this.cvsCtx.lineTo(dx + this.x2, dy + this.y2);
+		if (d1 < d2) {
+			this.cvsCtx.moveTo(x2, y2);
+			this.cvsCtx.lineTo(this.x2, this.y2);
+		} else {
+			this.cvsCtx.moveTo(this.x , this.y );
+			this.cvsCtx.lineTo(x2, y2);
+		}
 		this.cvsCtx.stroke();
 		this.draw();
 		this.cvsCtx.strokeStyle = 'rgba(0, 255, 0, 0.7)';
 		this.cvsCtx.lineWidth = 3;
 		this.cvsCtx.beginPath();
-		this.cvsCtx.moveTo(this.x , this.y );
-		this.cvsCtx.lineTo(dx + this.x2, dy + this.y2);
+		if (d1 < d2) {
+			this.cvsCtx.moveTo(x2, y2);
+			this.cvsCtx.lineTo(this.x2, this.y2);
+		} else {
+			this.cvsCtx.moveTo(this.x , this.y );
+			this.cvsCtx.lineTo(x2, y2);
+		}
 		this.cvsCtx.stroke();
 		this.draw();
 		this.cvsCtx.restore();
 	}
 
-	move(dx, dy) {
+	move(x, y, x1, y1) {
+		let dx = x1 - x;
+		let dy = y1 - y;
 		this.x  += dx;
 		this.y  += dy;
 		this.x2 += dx;
 		this.y2 += dy;
 	}
 
-	scale(dx, dy) {
-		this.x2 += dx;
-		this.y2 += dy;
+	scale(x, y, x2, y2) {
+		let d1 = parseInt(distanceP2P(x, y, this.x , this.y ));
+		let d2 = parseInt(distanceP2P(x, y, this.x2, this.y2));
+		console.log(`${x},${y} - ${this.x},${this.y} - ${this.x2},${this.y2} - ${d1} <> ${d2}`);
+		if (d1 < d2) {
+			this.x = x2; this.y = y2;
+		} else {
+			this.x2 = x2; this.y2 = y2;
+		}
 	}
 
 	isHit(x, y) {
