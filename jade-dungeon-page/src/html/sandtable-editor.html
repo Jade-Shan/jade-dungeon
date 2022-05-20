@@ -91,7 +91,7 @@ let editorHtmlRect =  '<tr>' +
 	+ '<td>宽：</td><td><input type="text" id="tkWidth" class="tkPropIpt" style="width:80px"></td>'
 	+ '<td>高：</td><td><input type="text" id="tkHeigh" class="tkPropIpt" style="width:80px"></td>'
 	+ '</tr><tr>'
-	+ '<td>图片：</td><td><input type="text" id="tkImgKey" class="tkPropIpt" style="width:100px"></td>'
+	+ '<td>图片：</td><td><select id="tkImgKey" class="tkPropIpt" style="width:100px"></select></td>'
 	+ '<td>x：</td><td><input type="text" id="tkImgX" class="tkPropIpt" style="width:80px"></td>'
 	+ '<td>y：</td><td><input type="text" id="tkImgY" class="tkPropIpt" style="width:80px"></td>'
 	+ '<td>宽：</td><td><input type="text" id="tkImgWidth" class="tkPropIpt" style="width:80px"></td>'
@@ -108,7 +108,7 @@ let editorHtmlCirc =  '<tr>' +
 	+ '<td>半径：</td><td><input type="text" id="tkRadius" class="tkPropIpt" style="width:80px"></td>'
 	+ '<td></td></td>'
 	+ '</tr><tr>'
-	+ '<td>图片：</td><td><input type="text" id="tkImgKey" class="tkPropIpt" style="width:100px"></td>'
+	+ '<td>图片：</td><td><select id="tkImgKey" class="tkPropIpt" style="width:100px"></select></td>'
 	+ '<td>x：</td><td><input type="text" id="tkImgX" class="tkPropIpt" style="width:80px"></td>'
 	+ '<td>y：</td><td><input type="text" id="tkImgY" class="tkPropIpt" style="width:80px"></td>'
 	+ '<td>宽：</td><td><input type="text" id="tkImgWidth" class="tkPropIpt" style="width:80px"></td>'
@@ -121,11 +121,10 @@ let editorHtmlCirc =  '<tr>' +
 let editorHtmlImg =  '<tr>' +
 	'<td style=\'width:60px\'>URL：</td><td colspan="9"><input type="text" id="tkURL" class="tkPropIpt" style="width:600px"></td>'
 	+ '</tr><tr>'
-	+ '<td>图片：</td><td><input type="text" id="tkImgKey" class="tkPropIpt" style="width:100px"></td>'
-	+ '<td>x：</td><td><input type="text" id="tkImgX" class="tkPropIpt" style="width:80px"></td>'
-	+ '<td>y：</td><td><input type="text" id="tkImgY" class="tkPropIpt" style="width:80px"></td>'
-	+ '<td>宽：</td><td><input type="text" id="tkImgWidth" class="tkPropIpt" style="width:80px"></td>'
-	+ '<td>高：</td><td><input type="text" id="tkImgHeight" class="tkPropIpt" style="width:80px"></td>'
+	+ '<td>名称：</td><td><input type="text" id="tkImgKey" class="tkPropIpt" style="width:100px"></td>'
+	+ '<td>宽：</td><td><input type="text" readOnly="readOnly" id="tkImgWidth"  class="tkPropIpt" style="width:80px"></td>'
+	+ '<td>高：</td><td><input type="text" readOnly="readOnly" id="tkImgHeight" class="tkPropIpt" style="width:80px"></td>'
+	+ '<td></td><td></td><td></td><td></td>'
 	+ '</tr><tr>'
 	+ '<td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>'
 	+ '<td><button type="button" onClick="javascript:sandtable.updateToken();" class="btn btn-primary">修改</button></td>'
@@ -145,11 +144,3 @@ sandtable.drawSandTable();
 
 	</script>
 </html>
-  
-
-	 
-	 
-	 
-	 
-	 
-	  

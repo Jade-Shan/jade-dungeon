@@ -54,12 +54,24 @@ class SandTableEditor {
 		$('#token-list').html(html);
 		// 
 		html = '';
-		html = html + '<button type="button" onClick="javascript:sandtable.preCreateToken(\'' +
-			groupName + '\',\'Line\');" class="btn btn-default">&#9585</button>';
-		html = html + '<button type="button" onClick="javascript:sandtable.preCreateToken(\'' + 
-			groupName + '\',\'Rectangle\');" class="btn btn-default">&#9634</button>';
-		html = html + '<button type="button" onClick="javascript:sandtable.preCreateToken(\'' + 
-			groupName + '\',\'Circle\');" class="btn btn-default">&#9711</button>';
+		if ('wall' == groupName || 'door' == groupName) {
+			html = html + '<button type="button" onClick="javascript:sandtable.preCreateToken(\'' +
+				groupName + '\',\'Line\');" class="btn btn-default">&#9585</button>';
+		}
+		if ('wall' == groupName || 'door' == groupName || 'furnishing' == groupName) {
+			html = html + '<button type="button" onClick="javascript:sandtable.preCreateToken(\'' + 
+				groupName + '\',\'Rectangle\');" class="btn btn-default">&#9634</button>';
+		}
+		if ('wall' == groupName || 'door' == groupName || 'furnishing' == groupName || 
+			'team' == groupName || 'creater' == groupName) //
+		{
+			html = html + '<button type="button" onClick="javascript:sandtable.preCreateToken(\'' + 
+				groupName + '\',\'Circle\');" class="btn btn-default">&#9711</button>';
+		}
+		if ('image' == groupName) {
+			html = html + '<button type="button" onClick="javascript:sandtable.preCreateToken(\'' + 
+				groupName + '\',\'Image\');" class="btn btn-default">&#9711</button>';
+		}
 		$('#tokenCreateBtns').html(html);
 		$('#tokenCreateText').html(this.scene.tokenGroupText[groupName]);
 	}
@@ -174,6 +186,7 @@ class SandTableEditor {
 	async updateToken() {
 		if (this.currEditing) {
 			let token = this.currEditing;
+			token.id  = $('#tkId').val();
 			token.x   = parseInt($('#tkX').val());
 			token.y   = parseInt($('#tkY').val());
 			if ("canvas.shape.2d.Line" == token.classType) {
@@ -184,6 +197,13 @@ class SandTableEditor {
 				token.height = parseInt($('#tkHeigh').val());
 			} else if ("canvas.shape.2d.Circle" == token.classType) {
 				token.radius = parseInt($('#tkRadius').val());
+			} else if ("Image" == token.classType) {
+				token.image.url = $('#tkURL').val();
+				token.image.img = await loadImage(new Image(), token.image.url);
+				$('#tkImgX'     ).val(0);
+				$('#tkImgY'     ).val(0);
+				$('#tkImgWidth' ).val(token.image.width );
+				$('#tkImgHeight').val(token.image.height);
 			} 
 			token.image.key    = $('#tkImgKey'   ).val();
 			token.image.sx     = parseInt($('#tkImgX'     ).val());
@@ -223,9 +243,19 @@ class SandTableEditor {
 			$('#tk-prop-editer').html(editorHtmlRect);
 			$('#tkWidth').val(token.width );
 			$('#tkHeigh').val(token.height);
+			let imgSelectHtml = '';
+			for (let e of this.scene.imageMap) {
+				imgSelectHtml = imgSelectHtml + '<option value="' + e[0] + '">' + e[0] + '</option>';
+			}
+			$('#tkImgKey').html(imgSelectHtml);
 		} else if ("canvas.shape.2d.Circle" == token.classType) {
 			$('#tk-prop-editer').html(editorHtmlCirc);
 			$('#tkRadius').val(token.radius);
+			let imgSelectHtml = '';
+			for (let e of this.scene.imageMap) {
+				imgSelectHtml = imgSelectHtml + '<option value="' + e[0] + '">' + e[0] + '</option>';
+			}
+			$('#tkImgKey').html(imgSelectHtml);
 		} else if ("Image" == token.classType) {
 			$('#tk-prop-editer').html(editorHtmlImg);
 			$('#tkURL'       ).val(token.url          );
@@ -244,13 +274,15 @@ class SandTableEditor {
 			this.tkImgCanvas.setAttribute('height', token.image.img.height);
 			this.tkImgCtx.clearRect(0, 0, token.image.img.width, token.image.img.height);
 			this.tkImgCtx.drawImage(token.image.img, 0, 0);
-			this.tkImgCtx.save();
-			this.tkImgCtx.lineWidth = 3;
-			this.tkImgCtx.fillStyle   = "rgba(0, 0, 255, 0.5)";
-			this.tkImgCtx.fillRect(token.image.sx, token.image.sy, token.image.width,  token.image.height);
-			this.tkImgCtx.strokeStyle = "rgba(255, 0, 0, 0.7)";
-			this.tkImgCtx.strokeRect(token.image.sx, token.image.sy, token.image.width,  token.image.height);
-			this.tkImgCtx.restore();
+			if ("Image" != token.classType) {
+				this.tkImgCtx.save();
+				this.tkImgCtx.lineWidth = 3;
+				this.tkImgCtx.fillStyle   = "rgba(0, 0, 255, 0.5)";
+				this.tkImgCtx.fillRect(token.image.sx, token.image.sy, token.image.width,  token.image.height);
+				this.tkImgCtx.strokeStyle = "rgba(255, 0, 0, 0.7)";
+				this.tkImgCtx.strokeRect(token.image.sx, token.image.sy, token.image.width,  token.image.height);
+				this.tkImgCtx.restore();
+			} 
 		} else {
 			this.tkImgCanvas.setAttribute( 'width', 10);
 			this.tkImgCanvas.setAttribute('height', 10);
@@ -290,6 +322,12 @@ class SandTableEditor {
 		} else if ('Circle' === typeName) {
 			this.currEditing = new Circle(this.ctx, id, this.startX, this.startY, 
 				25, color, image, isView, isBlock);
+		} else if ('Image' === typeName) {
+			this.currEditing = {
+				classType: "Image", id: id, url: '', x: 0, y: 0, width: 0, height: 0, 
+				onScaleing: () => {}, scale: () => {},
+				image: {
+					key: id, sx:0, sy: 0, width: 10, height: 10, img: undefined}};
 		}
 		if (this.currEditing) {
 			this.isScalingItem = true;
