@@ -26,6 +26,12 @@ function parseUrlParams() {
 
 let loadImage = async (image, imageURL) => {
 	return new Promise((resolve, reject) => {
+		image.src = imageURL;
+		// image.crossOrigin='Anonymous';
+		// image.crossorigin='anonymous';
+		// image.crossOrigin = "anonymous";
+		// image.setAttribute('crossOrigin', 'anonymous');
+		// image.setAttribute('crossorigin', 'anonymous');
 		image.onload  = () => { 
 			resolve(image, imageURL); 
 		};
@@ -35,8 +41,6 @@ let loadImage = async (image, imageURL) => {
 		image.onerror = () => { 
 			reject(image, imageURL); 
 		};
-		image.src = imageURL;
-		image.crossOrigin='Anonymous';
 	});
 };
 
@@ -102,6 +106,11 @@ let loadMapDatas = async (ctx, scene) => {
 	await requestMapDatas(scene.campaignId, scene.placeId, scene.sceneId).then((data) => { 
 		imgResources = data.imgResources;
 		mapDatas     = data.mapDatas;
+	}).catch((e) => {
+		imgResources = [
+			{"id":"chrt", "url": "./images/sandtable/char.png"},
+			{"id":"map" , "url": "./images/sandtable/map.png" }];
+		mapDatas     = {"teams": [], "creaters": [], "furnishings": [], "doors": [], "walls": []};
 	});	
 	for (let i = 0; i < imgResources.length; i++) {
 		let rec = imgResources[i];
