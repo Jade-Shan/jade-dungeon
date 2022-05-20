@@ -34,8 +34,8 @@ class SandTableView {
 	}
 
 	async initSence() {
-		this.scene.width  = this.scene.images.map.width;
-		this.scene.height = this.scene.images.map.height;
+		this.scene.width  = this.scene.imageMap.get('map').image.img.width;
+		this.scene.height = this.scene.imageMap.get('map').image.img.height;
 		canvas.setAttribute( 'width', this.scene.width );
 		canvas.setAttribute('height', this.scene.height);
 	}
@@ -69,7 +69,7 @@ class SandTableView {
 	async drawSence() {
 
 		this.ctx.clearRect(0, 0, canvas.width, canvas.height);
-		this.ctx.drawImage(this.scene.images.map, 0, 0);
+		this.ctx.drawImage(this.scene.imageMap.get('map').image.img, 0, 0);
 		this.ctx.fillStyle = this.scene.shadowColor;
 		this.ctx.fillRect(0, 0, this.scene.width, this.scene.height);
 		let darkMap = new Image();
@@ -80,7 +80,7 @@ class SandTableView {
 		darkMap.crossOrigin='Anonymous';
 
 		this.ctx.clearRect(0, 0, canvas.width, canvas.height);
-		this.ctx.drawImage(this.scene.images.map, 0, 0);
+		this.ctx.drawImage(this.scene.imageMap.get('map').image.img, 0, 0);
 		this.observer.draw();
 
 

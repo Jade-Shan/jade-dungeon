@@ -26,7 +26,7 @@ let dataToItem = (ctx, scene, rec) => {
 	let tkImg = {};
 	if (rec.img && rec.img.imgKey) { 
 		tkImg.key = rec.img.imgKey; 
-		tkImg.img = scene.images[rec.img.imgKey]; 
+		tkImg.img = scene.imageMap.get(rec.img.imgKey).image.img; 
 	}
 	if (rec.img && rec.img.sx    ) { tkImg.sx     = rec.img.sx    ; }
 	if (rec.img && rec.img.sy    ) { tkImg.sy     = rec.img.sy    ; }
@@ -86,7 +86,7 @@ let loadMapDatas = async (ctx, scene) => {
 		}).catch((img, url) => { 
 			// alert('加载图片失败：' + url);
 		});
-		scene.images[rec.id] = img;
+		// scene.imageMap[rec.id] = img;
 		scene.imageMap.set(rec.id, {classType: "Image", id: rec.id, url: rec.url,
 			x:0, y:0, width: img.width, height: img.height,
 			image: {key: rec.id, sx:0, sy: 0, width: img.width, height: img.height, img: img}});

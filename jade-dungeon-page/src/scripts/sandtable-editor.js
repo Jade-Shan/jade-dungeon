@@ -11,7 +11,7 @@ class SandTableEditor {
 		this.scene     = { width: 0, height: 0, 
 			campaignId: scene.campaignId, placeId: scene.placeId, sceneId: scene.sceneId,
 			shadowColor: scene.shadowColor, viewRange: scene.viewRange, allTokens: [],
-			creaters : [], teams: [], walls: [], doors: [], furnishings: [], images:{}};
+			creaters : [], teams: [], walls: [], doors: [], furnishings: [], images:[]};
 		this.scene.teamMap       = new Map();
 		this.scene.createrMap    = new Map();
 		this.scene.furnishingMap = new Map();
@@ -63,8 +63,8 @@ class SandTableEditor {
 	}
 
 	async initSence() {
-		this.scene.width  = this.scene.images.map.width;
-		this.scene.height = this.scene.images.map.height;
+		this.scene.width  = this.scene.imageMap.get('map').image.img.width;
+		this.scene.height = this.scene.imageMap.get('map').image.img.height;
 		this.canvas.setAttribute( 'width', this.scene.width );
 		this.canvas.setAttribute('height', this.scene.height);
 
@@ -140,7 +140,7 @@ class SandTableEditor {
 
 	async drawSence() {
 		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-		this.ctx.drawImage(this.scene.images.map, 0, 0);
+		this.ctx.drawImage(this.scene.imageMap.get('map').image.img, 0, 0);
 
 		this.scene.allTokens = this.scene.creaters.concat( 
 			this.scene.teams) .concat( 
@@ -178,7 +178,7 @@ class SandTableEditor {
 			token.image.width  = $('#tkImgWidth' ).val();
 			token.image.height = $('#tkImgHeight').val();
 			//
-			token.image.img = this.scene.images[token.image.key];
+			token.image.img = this.scene.imageMap.get(token.image.key).image.img;
 			if (token.image.img) {
 				this.tkImgCanvas.setAttribute( 'width', token.image.img.width );
 				this.tkImgCanvas.setAttribute('height', token.image.img.height);
