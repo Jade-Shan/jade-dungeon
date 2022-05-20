@@ -198,8 +198,8 @@ class SandTableEditor {
 			} else if ("canvas.shape.2d.Circle" == token.classType) {
 				token.radius = parseInt($('#tkRadius').val());
 			} else if ("Image" == token.classType) {
-				token.image.url = $('#tkURL').val();
-				token.image.img = await loadImage(new Image(), token.image.url);
+				token.url = $('#tkURL').val();
+				token.image.img = await loadImage(new Image(), token.url);
 				$('#tkImgX'     ).val(0);
 				$('#tkImgY'     ).val(0);
 				$('#tkImgWidth' ).val(token.image.width );
