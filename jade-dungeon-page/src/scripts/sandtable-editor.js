@@ -347,12 +347,12 @@ class SandTableEditor {
 	canvasMouseUp(x, y) {
 		if (this.currDragging) {
 			// console.log(`click up: ${this.currDragging.x}, ${this.currDragging.y}`);
+			// console.log(`click up: ${this.currDragging.x}, ${this.currDragging.y}`);
 			if (this.isMovingItem) {
 				this.currDragging.move(this.startX, this.startY, x, y);
 			} else if (this.isScalingItem) {
 				this.currDragging.scale(this.startX, this.startY, x, y);
 			}
-			console.log(`click up: ${this.currDragging.x}, ${this.currDragging.y}`);
 			this.drawSence();
 			this.currEditing  = this.currDragging;
 			this.selectToken(this.currDragging);

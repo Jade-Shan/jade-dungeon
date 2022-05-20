@@ -6,7 +6,6 @@ const PI_DOUBLE   = Math.PI * 2;
 function distanceP2P(x1, y1, x2, y2) {
 	let g = x1 - x2;
 	let j = y1 - y2;
-	console.log(`${x1},${x2} -> ${g} ~ ${y1},${y2} -> ${j}`);
 	return Math.sqrt(g*g + j*j);
 }
 
