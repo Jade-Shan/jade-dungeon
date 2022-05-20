@@ -1,4 +1,5 @@
 /* jshint esversion: 6 */
+
 var net = net || {};
 (function ($) {
 	net.jadedungeon = function () { init(); return this; };

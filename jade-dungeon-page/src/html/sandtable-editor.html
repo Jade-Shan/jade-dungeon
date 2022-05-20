@@ -130,12 +130,16 @@ let editorHtmlImg =  '<tr>' +
 	+ '<td><button type="button" onClick="javascript:sandtable.updateToken();" class="btn btn-primary">修改</button></td>'
 	+ '</tr>';
 
+// http://localhost:8080/sandtable-editor.html?campaign=campaignId01&placeId=place01&sceneId=scene01
+let params = parseUrlParams();
+
 let sandtable = new SandTableEditor(
 	document.getElementById("canvas"), 
-	document.getElementById("tkImgCanvas"), 
-	{
+	document.getElementById("tkImgCanvas"), {
 		viewRange: 500, shadowColor: 'rgba(0, 0, 0, 0.7)',
-		campaignId: "campaign01", placeId: "place01", sceneId: "scene01"
+		campaignId: params.get('campaignId'), 
+		placeId   : params.get('placeId'   ), 
+		sceneId   : params.get('sceneId'   )
 	}, "u001");
 
 window.addEventListener('resize', sandtable.resizeLayout);

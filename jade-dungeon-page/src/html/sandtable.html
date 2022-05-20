@@ -53,11 +53,15 @@
 	<script type="text/javascript">
 let apiRoot = '@@apiRoot/api/sandtable/';
 
+// http://localhost:8080/sandtable-editor.html?campaign=campaignId01&placeId=place01&sceneId=scene01
+let params = parseUrlParams();
 let sandtable = new SandTableView(
 	document.getElementById("canvas"), 
 	{
 		viewRange: 500, shadowColor: 'rgba(0, 0, 0, 0.7)',
-		campaignId: "campaign01", placeId: "place01", sceneId: "scene01"
+		campaignId: params.get('campaignId'), 
+		placeId   : params.get('placeId'   ), 
+		sceneId   : params.get('sceneId'   )
 	}, "u001");
 
 

@@ -1,5 +1,29 @@
 /* jshint esversion: 8 */
 
+function parseUrlParams() {
+	let params = new Map();
+	if (document.location.search.length > 1) {
+		let paramStr = document.location.search.substring(1);
+		let strArr   = paramStr.split('&');
+		for (let i = 0; i < strArr.length; i++) {
+			let kvArr = strArr[i].split('=');
+			let key   = decodeURIComponent(kvArr[0]);
+			let value = decodeURIComponent(kvArr[1]);
+			if (params.has(key)) {
+				let oldValue = params.get(key);
+				if (oldValue instanceof Array) {
+					oldValue.push(value);
+				} else {
+					params.set(key, [oldValue, value]);
+				}
+			} else {
+				params.set(key, value);
+			}
+		}
+	}
+	return params;
+}
+
 let loadImage = async (image, imageURL) => {
 	return new Promise((resolve, reject) => {
 		image.onload  = () => { 
