@@ -24,29 +24,28 @@ function pointToLine(ax, ay, bx, by, x, y) {
 	} else if (ay == by) {
 		return {x: x, y: ay};
 	} else {
-		// ay = ak * ax + ab
-		let ak = (ay - by) / (ax - bx);
-		let ab = ay - (ak * ax);
-		let angle1  = Math.atan(ak);
-		//
-		let angle2 = angle1 + PI_HALF;
-		let k = Math.tan(angle2);
-		let b = ak * ax + ab - k * x;
-		// 
-		let rx = (ak * ax + ab - b) / k;
-		let ry = k * rx + b;
+		let a = x  - ax;
+		let b = y  - ay;
+		let c = bx - ax;
+		let d = by - ay;
+		
+		let dot   = a * c + b * d;
+		let lenSq = c * c + d * d;
+		let param = dot / lenSq;
 
-		return {x: rx, y: ry};
+		if (param < 0) {
+			return {x: ax, y: ay};
+		} else if (param > 1) {
+			return {x: bx, y: by};
+		} else {
+			return {x: ax + param * c, y: ay + param * d};
+		}
 	}
 }
 
 function pointToLineDistence(ax, ay, bx, by, x, y) {
 	let p = pointToLine(ax, ay, bx, by, x, y);
-	let g = x - p.x;
-	let j = y - p.y;
-	let distance = Math.sqrt(g * g + j * j);
-	// console.log(`${p.x},${p.y} - ${x},${y} = ${distance}`);
-	return distance;
+	return distanceP2P(x, y, p.x, p.y);
 }
 
 /* 检查两条线段a-b与c-d是否相交，交点的坐标*/
@@ -390,6 +389,7 @@ class Line extends Canvas2dShape {
 			return false;
 		} else {
 			let dist = pointToLineDistence(this.x, this.y, this.x2, this.y2, x, y);
+			console.log(`distence is ${dist}`);
 			return dist < 10;
 		}
 	}

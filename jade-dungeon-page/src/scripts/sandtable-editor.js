@@ -283,7 +283,7 @@ class SandTableEditor {
 		let isBlock = 'furnishing' == groupName ? false : true;
 		if ('Line' === typeName) {
 			this.currEditing = new Line(this.ctx, id, this.startX, this.startY,  
-				this.startX + 20, this.startY + 20, "#0000FF", isView, isBlock);
+				this.startX + 5, this.startY, "#0000FF", isView, isBlock);
 		} else if ('Rectangle' === typeName) {
 			this.currEditing = new Rectangle(this.ctx, id, this.startX, this.startY, 
 				50, 50, color, image, isView, isBlock);
@@ -292,6 +292,7 @@ class SandTableEditor {
 				25, color, image, isView, isBlock);
 		}
 		if (this.currEditing) {
+			this.isScalingItem = true;
 			this.currDragging  = this.currEditing;
 			this.scene[groupName + 's'].push(this.currEditing);
 			this.drawSence();
