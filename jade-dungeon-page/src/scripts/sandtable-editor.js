@@ -335,11 +335,11 @@ class SandTableEditor {
 			if (this.isMovingItem) {
 				this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 				this.ctx.drawImage(this.brightMap, 0, 0);
-				this.currDragging.onMoveing(x - this.startX, y - this.startY);
+				this.currDragging.onMoveing(this.startX, this.startY, x, y);
 			} else if (this.isScalingItem) {
 				this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 				this.ctx.drawImage(this.brightMap, 0, 0);
-				this.currDragging.onScaleing(x - this.startX, y - this.startY);
+				this.currDragging.onScaleing(this.startX, this.startY, x, y);
 			}
 		}
 	}
@@ -349,9 +349,9 @@ class SandTableEditor {
 		if (this.currDragging) {
 			console.log(`click up: ${this.currDragging.x}, ${this.currDragging.y}`);
 			if (this.isMovingItem) {
-				this.currDragging.move(x - this.startX, y - this.startY);
+				this.currDragging.move(this.startX, this.startY, x, y);
 			} else if (this.isScalingItem) {
-				this.currDragging.scale(x - this.startX, y - this.startY);
+				this.currDragging.scale(this.startX, this.startY, x, y);
 			}
 			console.log(`click up: ${this.currDragging.x}, ${this.currDragging.y}`);
 			this.drawSence();

@@ -457,7 +457,9 @@ class Rectangle extends Canvas2dShape {
 			this.calVtxDstAngle(this.vtx[3][0], this.vtx[3][1], x, y, quad)];
 	}
 
-	onMoveing(dx, dy) {
+	onMoveing(x, y, x1, y1) {
+		let dx = x1 - x;
+		let dy = y1 - y;
 		this.cvsCtx.save();
 		this.cvsCtx.lineWidth = 5;
 		this.cvsCtx.fillStyle   = "rgba(0, 0, 255, 0.7)";
@@ -467,24 +469,34 @@ class Rectangle extends Canvas2dShape {
 		this.cvsCtx.restore();
 	}
 
-	onScaleing(dx, dy) {
+	onScaleing(x, y, x1, y1) {
+		let width = this.width  +(x1 - x);
+		let height= this.height +(y1 - y);
+		width  = width  > 10 ? width  : 10;
+		height = height > 10 ? height : 10;
 		this.cvsCtx.save();
 		this.cvsCtx.lineWidth = 5;
 		this.cvsCtx.fillStyle   = "rgba(0, 0, 255, 0.7)";
-		this.cvsCtx.fillRect(this.x, this.y, this.width + dx, this.height + dy);
+		this.cvsCtx.fillRect  (this.x, this.y, width, height);
 		this.cvsCtx.strokeStyle = "rgba(0, 255, 0, 0.7)";
-		this.cvsCtx.strokeRect(this.x, this.y, this.width + dx, this.height + dy);
+		this.cvsCtx.strokeRect(this.x, this.y, width, height);
 		this.cvsCtx.restore();
 	}
 
-	move(dx, dy) {
+	move(x, y, x1, y1) {
+		let dx = x1 - x;
+		let dy = y1 - y;
 		this.x  += dx;
 		this.y  += dy;
 	}
 
-	scale(dx, dy) {
-		this.width  += dx;
-		this.height += dy;
+	scale(x, y, x1, y1) {
+		let width = this.width  +(x1 - x);
+		let height= this.height +(y1 - y);
+		width  = width  > 10 ? width  : 10;
+		height = height > 10 ? height : 10;
+		this.width  = width ;
+		this.height = height;
 	}
 
 	isHit(x, y) {
@@ -631,7 +643,9 @@ class Circle extends Canvas2dShape {
 		this.cvsCtx.restore();
 	}
 
-	onMoveing(dx, dy) {
+	onMoveing(x, y, x1, y1) {
+		let dx = x1 - x;
+		let dy = y1 - y;
 		this.cvsCtx.save();
 		this.cvsCtx.lineWidth = 5;
 		this.cvsCtx.beginPath();
@@ -643,12 +657,25 @@ class Circle extends Canvas2dShape {
 		this.cvsCtx.restore();
 	}
 
-	onScaleing(dx, dy) {
-		let nr = Math.sqrt(dx * dx + dy * dy);
+	onScaleing(x, y, x1, y1) {
+		let dx = x1 - x;
+		let dy = y1 - y;
+		let nr = parseInt(Math.sqrt(dx*dx + dy*dy));
+		let dx2 = x1 - this.x;
+		let dy2 = y1 - this.y;
+		let r2 =  parseInt(Math.sqrt(dx2*dx2 + dy2*dy2));
+		if (r2 < this.radius) {
+			nr = this.radius - nr;
+		} else {
+			nr = this.radius + nr;
+		}
+		if (nr < 10) {
+			nr = 10;
+		}
 		this.cvsCtx.save();
 		this.cvsCtx.lineWidth = 5;
 		this.cvsCtx.beginPath();
-		this.cvsCtx.arc(this.x, this.y, this.radius + nr, 0, PI_DOUBLE, true);
+		this.cvsCtx.arc(this.x, this.y, nr, 0, PI_DOUBLE, true);
 		this.cvsCtx.fillStyle   = "rgba(0, 0, 255, 0.7)";
 		this.cvsCtx.fill();
 		this.cvsCtx.strokeStyle = "rgba(0, 255, 0, 0.7)";
@@ -656,13 +683,29 @@ class Circle extends Canvas2dShape {
 		this.cvsCtx.restore();
 	}
 
-	move(dx, dy) {
-		this.x  += dx;
-		this.y  += dy;
+	move(x, y, x1, y1) {
+		let dx = x1 - x;
+		let dy = y1 - y;
+		this.x += dx;
+		this.y += dy;
 	}
 
-	scale(dx, dy) {
-		this.radius += parseInt(Math.sqrt(dx*dx + dy*dy));
+	scale(x, y, x1, y1) {
+		let dx = x1 - x;
+		let dy = y1 - y;
+		let nr = parseInt(Math.sqrt(dx*dx + dy*dy));
+		let dx2 = x1 - this.x;
+		let dy2 = y1 - this.y;
+		let r2 =  parseInt(Math.sqrt(dx2*dx2 + dy2*dy2));
+		if (r2 < this.radius) {
+			nr = this.radius - nr;
+		} else {
+			nr = this.radius + nr;
+		}
+		if (nr < 10) {
+			nr = 10;
+		}
+		this.radius = nr;
 	}
 
 	isHit(x, y) {
