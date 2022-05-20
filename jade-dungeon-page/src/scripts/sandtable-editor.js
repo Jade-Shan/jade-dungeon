@@ -25,8 +25,18 @@ class SandTableEditor {
 		this.scene.tokenGroupIcons.door       = '&#128682';
 		this.scene.tokenGroupIcons.wall       = '&#127959';
 		this.scene.tokenGroupIcons.image      = '&#127756';
+		this.scene.tokenGroupText = {}; 
+		this.scene.tokenGroupText.team       = '创建新玩家：';
+		this.scene.tokenGroupText.creater    = '创建新生物：';
+		this.scene.tokenGroupText.furnishing = '创建新陈设：';
+		this.scene.tokenGroupText.door       = '创建新门户：';
+		this.scene.tokenGroupText.wall       = '创建新墙壁：';
+		this.scene.tokenGroupText.image      = '创建新图像：';
 		// 目前选中正在编辑的目标
-		this.currSelected = undefined;
+		this.currDragging = undefined;
+		// 将要创建的目标
+		this.addTokenGroup = undefined;
+		this.addTokenType  = undefined;
 	}
 
 	listGroupTokens(groupName) {
@@ -51,6 +61,7 @@ class SandTableEditor {
 		html = html + '<button type="button" onClick="javascript:sandtable.createToken(\'' + 
 			groupName + '\');" class="btn btn-default">&#9711</button>';
 		$('#tokenCreateBtns').html(html);
+		$('#tokenCreateText').html(this.scene.tokenGroupText[groupName]);
 	}
 
 
@@ -202,7 +213,6 @@ class SandTableEditor {
 	}
 
 	selectToken(token) {
-		this.currEditing = token;
 		if ("canvas.shape.2d.Line" == token.classType) {
 			$('#tk-prop-editer').html(editorHtmlLine);
 			$('#tkX2').val(token.x2);
@@ -248,12 +258,13 @@ class SandTableEditor {
 
 	canvasMouseDown(x, y) {
 		// console.log(`click: ${x}, ${y}`);
-		this.currSelected = undefined;
+		this.currDragging = undefined;
 		for(let i=0; i < this.scene.allTokens.length; i++) {
 			let token = this.scene.allTokens[i];
 			if (token.isHit(x, y)) {
-				console.log(`hit: ${token.id}`);
-				this.currSelected = token;
+				// console.log(`hit: ${token.id}`);
+				this.currDragging = token;
+				this.currEditing  = token;
 				this.selectToken(token);
 				break;
 			}
@@ -261,7 +272,7 @@ class SandTableEditor {
 	}
 
 	deleteToken(groupName, id) {
-		this.currSelected = undefined;
+		this.currDragging = undefined;
 		this.currEditing  = undefined;
 		$('#tk-prop-editer').html('');
 		let group = this.scene[groupName + 'Map'];
@@ -280,32 +291,34 @@ class SandTableEditor {
 	}
 
 	canvasMouseDrag(x, y) {
-		if (this.currSelected) {
+		if (this.currDragging) {
 			if (this.isMovingItem) {
 				this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 				this.ctx.drawImage(this.brightMap, 0, 0);
-				this.currSelected.onMoveing(x - this.startX, y - this.startY);
+				this.currDragging.onMoveing(x - this.startX, y - this.startY);
 			} else if (this.isScalingItem) {
 				this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 				this.ctx.drawImage(this.brightMap, 0, 0);
-				this.currSelected.onScaleing(x - this.startX, y - this.startY);
+				this.currDragging.onScaleing(x - this.startX, y - this.startY);
 			}
 		}
 	}
 
 	canvasMouseUp(x, y) {
 		console.log(`click up: ${x - this.startX}, ${y - this.startY}`);
-		if (this.currSelected) {
-			console.log(`click up: ${this.currSelected.x}, ${this.currSelected.y}`);
+		if (this.currDragging) {
+			console.log(`click up: ${this.currDragging.x}, ${this.currDragging.y}`);
 			if (this.isMovingItem) {
-				this.currSelected.move(x - this.startX, y - this.startY);
+				this.currDragging.move(x - this.startX, y - this.startY);
 			} else if (this.isScalingItem) {
-				this.currSelected.scale(x - this.startX, y - this.startY);
+				this.currDragging.scale(x - this.startX, y - this.startY);
 			}
-			console.log(`click up: ${this.currSelected.x}, ${this.currSelected.y}`);
-			this.currSelected = undefined;
+			console.log(`click up: ${this.currDragging.x}, ${this.currDragging.y}`);
+			this.currDragging = undefined;
 			this.drawSence();
 		}
+		this.addTokenGroup = undefined;
+		this.addTokenType  = undefined;
 	}
 
 }
