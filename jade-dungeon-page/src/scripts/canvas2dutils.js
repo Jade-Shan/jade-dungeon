@@ -400,6 +400,7 @@ class Rectangle extends Canvas2dShape {
 		this.width  = width  > 10 ? width  : 10;
 		this.color  = color;
 		this.image  = image;
+		this.image.key    = image.key;
 		this.image.sx     = image.sx     ? image.sx    : 0;
 		this.image.sy     = image.sy     ? image.sy    : 0;
 		this.image.width  = image.width  ? image.width : this.width;
@@ -535,6 +536,7 @@ class Circle extends Canvas2dShape {
 		this.classType = this.classType + '.Circle';
 		this.radius = radius < 10 ? 10 : radius;
 		this.image= image;
+		this.image.key    = image.key;
 		this.image.sx     = image.sx     ? image.sx     : 0;
 		this.image.sy     = image.sy     ? image.sy     : 0;
 		this.image.width  = image.width  ? image.width  : 2 * radius;

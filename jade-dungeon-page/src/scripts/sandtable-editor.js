@@ -33,7 +33,7 @@ class SandTableEditor {
 		this.scene.tokenGroupText.wall       = '创建新墙壁：';
 		this.scene.tokenGroupText.image      = '创建新图像：';
 		// 目前选中正在编辑的目标
-		this.currDragging = undefined;
+		this.currDragging  = undefined;
 		// 将要创建的目标
 		this.addTokenGroup = undefined;
 		this.addTokenType  = undefined;
@@ -54,12 +54,12 @@ class SandTableEditor {
 		$('#token-list').html(html);
 		// 
 		html = '';
-		html = html + '<button type="button" onClick="javascript:sandtable.createToken(\'' +
-			groupName + '\');" class="btn btn-default">&#9585</button>';
-		html = html + '<button type="button" onClick="javascript:sandtable.createToken(\'' + 
-			groupName + '\');" class="btn btn-default">&#9634</button>';
-		html = html + '<button type="button" onClick="javascript:sandtable.createToken(\'' + 
-			groupName + '\');" class="btn btn-default">&#9711</button>';
+		html = html + '<button type="button" onClick="javascript:sandtable.preCreateToken(\'' +
+			groupName + '\',\'Line\');" class="btn btn-default">&#9585</button>';
+		html = html + '<button type="button" onClick="javascript:sandtable.preCreateToken(\'' + 
+			groupName + '\',\'Rectangle\');" class="btn btn-default">&#9634</button>';
+		html = html + '<button type="button" onClick="javascript:sandtable.preCreateToken(\'' + 
+			groupName + '\',\'Circle\');" class="btn btn-default">&#9711</button>';
 		$('#tokenCreateBtns').html(html);
 		$('#tokenCreateText').html(this.scene.tokenGroupText[groupName]);
 	}
@@ -85,22 +85,22 @@ class SandTableEditor {
 		this.canvas.onmousedown = (e) => {
 			let offset = self.sumCanvasOffset(self.canvas, {x:0, y:0});
 			// console.log(`${offset.x}, ${offset.y}`);
-			self.startX = e.pageX - offset.x;
-			self.startY = e.pageY - offset.y;
+			self.startX = parseInt(e.pageX - offset.x);
+			self.startY = parseInt(e.pageY - offset.y);
 			self.canvasMouseDown(self.startX, self.startY);
 		};
 		this.canvas.onmousemove = (e) => {
 			let offset = self.sumCanvasOffset(self.canvas, {x:0, y:0});
 			// console.log(`${offset.x}, ${offset.y}`);
-			self.endX = e.pageX - offset.x;
-			self.endY = e.pageY - offset.y;
+			self.endX = parseInt(e.pageX - offset.x);
+			self.endY = parseInt(e.pageY - offset.y);
 			self.canvasMouseDrag(self.endX, self.endY);
 		};
 		this.canvas.onmouseup = (e) => {
 			let offset = self.sumCanvasOffset(self.canvas, {x:0, y:0});
 			// console.log(`${offset.x}, ${offset.y}`);
-			self.endX = e.pageX - offset.x;
-			self.endY = e.pageY - offset.y;
+			self.endX = parseInt(e.pageX - offset.x);
+			self.endY = parseInt(e.pageY - offset.y);
 			self.canvasMouseUp(self.endX, self.endY);
 		};
 		document.addEventListener("keydown", (e) => {
@@ -174,20 +174,22 @@ class SandTableEditor {
 	async updateToken() {
 		if (this.currEditing) {
 			let token = this.currEditing;
+			token.x   = parseInt($('#tkX').val());
+			token.y   = parseInt($('#tkY').val());
 			if ("canvas.shape.2d.Line" == token.classType) {
-				token.x2 = $('#tkX2').val();
-				token.y2 = $('#tkY2').val();
+				token.x2 = parseInt($('#tkX2').val());
+				token.y2 = parseInt($('#tkY2').val());
 			} else if ("canvas.shape.2d.Rectangle" == token.classType) {
-				token.width  = $('#tkWidth').val();
-				token.height = $('#tkHeigh').val();
+				token.width  = parseInt($('#tkWidth').val());
+				token.height = parseInt($('#tkHeigh').val());
 			} else if ("canvas.shape.2d.Circle" == token.classType) {
-				token.radius = $('#tkRadius').val();
+				token.radius = parseInt($('#tkRadius').val());
 			} 
 			token.image.key    = $('#tkImgKey'   ).val();
-			token.image.sx     = $('#tkImgX'     ).val();
-			token.image.sy     = $('#tkImgY'     ).val();
-			token.image.width  = $('#tkImgWidth' ).val();
-			token.image.height = $('#tkImgHeight').val();
+			token.image.sx     = parseInt($('#tkImgX'     ).val());
+			token.image.sy     = parseInt($('#tkImgY'     ).val());
+			token.image.width  = parseInt($('#tkImgWidth' ).val());
+			token.image.height = parseInt($('#tkImgHeight').val());
 			//
 			token.image.img = this.scene.imageMap.get(token.image.key).image.img;
 			if (token.image.img) {
@@ -256,21 +258,6 @@ class SandTableEditor {
 		}
 	}
 
-	canvasMouseDown(x, y) {
-		// console.log(`click: ${x}, ${y}`);
-		this.currDragging = undefined;
-		for(let i=0; i < this.scene.allTokens.length; i++) {
-			let token = this.scene.allTokens[i];
-			if (token.isHit(x, y)) {
-				// console.log(`hit: ${token.id}`);
-				this.currDragging = token;
-				this.currEditing  = token;
-				this.selectToken(token);
-				break;
-			}
-		}
-	}
-
 	deleteToken(groupName, id) {
 		this.currDragging = undefined;
 		this.currEditing  = undefined;
@@ -283,11 +270,61 @@ class SandTableEditor {
 		this.listGroupTokens(groupName);
 	}
 
+	preCreateToken(groupName, typeName) {
+		this.addTokenGroup = groupName;
+		this.addTokenType  = typeName;
+	}
+
+	createToken(groupName, typeName) {
+		let id = groupName + "-" + (new Date()).getTime();
+		let color = "#0000FF";
+		let image = this.scene.imageMap.get('chrt').image;
+		let isView  = 'Line'       == typeName  ? false : true;
+		let isBlock = 'furnishing' == groupName ? false : true;
+		if ('Line' === typeName) {
+			this.currEditing = new Line(this.ctx, id, this.startX, this.startY,  
+				this.startX + 20, this.startY + 20, "#0000FF", isView, isBlock);
+		} else if ('Rectangle' === typeName) {
+			this.currEditing = new Rectangle(this.ctx, id, this.startX, this.startY, 
+				50, 50, color, image, isView, isBlock);
+		} else if ('Circle' === typeName) {
+			this.currEditing = new Circle(this.ctx, id, this.startX, this.startY, 
+				25, color, image, isView, isBlock);
+		}
+		if (this.currEditing) {
+			this.currDragging  = this.currEditing;
+			this.scene[groupName + 's'].push(this.currEditing);
+			this.drawSence();
+			this.scene[groupName + "Map"].set(id, this.currEditing);
+			this.listGroupTokens(groupName);
+			this.selectToken(this.currEditing);
+		}
+	}
+
 
 	selectTokenOnList(groupName, id) {
 		let group = this.scene[groupName + 'Map'];
 		let token = group.get(id);
 		this.selectToken(token);
+	}
+
+	canvasMouseDown(x, y) {
+		// console.log(`click: ${x}, ${y}`);
+		this.currDragging = undefined;
+		if (this.addTokenGroup && this.addTokenType) {
+			this.createToken(this.addTokenGroup, this.addTokenType);
+		} else {
+			for(let i=0; i < this.scene.allTokens.length; i++) {
+				let token = this.scene.allTokens[i];
+				if (token.isHit(x, y)) {
+					// console.log(`hit: ${token.id}`);
+					this.currDragging = token;
+					this.currEditing  = token;
+					this.selectToken(token);
+					break;
+				}
+			}
+		}
 	}
 
 	canvasMouseDrag(x, y) {
