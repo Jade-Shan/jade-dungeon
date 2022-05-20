@@ -328,7 +328,10 @@ class SandTableEditor {
 	}
 
 	canvasMouseDrag(x, y) {
-		if (this.currDragging) {
+		let g = x - this.startX;
+		let j = y - this.startY;
+		let r = Math.sqrt(g*g + j*j);
+		if (this.currDragging && r > 10) {
 			if (this.isMovingItem) {
 				this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 				this.ctx.drawImage(this.brightMap, 0, 0);
@@ -351,9 +354,11 @@ class SandTableEditor {
 				this.currDragging.scale(x - this.startX, y - this.startY);
 			}
 			console.log(`click up: ${this.currDragging.x}, ${this.currDragging.y}`);
-			this.currDragging = undefined;
 			this.drawSence();
+			this.currEditing  = this.currDragging;
+			this.selectToken(this.currDragging);
 		}
+		this.currDragging = undefined;
 		this.addTokenGroup = undefined;
 		this.addTokenType  = undefined;
 	}

@@ -662,7 +662,7 @@ class Circle extends Canvas2dShape {
 	}
 
 	scale(dx, dy) {
-		this.radius += Math.sqrt(dx*dx + dy*dy);
+		this.radius += parseInt(Math.sqrt(dx*dx + dy*dy));
 	}
 
 	isHit(x, y) {
