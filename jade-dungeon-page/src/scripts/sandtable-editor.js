@@ -140,16 +140,18 @@ class SandTableEditor {
 		let propImgArea = document.querySelector("#propImgArea");
 		let tokenGroupBtns  = document.querySelector("#tokenGroupBtns");
 		let tokenListArea   = document.querySelector("#tokenListArea");
-		let tokenCreateBtns = document.querySelector("#tokenCreateBtns");
+		let createTokenArea = document.querySelector("#createTokenArea");
+		let saveAllBtnArea  = document.querySelector("#saveAllBtnArea");
 
 		let cpHeight  = parseInt(propImgArea.clientHeight);
 		let tgbHeight = parseInt(tokenGroupBtns.clientHeight);
 		let tlaHeight = parseInt(tokenListArea.clientHeight);
-		let tcbHeight = parseInt(tokenCreateBtns.clientHeight);
+		let tcbHeight = parseInt(createTokenArea.clientHeight);
+		let sabHeight = parseInt(saveAllBtnArea.clientHeight);
 
 		let maHeight = wHeight - cpHeight;
 		mapArea.style.height = maHeight + "px";
-		let tlHeight = maHeight - tgbHeight - tcbHeight;
+		let tlHeight = maHeight - tgbHeight - tcbHeight - sabHeight;
 		tokenListArea.style.height = tlHeight + 'px';
 	}
 
@@ -190,8 +192,16 @@ class SandTableEditor {
 		mapDatas.mapDatas.creaters    = seriseTokenMap(this.scene.createrMap   );
 		mapDatas.mapDatas.furnishings = seriseTokenMap(this.scene.furnishingMap);
 		mapDatas.mapDatas.doors       = seriseTokenMap(this.scene.doorMap      );
-		mapDatas.mapDatas.walls       = seriseTokenMap(this.scene.wallM        );
+		mapDatas.mapDatas.walls       = seriseTokenMap(this.scene.wallMap      );
 		return JSON.stringify(mapDatas);
+	}
+
+	saveAllMapData() {
+		let jsonStr = this.seriseMapData();	
+		// console.log(jsonStr);
+		updateMapDatas(
+			this.scene.campaignId, this.scene.placeId, this.scene.sceneId, 
+			jsonStr);
 	}
 
 	async updateToken() {

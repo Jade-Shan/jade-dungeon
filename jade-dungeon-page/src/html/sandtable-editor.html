@@ -17,23 +17,32 @@
 			<div id="mapArea" class="col-lg-9 col-md-8 col-sm-6 col-xs-6">
 				<canvas id="canvas" height="300" width="300"></canvas>	
 			</div>
-			<div id='tokenGroupBtns' class="container col-lg-3 col-md-4 col-sm-6 col-xs-6">
-				<div class="btn-group col-12">
-					<button type="button"	id="btn-lst-teams"      onClick="javascript:sandtable.listGroupTokens('team'      );" class="btn btn-default">&#128100</button>
-					<button type="button"	id="btn-lst-creaters"   onClick="javascript:sandtable.listGroupTokens('creater'   );" class="btn btn-default">&#128126</button>
-					<button type="button"	id="btn-lst-furnishing" onClick="javascript:sandtable.listGroupTokens('furnishing');" class="btn btn-default">&#128452</button>
-					<button type="button"	id="btn-lst-doors"      onClick="javascript:sandtable.listGroupTokens('door'      );" class="btn btn-default">&#128682</button>
-					<button type="button"	id="btn-lst-walls"      onClick="javascript:sandtable.listGroupTokens('wall'      );" class="btn btn-default">&#127959</button>
-					<button type="button"	id="btn-lst-images"     onClick="javascript:sandtable.listGroupTokens('image'     );" class="btn btn-default">&#127756</button>
+			<div class="container col-lg-3 col-md-4 col-sm-6 col-xs-6">
+				<div id='tokenGroupBtns' class="row">
+					<div class="btn-group col-12">
+						<button type="button"	id="btn-lst-teams"      onClick="javascript:sandtable.listGroupTokens('team'      );" class="btn btn-default">&#128100</button>
+						<button type="button"	id="btn-lst-creaters"   onClick="javascript:sandtable.listGroupTokens('creater'   );" class="btn btn-default">&#128126</button>
+						<button type="button"	id="btn-lst-furnishing" onClick="javascript:sandtable.listGroupTokens('furnishing');" class="btn btn-default">&#128452</button>
+						<button type="button"	id="btn-lst-doors"      onClick="javascript:sandtable.listGroupTokens('door'      );" class="btn btn-default">&#128682</button>
+						<button type="button"	id="btn-lst-walls"      onClick="javascript:sandtable.listGroupTokens('wall'      );" class="btn btn-default">&#127959</button>
+						<button type="button"	id="btn-lst-images"     onClick="javascript:sandtable.listGroupTokens('image'     );" class="btn btn-default">&#127756</button>
+					</div>
 				</div>
-				<div id="tokenListArea" class="col-12">
-					<table class="table table-striped">
-						<tbody id="token-list"></tbody>
-					</table>	
+				<div class="row">
+					<div id="tokenListArea" class="col-12">
+						<table class="table table-striped">
+							<tbody id="token-list"></tbody>
+						</table>	
+					</div>
 				</div>
-				<div id="tokenCreateBtnsArea" class="btn-group col-12">
+				<div id="createTokenArea" class="row">
 					<span id="tokenCreateText" class="btn-group col-6"></span>
-					<div  id="tokenCreateBtns" class="btn-group col-6">
+					<div  id="tokenCreateBtns" class="btn-group col-6"></div>
+				</div>
+				<div id="saveAllBtnArea" class="row">
+					<div id="saveAllBtnDiv" class="btn-group col-12">
+						<button onClick="javascript:sandtable.saveAllMapData();"
+							 type="button" class="btn btn-default">保存全部</button>
 					</div>
 				</div>
 			</div>

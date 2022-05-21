@@ -51,33 +51,38 @@ let sleepMS = async (ms) =>  {
 };
 
 let tokenToData = (token) => {
-	let rec = {"id": token.id, "type": token.classType};
+	let rec = {"id": token.id};
 	if ("Image" != token.classType) {
 		rec.x         = token.x         ;
 		rec.y         = token.y         ;
 		rec.visiable  = token.visiable  ;
 		rec.blockView = token.blockView ;
 		rec.color     = token.color     ;
-	} else if ("canvas.shape.2d.Rectangle" == token.classType || 
-		"canvas.shape.2d.Circle" == token.classType) //
-	{
-		rec.img = {
-			"imgKey" : token.image.key   ,
-			"sx"     : token.image.sx    ,
-			"sy"     : token.image.sy    ,
-			"width"  : token.image.width ,
-			"height" : token.image.height,
-		};
-	}
+		if ("canvas.shape.2d.Rectangle" == token.classType || 
+			"canvas.shape.2d.Circle" == token.classType) //
+		{
+			rec.img = {
+				"imgKey" : token.image.key   ,
+				"sx"     : token.image.sx    ,
+				"sy"     : token.image.sy    ,
+				"width"  : token.image.width ,
+				"height" : token.image.height,
+			};
+		}
+	} 
 	if ("canvas.shape.2d.Line" == token.classType) {
+		rec.type       = "Line"         ;
 		rec.x2         = token.x2       ;
 		rec.y2         = token.y2       ;
 	} else if ("canvas.shape.2d.Rectangle" == token.classType) {
+		rec.type       = "Rectangle"    ;
 		rec.width  = token.width ;
 		rec.height = token.height;
 	} else if ("canvas.shape.2d.Circle" == token.classType) {
+		rec.type   = "Circle"    ;
 		rec.radius =  token.radius;
 	} else if ("Image" == token.classType) {
+		rec.type   = "Image"    ;
 		rec.url = token.url;
 	}
 	return rec;
@@ -173,7 +178,7 @@ let updateMapDatas = async (campaignId, placeId, sceneId, jsonStr) => {
 
 function initTestMapData() {
 let jsonStr = JSON.stringify(testData);
-	updateMapDatas('campaign01', 'place01', 'scene01', jsonStr).then((d) => { console.log(d); });
+	updateMapDatas('campaign01', 'place01', 'scene01', jsonStr).then((d) => { /* console.log(d); */ });
 }
 let testData = {
 	"status": "success", 
@@ -253,6 +258,7 @@ let testData = {
 
 let loadMapDatas = async (ctx, scene) => {
 	await requestMapDatas(scene.campaignId, scene.placeId, scene.sceneId).then((data) => { 
+		// console.log(JSON.stringify(data));
 		imgResources = data.imgResources;
 		mapDatas     = data.mapDatas;
 	}).catch((e) => {
