@@ -50,6 +50,39 @@ let sleepMS = async (ms) =>  {
 	});
 };
 
+let tokenToData = (token) => {
+	let rec = {"id": token.id, "type": token.classType};
+	if ("Image" != token.classType) {
+		rec.x         = token.x         ;
+		rec.y         = token.y         ;
+		rec.visiable  = token.visiable  ;
+		rec.blockView = token.blockView ;
+		rec.color     = token.color     ;
+	} else if ("canvas.shape.2d.Rectangle" == token.classType || 
+		"canvas.shape.2d.Circle" == token.classType) //
+	{
+		rec.img = {
+			"imgKey" : token.image.key   ,
+			"sx"     : token.image.sx    ,
+			"sy"     : token.image.sy    ,
+			"width"  : token.image.width ,
+			"height" : token.image.height,
+		};
+	}
+	if ("canvas.shape.2d.Line" == token.classType) {
+		rec.x2         = token.x2       ;
+		rec.y2         = token.y2       ;
+	} else if ("canvas.shape.2d.Rectangle" == token.classType) {
+		rec.width  = token.width ;
+		rec.height = token.height;
+	} else if ("canvas.shape.2d.Circle" == token.classType) {
+		rec.radius =  token.radius;
+	} else if ("Image" == token.classType) {
+		rec.url = token.url;
+	}
+	return rec;
+};
+
 let dataToToken = async (ctx, scene, rec) => {
 	let tkImg = {};
 	if ('Image' != rec.type && rec.img && rec.img.imgKey) { 
@@ -76,6 +109,16 @@ let dataToToken = async (ctx, scene, rec) => {
 			image: {key: rec.id, sx:0, sy: 0, width: img.width, height: img.height, img: img}};
 
 	}
+};
+
+let seriseTokenMap = (itemMap) => {
+	let items = [];
+	if (itemMap) {
+		for (let e of itemMap) {
+			items.push(tokenToData(e[1]));
+		}
+	}
+	return items;
 };
 
 let loadItemsOnMap = async (ctx, scene, itemList, itemMap, itemDatas) => {
@@ -233,8 +276,6 @@ let loadMapDatas = async (ctx, scene) => {
 	await loadItemsOnMap(ctx, scene, scene.creaters,    scene.createrMap,    mapDatas.creaters   );
 	await loadItemsOnMap(ctx, scene, scene.teams,       scene.teamMap,       mapDatas.teams      );
 };
-
-
 
 
 

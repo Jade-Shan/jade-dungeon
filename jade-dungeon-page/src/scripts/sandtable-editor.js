@@ -183,6 +183,17 @@ class SandTableEditor {
 		this.brightMap = brightMap;
 	}
 
+	seriseMapData () {
+		let mapDatas = {"mapDatas": {}};
+		mapDatas.imgResources         = seriseTokenMap(this.scene.imageMap     );
+		mapDatas.mapDatas.teams       = seriseTokenMap(this.scene.teamMap      );
+		mapDatas.mapDatas.creaters    = seriseTokenMap(this.scene.createrMap   );
+		mapDatas.mapDatas.furnishings = seriseTokenMap(this.scene.furnishingMap);
+		mapDatas.mapDatas.doors       = seriseTokenMap(this.scene.doorMap      );
+		mapDatas.mapDatas.walls       = seriseTokenMap(this.scene.wallM        );
+		return JSON.stringify(mapDatas);
+	}
+
 	async updateToken() {
 		if (this.currEditing) {
 			let token = this.currEditing;

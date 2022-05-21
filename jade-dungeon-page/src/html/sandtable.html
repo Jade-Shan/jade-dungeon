@@ -19,6 +19,7 @@
 		</div>
 
 		<div id="ctrlPanel">
+			<!-- 
 			<table>
 				<tr>
 					<td></td>
@@ -36,6 +37,7 @@
 					<td></td>
 				</tr>
 			</table>
+			-->
 		</div>
 
 		<div id="hideImgs">
@@ -53,26 +55,36 @@
 	<script type="text/javascript">
 let apiRoot = '@@apiRootSandtable/api/sandtable/';
 
+let params     = parseUrlParams();
+let campaignId = params.get('campaignId');
+let placeId    = params.get('placeId'   );
+let sceneId    = params.get('sceneId'   );
+
+if (campaignId && placeId && sceneId) { /* ok */ } else {
+	window.location = '@@webRoot/sandtable.html?campaignId=campaign01&placeId=place01&sceneId=scene01';
+//	campaignId = (new Date()).getTime();
+//	placeId    = (new Date()).getTime();
+//	sceneId    = (new Date()).getTime();
+//	window.location = '@@webRoot/sandtable-editor.html?campaignId=' + campaignId +
+//		'&placeId=' + placeId + '&sceneId=' + sceneId;
+}
+
 // http://localhost:8088/api/sandtable/load-map?campaignId=campaign01&placeId=place01&sceneId=scene01?t=1653100882832
 // http://localhost:8088/api/sandtable/load-map?campaignId=campaign01&placeId=place01&sceneId=scene01
 // http://localhost:8080/sandtable-editor.html?campaign=campaignId01&placeId=place01&sceneId=scene01
-let params = parseUrlParams();
 let sandtable = new SandTableView(
 	document.getElementById("canvas"), 
-	document.getElementById("finalCanvas"), 
-	{
+	document.getElementById("finalCanvas"), {
 		viewRange: 500, shadowColor: 'rgba(0, 0, 0, 0.7)',
-		campaignId: params.get('campaignId'), 
-		placeId   : params.get('placeId'   ), 
-		sceneId   : params.get('sceneId'   )
-	}, "u001");
-
+		campaignId: campaignId, placeId: placeId, sceneId: sceneId}, 
+	"u001");
 
 window.addEventListener('resize', sandtable.resizeLayout);
 
 function moveObs(dx, dy) { sandtable.moveObs(dx, dy); };
 
 document.addEventListener("keydown", (event) => {
+	/*
 	if (event.key == 'h') { 
 		moveObs(-10,   0);
 	} else if (event.key == 'j') { 
@@ -82,6 +94,7 @@ document.addEventListener("keydown", (event) => {
 	} else if (event.key == 'l') { 
 		moveObs( 10,   0);
 	}
+	*/
 });
 
 sandtable.drawSandTable();
