@@ -24,14 +24,10 @@ let userLogin = async (username, password, token, callback) => {
 	await login(username, password, token).then((data) => {
 		console.log(data);
 		cookieOperator('username'  , data.username);
-		cookieOperator('logintoken', data.token   );
+		cookieOperator('loginToken', data.token   );
 		callback(data);
 	}).catch((err) => {
-		if ("username exists" == err.msg) {
-			alert('用户名已经被使用');
-		} else {
-			alert('注册失败');
-		}
+		callback({status: 'err', msg:'用户名或密码错误'});
 	});
 };
 

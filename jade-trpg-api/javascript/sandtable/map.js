@@ -5,12 +5,15 @@ let genSceneKey = (campaignId, placeId, sceneId) => {
 	return `jadedungeon::sandtable::scence::${campaignId}::${placeId}::${sceneId}`;
 };
 
+let genOwnerKey = (campaignId, placeId, sceneId) => {
+	return `jadedungeon::sandtable::campaignOwner::${campaignId}`;
+};
+
 exports.handler = {
 	//http://localhost:8088/api/sandtable/load-map?campaignId=campaign01&placeId=place01&sceneId=scene01
 	"/api/sandtable/load-map": async (context, data) => {
-		let key = genSceneKey(data.params.campaignId, data.params.placeId, data.params.sceneId);
 		let jsonStr = await rdsUtil.connect('trpg').call((conn, callback) => {
-			conn.get(key, callback);
+			conn.get(genSceneKey(data.params.campaignId, data.params.placeId, data.params.sceneId), callback);
 		});
 		// console.log(jsonStr);
 		let json = JSON.parse(jsonStr);
@@ -25,15 +28,32 @@ exports.handler = {
 
 	//http://localhost:8088/api/sandtable/save-map?campaignId=campaign01&placeId=place01&sceneId=scene01&jsonStr={} 
 	"/api/sandtable/save-map": async (context, data) => {
-		let key = genSceneKey(data.params.campaignId, data.params.placeId, data.params.sceneId);
-		let resp = await rdsUtil.connect('trpg').call((conn, callback) => {
-			conn.set(key, data.params.jsonStr, callback);
+		let result = {status:'err'};
+		let owner = await rdsUtil.connect('trpg').call((conn, callback) => {
+			conn.get(genOwnerKey(data.params.campaignId), callback);
 		});
+		let json = JSON.parse(data.params.jsonStr);
+		if (!owner || owner.length < 1) {
+			owner = json.username;
+			console.log(`${owner} create capaign ${genOwnerKey(data.params.campaignId)}`);
+			await rdsUtil.connect('trpg').call((conn, callback) => {
+				conn.set(genOwnerKey(data.params.campaignId), owner, callback);
+			});
+		}
+		if (owner == json.username) {
+			let resp = await rdsUtil.connect('trpg').call((conn, callback) => {
+				conn.set(genSceneKey(data.params.campaignId, data.params.placeId, data.params.sceneId), data.params.jsonStr, callback);
+			});
+			result.status = 'success';
+			result.msg = 'save success';
+		} else {
+			result.msg = 'not owner';
+		}
 		context.response.writeHead(200, {
 			'Content-Type':'application/json;charset=utf-8',
 			'Access-Control-Allow-Origin':'*',
 			'Access-Control-Allow-Methods':'GET,POST',
 			'Access-Control-Allow-Headers':'x-requested-with,content-type'});
-		context.response.end(JSON.stringify({status: "success", saveResp: resp}));
+		context.response.end(JSON.stringify(result));
 	}
 };

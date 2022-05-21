@@ -187,6 +187,8 @@ class SandTableEditor {
 
 	seriseMapData () {
 		let mapDatas = {"mapDatas": {}};
+		mapDatas.username   = cookieOperator('username');
+		mapDatas.loginToken = cookieOperator('loginToken');
 		mapDatas.imgResources         = seriseTokenMap(this.scene.imageMap     );
 		mapDatas.mapDatas.teams       = seriseTokenMap(this.scene.teamMap      );
 		mapDatas.mapDatas.creaters    = seriseTokenMap(this.scene.createrMap   );

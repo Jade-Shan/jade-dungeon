@@ -96,12 +96,22 @@ let pageRegist = () => {
 
 let pageLogin = () => {
 	userLogin($('#username').val(), $('#password').val(), '', (data) => {
-		let option = {expires: 100, path: '/', domain: document.location.host};
-		alert('登录成功');
+		if ('success' == data.status) {
+			alert('登录成功');
+		} else {
+			alert(data.msg);
+		}
 	});
 };
 
 let goSandtable = () => {
+	userLogin($('#username').val(), $('#password').val(), '', (data) => {
+		if ('success' == data.status) {
+			alert('跳转');
+		} else {
+			alert(data.msg);
+		}
+	});
 };
 
 
