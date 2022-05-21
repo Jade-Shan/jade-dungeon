@@ -124,6 +124,7 @@ gulp.task('copy-scripts', gulp.series('clean-scripts', 'check-scripts', () => {
 			cfg.path.src.js + 'base.js',
 			cfg.path.src.js + 'canvas2dutils.js',
 			cfg.path.src.js + 'sandtable-comm.js',
+			cfg.path.src.js + 'sandtable-index.js',
 			cfg.path.src.js + 'sandtable-view.js',
 			cfg.path.src.js + 'sandtable-editor.js',
 			cfg.path.src.js + 'journal.js',

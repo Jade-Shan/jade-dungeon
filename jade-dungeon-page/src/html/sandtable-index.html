@@ -66,6 +66,7 @@
 	<!--build:js @@webRoot/scripts/trpg.min.js?v=@@buildversion-->
 	<script src="@@webRoot/scripts/canvas2dutils.js?v=@@buildversion" ></script>
 	<script src="@@webRoot/scripts/sandtable-comm.js?v=@@buildversion" ></script>
+	<script src="@@webRoot/scripts/sandtable-index.js?v=@@buildversion" ></script>
 	<script src="@@webRoot/scripts/sandtable-view.js?v=@@buildversion" ></script>
 	<script src="@@webRoot/scripts/sandtable-editor.js?v=@@buildversion" ></script>
 	<!--/build -->
@@ -88,6 +89,10 @@ $('#sceneId'   ).val(sceneId   );
 
 let pageRegist = () => {
 	userRegist($('#username').val(),$('#password').val());
+};
+
+let pageLogin = () => {
+	userLogin($('#username').val(),$('#password').val(),'');
 };
 
 

@@ -35,6 +35,7 @@ exports.handler = {
 					conn.set(key, password, callback);
 				});
 				json.msg = resp;
+				json.username = username;
 				json.status = 'success';
 			}
 		} else {
