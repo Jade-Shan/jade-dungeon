@@ -205,7 +205,10 @@ class SandTableEditor {
 				$('#tkImgWidth' ).val(token.image.width );
 				$('#tkImgHeight').val(token.image.height);
 			} 
-			token.image.key    = $('#tkImgKey'   ).val();
+			token.visiable     = 'true' == $('#tkVisiable').val() ? true : false;
+			token.blockView    = 'true' == $('#tkBlock'   ).val() ? true : false;
+			token.color        = $('#tkColor' ).val();
+			token.image.key    = $('#tkImgKey').val();
 			token.image.sx     = parseInt($('#tkImgX'     ).val());
 			token.image.sy     = parseInt($('#tkImgY'     ).val());
 			token.image.width  = parseInt($('#tkImgWidth' ).val());
@@ -234,7 +237,7 @@ class SandTableEditor {
 		}
 	}
 
-	selectToken(token) {
+	editToken(token) {
 		if ("canvas.shape.2d.Line" == token.classType) {
 			$('#tk-prop-editer').html(editorHtmlLine);
 			$('#tkX2').val(token.x2);
@@ -260,6 +263,9 @@ class SandTableEditor {
 			$('#tk-prop-editer').html(editorHtmlImg);
 			$('#tkURL'       ).val(token.url          );
 		} 
+		$('#tkVisiable' ).val(true == token.visiable  ? 'true' : 'false');
+		$('#tkBlock'    ).val(true == token.blockView ? 'true' : 'false');
+		$('#tkColor'    ).val(token.color       );
 		$('#tkId'       ).val(token.id          );
 		$('#tkX'        ).val(token.x           );
 		$('#tkY'        ).val(token.y           );
@@ -336,7 +342,7 @@ class SandTableEditor {
 			this.drawSence();
 			this.scene[groupName + "Map"].set(id, this.currEditing);
 			this.listGroupTokens(groupName);
-			this.selectToken(this.currEditing);
+			this.editToken(this.currEditing);
 		}
 	}
 
@@ -344,7 +350,10 @@ class SandTableEditor {
 	selectTokenOnList(groupName, id) {
 		let group = this.scene[groupName + 'Map'];
 		let token = group.get(id);
-		this.selectToken(token);
+		if (token) {
+			this.currEditing = token;
+			this.editToken(token);
+		}
 	}
 
 	canvasMouseDown(x, y) {
@@ -359,7 +368,7 @@ class SandTableEditor {
 					// console.log(`hit: ${token.id}`);
 					this.currDragging = token;
 					this.currEditing  = token;
-					this.selectToken(token);
+					this.editToken(token);
 					break;
 				}
 			}
@@ -394,7 +403,7 @@ class SandTableEditor {
 			}
 			this.drawSence();
 			this.currEditing  = this.currDragging;
-			this.selectToken(this.currDragging);
+			this.editToken(this.currDragging);
 		}
 		this.currDragging = undefined;
 		this.addTokenGroup = undefined;
