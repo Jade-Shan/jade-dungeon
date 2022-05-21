@@ -50,7 +50,7 @@ let sleepMS = async (ms) =>  {
 	});
 };
 
-let dataToItem = async (ctx, scene, rec) => {
+let dataToToken = async (ctx, scene, rec) => {
 	let tkImg = {};
 	if ('Image' != rec.type && rec.img && rec.img.imgKey) { 
 		tkImg.key = rec.img.imgKey; 
@@ -81,7 +81,7 @@ let dataToItem = async (ctx, scene, rec) => {
 let loadItemsOnMap = async (ctx, scene, itemList, itemMap, itemDatas) => {
 	if (itemDatas) {
 		for (let i = 0; i < itemDatas.length; i++) {
-			let obj = await dataToItem(ctx, scene, itemDatas[i]);
+			let obj = await dataToToken(ctx, scene, itemDatas[i]);
 			if (obj) { 
 				itemList.push(obj); 
 				itemMap.set(obj.id, obj);
