@@ -95,7 +95,13 @@ let pageRegist = () => {
 };
 
 let pageLogin = () => {
-	userLogin($('#username').val(),$('#password').val(),'');
+	userLogin($('#username').val(), $('#password').val(), '', (data) => {
+		let option = {expires: 100, path: '/', domain: document.location.host};
+		alert('登录成功');
+	});
+};
+
+let goSandtable = () => {
 };
 
 

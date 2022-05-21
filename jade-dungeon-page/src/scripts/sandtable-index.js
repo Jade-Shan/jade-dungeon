@@ -20,13 +20,12 @@ let login = async (username, password, token) => {
 	});
 };
 
-let userLogin = async (username, password, token) => {
+let userLogin = async (username, password, token, callback) => {
 	await login(username, password, token).then((data) => {
-		let option = {expires: 100, path: '/', domain: document.location.host};
 		console.log(data);
 		cookieOperator('username'  , data.username);
 		cookieOperator('logintoken', data.token   );
-		alert('登录成功');
+		callback(data);
 	}).catch((err) => {
 		if ("username exists" == err.msg) {
 			alert('用户名已经被使用');
