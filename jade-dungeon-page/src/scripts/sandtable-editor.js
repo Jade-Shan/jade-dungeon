@@ -266,6 +266,8 @@ class SandTableEditor {
 		$('#tkVisiable' ).val(true == token.visiable  ? 'true' : 'false');
 		$('#tkBlock'    ).val(true == token.blockView ? 'true' : 'false');
 		$('#tkColor'    ).val(token.color       );
+		//$('#tkColor'    ).attr('style','color:'+token.color);
+		changeEditColor();
 		$('#tkId'       ).val(token.id          );
 		$('#tkX'        ).val(token.x           );
 		$('#tkY'        ).val(token.y           );

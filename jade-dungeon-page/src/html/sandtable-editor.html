@@ -140,7 +140,7 @@ let editorHtmlCirc =  '<tr>' +
 	+ '<td>宽：</td><td><input type="text" id="tkImgWidth" class="tkPropIpt" style="width:60px"></td>'
 	+ '<td>高：</td><td><input type="text" id="tkImgHeight" class="tkPropIpt" style="width:60px"></td>'
 	+ '</tr><tr>'
-	+ '<td>颜色：</td><td><select id="tkColor" class="tkPropIpt" style="width:100px">' 
+	+ '<td>颜色：</td><td><select id="tkColor" class="tkPropIpt" style="width:100px"onChange="javascript:changeEditColor();">' 
 	+ '<option value="#000000" style="color:#000000">&#9608; 000000</option>'
 	+ '<option value="#FF0000" style="color:#FF0000">&#9608; FF0000</option>'
 	+ '<option value="#00FF00" style="color:#00FF00">&#9608; 00FF00</option>'
@@ -187,5 +187,10 @@ let sandtable = new SandTableEditor(
 window.addEventListener('resize', sandtable.resizeLayout);
 
 sandtable.drawSandTable();
+
+function changeEditColor() {
+	let color = $('#tkColor').val();
+	$('#tkColor').attr('style','color:' + color + ';background-color:#505050');
+};
 	</script>
 </html>
