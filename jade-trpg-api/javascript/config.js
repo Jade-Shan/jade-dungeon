@@ -7,6 +7,7 @@ exports.globalCfg = {
 		staticFile    : [{path : "/static", folder : "static"}],
 	},
 	moduleNames : [
+		"./auth/login.js",
 		"./sandtable/map",
 		"./test"]                                // 测试模块
 };
