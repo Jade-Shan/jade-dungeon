@@ -8,12 +8,21 @@ config.globalCfg.redis.forEach((e) => {
     connMap.set(e.name, client);
 });
 
-exports.getConn = (connName) => { return connMap.get(connName); };
-
-exports.call = async (func) => {
+let callRedis = async (callback) => {
     return new Promise((resolve, reject) => {
-        func((err, reply) => {
-				if (err) { reject(err); } else { resolve(reply); }
-			});
+        callback((err, reply) => {
+            if (err) { reject(err); } else { resolve(reply); }
+        });
     });
+};
+
+exports.connect = (connName) => {
+    let conn = connMap.get(connName);
+    return {
+        call: async (func) => {
+            return await callRedis((callback) => {
+                func(conn, callback);
+            }).then((reply) => { return reply; });
+        }
+    };
 };

@@ -20,7 +20,10 @@ exports.handler = {
 		let username = data.params.username;
 		let password = data.params.password;
 		if (username && password && username.length > 0 && password.length > 0) {
-
+			let key = genUserInfoRrdsKey(username);
+			let jsonStr = await rdsUtil.call((callback) => {
+				rdsUtil.getConn('trpg').get(key, callback);
+			}).then((reply) => { return reply; });
 		} else {
 			json.msg = "miss username or passwork";
 		}
