@@ -21,7 +21,7 @@
 				<div class="form-group">
 					<label for="password" class="col-sm-2 control-label">密码</label>
 					<div class="col-sm-10">
-						<input type="text" class="form-control" id="password" placeholder="请输入密码">
+						<input type="password" class="form-control" id="password" placeholder="请输入密码">
 					</div>
 				</div>
 				<div class="form-group">
@@ -53,7 +53,8 @@
 				</div>
 				<div class="form-group">
 					<div class="col-sm-offset-2 col-sm-10">
-						<button type="submit" class="btn btn-default">登录</button>
+						<button type="button" class="btn btn-default" onClick="javascript:pageLogin();">登录</button>
+						<button type="button" class="btn btn-default" onClick="javascript:pageRegist();">注册</button>
 					</div>
 				</div>
 			</form>
@@ -70,6 +71,7 @@
 	<!--/build -->
 	<script type="text/javascript">
 let apiRoot = '@@apiRootSandtable/api/sandtable/';
+let apiRootAuth = '@@apiRootSandtable/api/auth/';
 
 let params     = parseUrlParams();
 let campaignId = params.get('campaignId');
@@ -77,134 +79,18 @@ let placeId    = params.get('placeId'   );
 let sceneId    = params.get('sceneId'   );
 
 if (campaignId && placeId && sceneId) { /* ok */ } else {
-//	window.location = '@@webRoot/sandtable-editor.html?campaignId=campaign01&placeId=place01&sceneId=scene01';
-//	campaignId = (new Date()).getTime();
-//	placeId    = (new Date()).getTime();
-//	sceneId    = (new Date()).getTime();
-//	window.location = '@@webRoot/sandtable-editor.html?campaignId=' + campaignId +
-//		'&placeId=' + placeId + '&sceneId=' + sceneId;
+	window.location = '@@webRoot/sandtable-index.html?campaignId=campaign01&placeId=place01&sceneId=scene01';
 }
 
+$('#campaignId').val(campaignId);
+$('#placeId'   ).val(placeId   );
+$('#sceneId'   ).val(sceneId   );
 
-let editorHtmlLine =  '<tr>' +
-	'<td style=\'width:60px\'>线条：</td><td><input type="text" id="tkId" class="tkPropIpt" style="width:100px"></td>'
-	+ '<td>x：</td><td><input type="text" id="tkX" class="tkPropIpt" style="width:60px"></td>'
-	+ '<td>y：</td><td><input type="text" id="tkY" class="tkPropIpt" style="width:60px"></td>'
-	+ '<td>x：</td><td><input type="text" id="tkX2" class="tkPropIpt" style="width:60px"></td>'
-	+ '<td>y：</td><td><input type="text" id="tkY2" class="tkPropIpt" style="width:60px"></td>'
-	+ '</tr><tr>'
-	+ '<td></td><td></td>'
-	+ '<td></td><td></td>'
-	+ '<td></td><td></td>'
-	+ '<td></td><td></td>'
-	+ '<td></td><td></td>'
-	+ '</tr><tr>'
-	+ '<td>颜色：</td><td><select id="tkColor" class="tkPropIpt" style="width:100px">' 
-	+ '<option value="#000000" style="color:#000000">&#9608; 000000</option>'
-	+ '<option value="#FF0000" style="color:#FF0000">&#9608; FF0000</option>'
-	+ '<option value="#00FF00" style="color:#00FF00">&#9608; 00FF00</option>'
-	+ '<option value="#0000FF" style="color:#0000FF">&#9608; 0000FF</option>'
-	+ '<option value="#FFFF00" style="color:#FFFF00">&#9608; FFFF00</option>'
-	+ '<option value="#00FFFF" style="color:#00FFFF">&#9608; 00FFFF</option>'
-	+ '<option value="#FF00FF" style="color:#FF00FF">&#9608; FF00FF</option>'
-	+ '<option value="#C0C0C0" style="color:#C0C0C0">&#9608; C0C0C0</option>'
-	+ '<option value="#FFFFFF" style="color:#FFFFFF">&#9608; FFFFFF</option>'
-	+ '</select></td>'
-	+ '<td>遮挡：</td><td><select id="tkBlock" class="tkPropIpt" style="width:80px"><option value="true">遮挡视线</option><option value="false">后方可见</option></select></td>' 
-	+ '<td>可见：</td><td><select id="tkVisiable" class="tkPropIpt" style="width:60px"><option value="true">可见</option><option value="false">隐形</option></select></td>' 
-	+ '<td></td><td></td><td></td>'
-	+ '<td><button type="button" onClick="javascript:sandtable.updateToken();" class="btn btn-primary">修改</button></td>'
-	+ '</tr>';
-
-let editorHtmlRect =  '<tr>' +
-	'<td style=\'width:60px\'>方块：</td><td><input type="text" id="tkId" class="tkPropIpt" style="width:100px"></td>'
-	+ '<td>x：</td><td><input type="text" id="tkX" class="tkPropIpt" style="width:60px"></td>'
-	+ '<td>y：</td><td><input type="text" id="tkY" class="tkPropIpt" style="width:60px"></td>'
-	+ '<td>宽：</td><td><input type="text" id="tkWidth" class="tkPropIpt" style="width:60px"></td>'
-	+ '<td>高：</td><td><input type="text" id="tkHeigh" class="tkPropIpt" style="width:60px"></td>'
-	+ '</tr><tr>'
-	+ '<td>图片：</td><td><select id="tkImgKey" class="tkPropIpt" style="width:100px"></select></td>'
-	+ '<td>x：</td><td><input type="text" id="tkImgX" class="tkPropIpt" style="width:60px"></td>'
-	+ '<td>y：</td><td><input type="text" id="tkImgY" class="tkPropIpt" style="width:60px"></td>'
-	+ '<td>宽：</td><td><input type="text" id="tkImgWidth" class="tkPropIpt" style="width:60px"></td>'
-	+ '<td>高：</td><td><input type="text" id="tkImgHeight" class="tkPropIpt" style="width:60px"></td>'
-	+ '</tr><tr>'
-	+ '<td>颜色：</td><td><select id="tkColor" class="tkPropIpt" style="width:100px">' 
-	+ '<option value="#000000" style="color:#000000">&#9608; 000000</option>'
-	+ '<option value="#FF0000" style="color:#FF0000">&#9608; FF0000</option>'
-	+ '<option value="#00FF00" style="color:#00FF00">&#9608; 00FF00</option>'
-	+ '<option value="#0000FF" style="color:#0000FF">&#9608; 0000FF</option>'
-	+ '<option value="#FFFF00" style="color:#FFFF00">&#9608; FFFF00</option>'
-	+ '<option value="#00FFFF" style="color:#00FFFF">&#9608; 00FFFF</option>'
-	+ '<option value="#FF00FF" style="color:#FF00FF">&#9608; FF00FF</option>'
-	+ '<option value="#C0C0C0" style="color:#C0C0C0">&#9608; C0C0C0</option>'
-	+ '<option value="#FFFFFF" style="color:#FFFFFF">&#9608; FFFFFF</option>'
-	+ '</select></td>'
-	+ '<td>遮挡：</td><td><select id="tkBlock" class="tkPropIpt" style="width:80px"><option value="true">遮挡视线</option><option value="false">后方可见</option></select></td>' 
-	+ '<td>可见：</td><td><select id="tkVisiable" class="tkPropIpt" style="width:60px"><option value="true">可见</option><option value="false">隐形</option></select></td>' 
-	+ '<td></td><td></td><td></td>'
-	+ '<td><button type="button" onClick="javascript:sandtable.updateToken();" class="btn btn-primary">修改</button></td>'
-	+ '</tr>';
-
-let editorHtmlCirc =  '<tr>' +
-	'<td style=\'width:60px\'>棋子：</td><td><input type="text" id="tkId" class="tkPropIpt" style="width:100px"></td>'
-	+ '<td>x：</td><td><input type="text" id="tkX" class="tkPropIpt" style="width:60px"></td>'
-	+ '<td>y：</td><td><input type="text" id="tkY" class="tkPropIpt" style="width:60px"></td>'
-	+ '<td>半径：</td><td><input type="text" id="tkRadius" class="tkPropIpt" style="width:60px"></td>'
-	+ '<td></td></td>'
-	+ '</tr><tr>'
-	+ '<td>图片：</td><td><select id="tkImgKey" class="tkPropIpt" style="width:100px"></select></td>'
-	+ '<td>x：</td><td><input type="text" id="tkImgX" class="tkPropIpt" style="width:60px"></td>'
-	+ '<td>y：</td><td><input type="text" id="tkImgY" class="tkPropIpt" style="width:60px"></td>'
-	+ '<td>宽：</td><td><input type="text" id="tkImgWidth" class="tkPropIpt" style="width:60px"></td>'
-	+ '<td>高：</td><td><input type="text" id="tkImgHeight" class="tkPropIpt" style="width:60px"></td>'
-	+ '</tr><tr>'
-	+ '<td>颜色：</td><td><select id="tkColor" class="tkPropIpt" style="width:100px"onChange="javascript:changeEditColor();">' 
-	+ '<option value="#000000" style="color:#000000">&#9608; 000000</option>'
-	+ '<option value="#FF0000" style="color:#FF0000">&#9608; FF0000</option>'
-	+ '<option value="#00FF00" style="color:#00FF00">&#9608; 00FF00</option>'
-	+ '<option value="#0000FF" style="color:#0000FF">&#9608; 0000FF</option>'
-	+ '<option value="#FFFF00" style="color:#FFFF00">&#9608; FFFF00</option>'
-	+ '<option value="#00FFFF" style="color:#00FFFF">&#9608; 00FFFF</option>'
-	+ '<option value="#FF00FF" style="color:#FF00FF">&#9608; FF00FF</option>'
-	+ '<option value="#C0C0C0" style="color:#C0C0C0">&#9608; C0C0C0</option>'
-	+ '<option value="#FFFFFF" style="color:#FFFFFF">&#9608; FFFFFF</option>'
-	+ '</select></td>'
-	+ '<td>遮挡：</td><td><select id="tkBlock" class="tkPropIpt" style="width:80px"><option value="true">遮挡视线</option><option value="false">后方可见</option></select></td>' 
-	+ '<td>可见：</td><td><select id="tkVisiable" class="tkPropIpt" style="width:60px"><option value="true">可见</option><option value="false">隐形</option></select></td>' 
-	+ '<td></td><td></td><td></td>'
-	+ '<td><button type="button" onClick="javascript:sandtable.updateToken();" class="btn btn-primary">修改</button></td>'
-	+ '</tr>';
-
-let editorHtmlImg =  '<tr>' +
-	'<td style=\'width:60px\'>URL：</td><td colspan="9"><input type="text" id="tkURL" class="tkPropIpt" style="width:600px"></td>'
-	+ '</tr><tr>'
-	+ '<td>名称：</td><td><input type="text" id="tkImgKey" class="tkPropIpt" style="width:100px"></td>'
-	+ '<td>宽：</td><td><input type="text" readOnly="readOnly" id="tkImgWidth"  class="tkPropIpt" style="width:60px"></td>'
-	+ '<td>高：</td><td><input type="text" readOnly="readOnly" id="tkImgHeight" class="tkPropIpt" style="width:60px"></td>'
-	+ '<td></td><td></td><td></td><td></td>'
-	+ '</tr><tr>'
-	+ '<td></td><td><input type="hidden" id="tkColor"/></td>'
-	+ '<td>遮挡：</td><td><input type="hidden" id="tkBlock" /></td>' 
-	+ '<td>可见：</td><td><input type="hidden" id="tkVisiable" /></td>' 
-	+ '<td></td><td></td><td></td>'
-	+ '<td><button type="button" onClick="javascript:sandtable.updateToken();" class="btn btn-primary">修改</button></td>'
-	+ '</tr>';
-
-let sandtable = new SandTableEditor(
-	document.getElementById("canvas"), 
-	document.getElementById("tkImgCanvas"), {
-		viewRange: 500, shadowColor: 'rgba(0, 0, 0, 0.7)',
-		campaignId: campaignId, placeId: placeId, sceneId: sceneId}, 
-	"u001");
-
-window.addEventListener('resize', sandtable.resizeLayout);
-
-sandtable.drawSandTable();
-
-function changeEditColor() {
-	let color = $('#tkColor').val();
-	$('#tkColor').attr('style','color:' + color + ';background-color:#505050');
+let pageRegist = () => {
+	userRegist($('#username').val(),$('#password').val());
 };
+
+
+
 	</script>
 </html>

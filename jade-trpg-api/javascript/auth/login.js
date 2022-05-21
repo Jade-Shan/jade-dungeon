@@ -18,17 +18,25 @@ let genUserTokenRrdsKey = (username) => {
 };
 
 exports.handler = {
-	"/api/auth/register": async (context, data) => {
+	"/api/auth/regist": async (context, data) => {
 		let json = { status: 'err' };
 		let username = data.params.username;
 		let password = data.params.password;
 		if (username && password && username.length > 0 && password.length > 0) {
 			let key = genUserInfoRrdsKey(username);
-			let resp = await rdsUtil.connect('auth').call((conn, callback) => {
-				conn.set(key, password, callback);
+			let value = await rdsUtil.connect('auth').call((conn, callback) => {
+				conn.get(key, callback);
 			});
-			json.msg = resp;
-			json.status = 'success';
+			if (value && value.length > 0) {
+				json.msg = "username exists";
+				console.log(json.msg);
+			} else {
+				let resp = await rdsUtil.connect('auth').call((conn, callback) => {
+					conn.set(key, password, callback);
+				});
+				json.msg = resp;
+				json.status = 'success';
+			}
 		} else {
 			json.msg = "miss username or passwork";
 		}
