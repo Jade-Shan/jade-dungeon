@@ -4,65 +4,70 @@
 <link rel="stylesheet" href="@@cdn3rd/bootstrap/3.3.6/css/bootstrap.min.css" />
 <link rel="stylesheet" href="@@cdn3rd/bootstrap/3.3.6/css/bootstrap-theme.min.css" />
 		<style>
-			div#hideImgs { display: none;}
-			div#mapArea {overflow: auto;}	
-			div#tokenListArea {overflow: auto;}	
-			div#propImgArea {overflow: auto; height: 150px;}	
 		</style>
 		<meta charset="UTF-8">
 		<title>sand box</title>
 	</head>
 	<body class="container">
 		<div id="most-out" class="row">
-			<div id="mapArea" class="col-lg-9 col-md-8 col-sm-6 col-xs-6">
-				<canvas id="canvas" height="300" width="300"></canvas>	
-			</div>
-			<div id='tokenGroupBtns' class="container col-lg-3 col-md-4 col-sm-6 col-xs-6">
-				<div class="btn-group col-12">
-					<button type="button"	id="btn-lst-teams"      onClick="javascript:sandtable.listGroupTokens('team'      );" class="btn btn-default">&#128100</button>
-					<button type="button"	id="btn-lst-creaters"   onClick="javascript:sandtable.listGroupTokens('creater'   );" class="btn btn-default">&#128126</button>
-					<button type="button"	id="btn-lst-furnishing" onClick="javascript:sandtable.listGroupTokens('furnishing');" class="btn btn-default">&#128452</button>
-					<button type="button"	id="btn-lst-doors"      onClick="javascript:sandtable.listGroupTokens('door'      );" class="btn btn-default">&#128682</button>
-					<button type="button"	id="btn-lst-walls"      onClick="javascript:sandtable.listGroupTokens('wall'      );" class="btn btn-default">&#127959</button>
-					<button type="button"	id="btn-lst-images"     onClick="javascript:sandtable.listGroupTokens('image'     );" class="btn btn-default">&#127756</button>
-				</div>
-				<div id="tokenListArea" class="col-12">
-					<table class="table table-striped">
-						<tbody id="token-list"></tbody>
-					</table>	
-				</div>
-				<div id="tokenCreateBtnsArea" class="btn-group col-12">
-					<span id="tokenCreateText" class="btn-group col-6"></span>
-					<div  id="tokenCreateBtns" class="btn-group col-6">
+
+			<form class="form-horizontal col-12" role="form">
+				<div class="form-group">
+					<label for="username" class="col-sm-2 control-label">用户名</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" id="username" placeholder="请输入用户名">
 					</div>
 				</div>
-			</div>
-		</div>
-		<div class="row">
-			<div id="ctrlPanel" class="col-lg-8 col-md-8 col-sm-6 col-xs-6">
-				<table class="table table-striped">
-					<tbody id="tk-prop-editer"></tbody>
-				</table>
-			</div>
-			<div id="propImgArea" class="col-lg-4 col-md-4 col-sm-6 col-xs-6">
-				<canvas id="tkImgCanvas" height="100" width="100"></canvas>	
-			</div>
-		</div>
+				<div class="form-group">
+					<label for="password" class="col-sm-2 control-label">密码</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" id="password" placeholder="请输入密码">
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-offset-2 col-sm-10">
+						<div class="checkbox">
+							<label>
+								<input type="checkbox">请记住我
+							</label>
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="campaignId" class="col-sm-2 control-label">战役名称</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" id="campaignId" placeholder="请输入战役名称">
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="placeId" class="col-sm-2 control-label">所在地区</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" id="placeId" placeholder="请输入所在地区">
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="sceneId" class="col-sm-2 control-label">所在场景</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" id="sceneId" placeholder="请输入所在场景">
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-offset-2 col-sm-10">
+						<button type="submit" class="btn btn-default">登录</button>
+					</div>
+				</div>
+			</form>
 
-
-		<div id="hideImgs">
-			<canvas id="finalCanvas" height="300" width="300"></canvas>	
 		</div>
-
-		<script src="@@cdn3rd/jquery/2.1.4/jquery.min.js"></script>
-		<script src="@@cdn3rd/bootstrap/3.3.6/js/bootstrap.min.js" ></script>
-<!--build:js @@webRoot/scripts/trpg.min.js?v=@@buildversion-->
-		<script src="@@webRoot/scripts/canvas2dutils.js?v=@@buildversion" ></script>
-		<script src="@@webRoot/scripts/sandtable-comm.js?v=@@buildversion" ></script>
-		<script src="@@webRoot/scripts/sandtable-view.js?v=@@buildversion" ></script>
-		<script src="@@webRoot/scripts/sandtable-editor.js?v=@@buildversion" ></script>
-<!--/build -->
 	</body>
+	<script src="@@cdn3rd/jquery/2.1.4/jquery.min.js"></script>
+	<script src="@@cdn3rd/bootstrap/3.3.6/js/bootstrap.min.js" ></script>
+	<!--build:js @@webRoot/scripts/trpg.min.js?v=@@buildversion-->
+	<script src="@@webRoot/scripts/canvas2dutils.js?v=@@buildversion" ></script>
+	<script src="@@webRoot/scripts/sandtable-comm.js?v=@@buildversion" ></script>
+	<script src="@@webRoot/scripts/sandtable-view.js?v=@@buildversion" ></script>
+	<script src="@@webRoot/scripts/sandtable-editor.js?v=@@buildversion" ></script>
+	<!--/build -->
 	<script type="text/javascript">
 let apiRoot = '@@apiRootSandtable/api/sandtable/';
 
@@ -72,7 +77,7 @@ let placeId    = params.get('placeId'   );
 let sceneId    = params.get('sceneId'   );
 
 if (campaignId && placeId && sceneId) { /* ok */ } else {
-	window.location = '@@webRoot/sandtable-editor.html?campaignId=campaign01&placeId=place01&sceneId=scene01';
+//	window.location = '@@webRoot/sandtable-editor.html?campaignId=campaign01&placeId=place01&sceneId=scene01';
 //	campaignId = (new Date()).getTime();
 //	placeId    = (new Date()).getTime();
 //	sceneId    = (new Date()).getTime();
