@@ -23,23 +23,22 @@ exports.handler = {
 		let username = data.params.username;
 		let password = data.params.password;
 		if (username && password && username.length > 0 && password.length > 0) {
-			let key = genUserInfoRrdsKey(username);
-			let value = await rdsUtil.connect('auth').call((conn, callback) => {
-				conn.get(key, callback);
+			let res = await rdsUtil.connect('auth').call((conn, callback) => {
+				conn.get(genUserInfoRrdsKey(username), callback);
 			});
-			if (value && value.length > 0) {
+			if (res && res.data && res.data.length > 0) {
 				json.msg = "username exists";
 				console.log(json.msg);
 			} else {
 				let resp = await rdsUtil.connect('auth').call((conn, callback) => {
-					conn.set(key, password, callback);
+					conn.set(genUserInfoRrdsKey(username), password, callback);
 				});
-				json.msg = resp;
+				json.msg = resp.data;
 				json.username = username;
 				json.status = 'success';
 			}
 		} else {
-			json.msg = "miss username or passwork";
+			json.msg = "miss username or password";
 		}
 		context.response.writeHead(200, {
 			'Content-Type': 'application/json;charset=utf-8',
@@ -55,15 +54,13 @@ exports.handler = {
 		let password = data.params.password;
 		let token = data.params.token;
 		if (username && password && username.length > 0 && password.length > 0) {
-			let key = genUserInfoRrdsKey(username);
-			let value = await rdsUtil.connect('auth').call((conn, callback) => {
-				conn.get(key, callback);
+			let res = await rdsUtil.connect('auth').call((conn, callback) => {
+				conn.get(genUserInfoRrdsKey(username), callback);
 			});
-			if (password == value) {
+			if (res && res.data && res.data == password) {
 				let token = genLoginToken(username);
-				let key = genUserTokenRrdsKey(username);
 				let resp = await rdsUtil.connect('auth').call((conn, callback) => {
-					conn.set(key, token, callback);
+					conn.set(genUserTokenRrdsKey(username), token, callback);
 				});
 				json.msg = 'login success';
 				json.username = username;
@@ -83,18 +80,16 @@ exports.handler = {
 					console.log(err);
 				}
 				if (expire > (new Date()).getTime()) {
-					let key = genUserTokenRrdsKey(username);
 					let value = await rdsUtil.connect('auth').call((conn, callback) => {
-						conn.get(key, callback);
+						conn.get(genUserTokenRrdsKey(username), callback);
 					});
 					if (value && value === token) {
-						let key = genUserTokenRrdsKey(username);
 						let resp = await rdsUtil.connect('auth').call((conn, callback) => {
-							conn.set(key, token, callback);
+							conn.set(genUserTokenRrdsKey(username), token, callback);
 						});
 						json.msg = 'login success';
 						json.username = username;
-						json.token = key;
+						json.token = token;
 						json.status = 'success';
 					} else {
 						json.msg = "token err or expire";
@@ -103,7 +98,7 @@ exports.handler = {
 					json.msg = "token err or expire";
 				}
 			} else {
-				json.msg = "miss username or passwork";
+				json.msg = "miss username or password";
 			}
 		}
 		context.response.writeHead(200, {

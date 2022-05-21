@@ -308,8 +308,8 @@ let loadMapDatas = async (ctx, scene) => {
 		mapDatas     = data.mapDatas;
 	}).catch((e) => {
 		imgResources = [
-			{"id":"chrt", "url": "./images/sandtable/char.png"},
-			{"id":"map" , "url": "./images/sandtable/map.png" }];
+			{"id":"chrt","type":"Image","url":"./images/sandtable/char.png"},
+			{"id":"map","type":"Image","url":"./images/sandtable/map.png"}];
 		mapDatas     = {"teams": [], "creaters": [], "furnishings": [], "doors": [], "walls": []};
 	});	
 	/*

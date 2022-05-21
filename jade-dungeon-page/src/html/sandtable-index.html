@@ -107,7 +107,17 @@ let pageLogin = () => {
 let goSandtable = () => {
 	userLogin($('#username').val(), $('#password').val(), '', (data) => {
 		if ('success' == data.status) {
-			alert('跳转');
+			let campaignId = $('#campaignId').val();
+			let placeId    = $('#placeId'   ).val();
+			let sceneId    = $('#sceneId'   ).val();
+			if (campaignId && placeId && sceneId && 
+				campaignId.length > 0 && placeId.length > 0 && sceneId.length > 0) //
+			{
+				window.location = '@@webRoot/sandtable-editor.html?campaignId=' + 
+					campaignId + '&placeId=' + placeId + '&sceneId=' + sceneId;
+			} else {
+				alert('请输入战役名称、地区、场景信息');
+			}
 		} else {
 			alert(data.msg);
 		}

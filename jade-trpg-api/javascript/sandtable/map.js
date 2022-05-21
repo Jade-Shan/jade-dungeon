@@ -12,12 +12,16 @@ let genOwnerKey = (campaignId, placeId, sceneId) => {
 exports.handler = {
 	//http://localhost:8088/api/sandtable/load-map?campaignId=campaign01&placeId=place01&sceneId=scene01
 	"/api/sandtable/load-map": async (context, data) => {
-		let jsonStr = await rdsUtil.connect('trpg').call((conn, callback) => {
+		let json = {status:"error", msg: ""};
+		let res = await rdsUtil.connect('trpg').call((conn, callback) => {
 			conn.get(genSceneKey(data.params.campaignId, data.params.placeId, data.params.sceneId), callback);
 		});
-		// console.log(jsonStr);
-		let json = JSON.parse(jsonStr);
-		json.status = "success";
+		try {
+			json = JSON.parse(res.data);
+			json.status = "success";
+		} catch (e) {
+			json = { status: "error", msg: "empty" };
+		}
 		context.response.writeHead(200, {
 			'Content-Type':'application/json;charset=utf-8',
 			'Access-Control-Allow-Origin':'*',
@@ -29,9 +33,10 @@ exports.handler = {
 	//http://localhost:8088/api/sandtable/save-map?campaignId=campaign01&placeId=place01&sceneId=scene01&jsonStr={} 
 	"/api/sandtable/save-map": async (context, data) => {
 		let result = {status:'err'};
-		let owner = await rdsUtil.connect('trpg').call((conn, callback) => {
+		let res = await rdsUtil.connect('trpg').call((conn, callback) => {
 			conn.get(genOwnerKey(data.params.campaignId), callback);
 		});
+		let owner = res.data;
 		let json = JSON.parse(data.params.jsonStr);
 		if (!owner || owner.length < 1) {
 			owner = json.username;
@@ -41,11 +46,15 @@ exports.handler = {
 			});
 		}
 		if (owner == json.username) {
-			let resp = await rdsUtil.connect('trpg').call((conn, callback) => {
+			let res = await rdsUtil.connect('trpg').call((conn, callback) => {
 				conn.set(genSceneKey(data.params.campaignId, data.params.placeId, data.params.sceneId), data.params.jsonStr, callback);
 			});
-			result.status = 'success';
-			result.msg = 'save success';
+			if (res.data) {
+				result.status = 'success';
+				result.msg = 'save success';
+			} else {
+				result.msg = 'not owner';
+			}
 		} else {
 			result.msg = 'not owner';
 		}

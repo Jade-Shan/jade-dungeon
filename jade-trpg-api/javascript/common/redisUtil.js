@@ -20,9 +20,16 @@ exports.connect = (connName) => {
     let conn = connMap.get(connName);
     return {
         call: async (func) => {
-            return await callRedis((callback) => {
+            let resp = { isSuccess: false, data: null, err: null };
+            await callRedis((callback) => {
                 func(conn, callback);
-            }).then((reply) => { return reply; });
+            }).then((reply) => { 
+                resp.isSuccess = true;
+                resp.data = reply; 
+            }).catch((err) => { 
+                resp.err = err;
+            });;
+            return resp;
         }
     };
 };
