@@ -64,7 +64,7 @@
 <!--/build -->
 	</body>
 	<script type="text/javascript">
-let apiRoot = '@@apiRoot/api/sandtable/';
+let apiRoot = '@@apiRootSandtable/api/sandtable/';
 
 
 let editorHtmlLine =  '<tr>' +
@@ -130,7 +130,7 @@ let editorHtmlImg =  '<tr>' +
 	+ '<td><button type="button" onClick="javascript:sandtable.updateToken();" class="btn btn-primary">修改</button></td>'
 	+ '</tr>';
 
-// http://localhost:8080/sandtable-editor.html?campaign=campaignId01&placeId=place01&sceneId=scene01
+// http://localhost:8080/sandtable-editor.html?campaignId=campaign01&placeId=place01&sceneId=scene01
 let params = parseUrlParams();
 
 let sandtable = new SandTableEditor(

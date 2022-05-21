@@ -170,7 +170,7 @@ function configEnv(envEntry) {
 
 
 gulp.task('clean-html-dev', () => {
-	configEnv(envs.deployEnvs.dev)
+	configEnv(envs.deployEnvs.dev);
 	return gulp.src([cfg.path.dst.html + '**/*.html'], {read: false}).pipe(clean());
 });
 
@@ -181,7 +181,7 @@ gulp.task('include-html', gulp.series('clean-html-dev', async (callback) => {
 }));
 
 gulp.task('clean-html-rls', () => {
-	configEnv(envs.deployEnvs.rls)
+	configEnv(envs.deployEnvs.rls);
 	return gulp.src([cfg.path.dst.html + '**/*.html'], {read: false}).pipe(clean());
 });
 

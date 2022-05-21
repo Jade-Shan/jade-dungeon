@@ -2,9 +2,11 @@
 
 class SandTableView {
 
-	constructor(canvas, scene, userId) {
+	constructor(canvas, fc, scene, userId) {
 		this.canvas    = canvas;
 		this.ctx       = canvas.getContext("2d");
+		this.fc = fc;
+		this.fctx = this.fc.getContext("2d");
 		this.userId    = userId;
 		this.observer  = {};
 		this.scene     = { width: 0, height: 0, 
@@ -112,16 +114,16 @@ class SandTableView {
 		this.ctx.drawImage(brightMap, 0, 0);
 		this.ctx.restore();
 
-		let fc   = document.getElementById("finalCanvas");
-		fc.setAttribute( 'width', this.scene.width );
-		fc.setAttribute('height', this.scene.height);
-		let fctx = fc.getContext("2d");
+		// let fc   = document.getElementById("finalCanvas");
+		this.fc.setAttribute( 'width', this.scene.width );
+		this.fc.setAttribute('height', this.scene.height);
+		// let fctx = fc.getContext("2d");
 		let viewMap = new Image();
 		await loadImage(viewMap, canvas.toDataURL({
 			format: 'image/png', quality: 1, 
 			width: this.scene.width, height: this.scene.height})
 		).catch((img, url) => { alert('加载图形失败：' + url); });
-		fctx.drawImage(viewMap, 0, 0);
+		this. fctx.drawImage(viewMap, 0, 0);
 	}
 
 }

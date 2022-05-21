@@ -15,7 +15,7 @@
 	</head>
 	<body>
 		<div id="mapArea">
-			<canvas id="canvas" height="300" width="300"></canvas>	
+			<canvas id="finalCanvas" height="300" width="300"></canvas>	
 		</div>
 
 		<div id="ctrlPanel">
@@ -39,7 +39,7 @@
 		</div>
 
 		<div id="hideImgs">
-			<canvas id="finalCanvas" height="300" width="300"></canvas>	
+			<canvas id="canvas" height="300" width="300"></canvas>	
 		</div>
 
 		<script src="@@cdn3rd/jquery/2.1.4/jquery.min.js"></script>
@@ -51,12 +51,15 @@
 <!--/build -->
 	</body>
 	<script type="text/javascript">
-let apiRoot = '@@apiRoot/api/sandtable/';
+let apiRoot = '@@apiRootSandtable/api/sandtable/';
 
+// http://localhost:8088/api/sandtable/load-map?campaignId=campaign01&placeId=place01&sceneId=scene01?t=1653100882832
+// http://localhost:8088/api/sandtable/load-map?campaignId=campaign01&placeId=place01&sceneId=scene01
 // http://localhost:8080/sandtable-editor.html?campaign=campaignId01&placeId=place01&sceneId=scene01
 let params = parseUrlParams();
 let sandtable = new SandTableView(
 	document.getElementById("canvas"), 
+	document.getElementById("finalCanvas"), 
 	{
 		viewRange: 500, shadowColor: 'rgba(0, 0, 0, 0.7)',
 		campaignId: params.get('campaignId'), 

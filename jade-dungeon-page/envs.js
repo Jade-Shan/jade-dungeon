@@ -4,6 +4,7 @@ exports.deployEnvs = {
 		webRoot: ".",
 		staticRoot: ".",
 		apiRoot: ".",
+		apiRootSandtable: "//localhost:8088",
 		cdnRoot: "//localhost:8081/webroot",
 		cdn3rd : "//cdn.bootcss.com"
 	},
@@ -12,6 +13,7 @@ exports.deployEnvs = {
 		webRoot: ".",
 		staticRoot: ".",
 		apiRoot: ".",
+		apiRootSandtable: "//localhost:8088",
 		cdnRoot: "//www.jade-dungeon.net:8081",
 		cdn3rd : "//cdn.bootcss.com"
 	}
