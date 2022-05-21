@@ -50,9 +50,9 @@ let sleepMS = async (ms) =>  {
 	});
 };
 
-let dataToItem = (ctx, scene, rec) => {
+let dataToItem = async (ctx, scene, rec) => {
 	let tkImg = {};
-	if (rec.img && rec.img.imgKey) { 
+	if ('Image' != rec.type && rec.img && rec.img.imgKey) { 
 		tkImg.key = rec.img.imgKey; 
 		tkImg.img = scene.imageMap.get(rec.img.imgKey).image.img; 
 	}
@@ -68,13 +68,20 @@ let dataToItem = (ctx, scene, rec) => {
 	} else if ('Circle' === rec.type) {
 		return new Circle(ctx, rec.id, rec.x, rec.y, rec.radius, 
 			rec.color, tkImg, rec.visiable, rec.blockView);
+	} else if ('Image' === rec.type) {
+		let img = await loadImage(new Image(), rec.url).then(
+			(img, url) => { return img; }).catch((img, url) => { });
+		return {classType: "Image", id: rec.id, url: rec.url,
+			x:0, y:0, width: img.width, height: img.height,
+			image: {key: rec.id, sx:0, sy: 0, width: img.width, height: img.height, img: img}};
+
 	}
 };
 
-let loadItemsOnMap = (ctx, scene, itemList, itemMap, itemDatas) => {
+let loadItemsOnMap = async (ctx, scene, itemList, itemMap, itemDatas) => {
 	if (itemDatas) {
 		for (let i = 0; i < itemDatas.length; i++) {
-			let obj = dataToItem(ctx, scene, itemDatas[i]);
+			let obj = await dataToItem(ctx, scene, itemDatas[i]);
 			if (obj) { 
 				itemList.push(obj); 
 				itemMap.set(obj.id, obj);
@@ -128,14 +135,14 @@ let jsonStr = JSON.stringify(testData);
 let testData = {
 	"status": "success", 
 	"imgResources": [
-	{"id":"chrt",         "url": "./images/sandtable/char.png"        },
-	{"id":"sdr1",         "url": "./images/sandtable/solider01.png"   },
-	{"id":"mos1",         "url": "./images/sandtable/moster.01.png"   },
-	{"id":"mos2",         "url": "./images/sandtable/moster.02.png"   },
-	{"id":"door",         "url": "./images/sandtable/door-wood.png"   },
-	{"id":"trsuBox-01-c", "url": "./images/sandtable/trsuBox-01-c.png"},
-	{"id":"trsuBox-02-c", "url": "./images/sandtable/trsuBox-02-c.png"},
-	{"id":"map",          "url": "./images/sandtable/map.png"         }],
+	{"id":"chrt"        , "type":"Image", "url": "./images/sandtable/char.png"        },
+	{"id":"sdr1"        , "type":"Image", "url": "./images/sandtable/solider01.png"   },
+	{"id":"mos1"        , "type":"Image", "url": "./images/sandtable/moster.01.png"   },
+	{"id":"mos2"        , "type":"Image", "url": "./images/sandtable/moster.02.png"   },
+	{"id":"door"        , "type":"Image", "url": "./images/sandtable/door-wood.png"   },
+	{"id":"trsuBox-01-c", "type":"Image", "url": "./images/sandtable/trsuBox-01-c.png"},
+	{"id":"trsuBox-02-c", "type":"Image", "url": "./images/sandtable/trsuBox-02-c.png"},
+	{"id":"map"         , "type":"Image", "url": "./images/sandtable/map.png"         }],
 	"mapDatas" : {
 		"teams": [
 		{"id": "u001", "type":"Circle", "x":250, "y":300, "radius":25, "color":"#0000FF", "img":{"imgKey":"chrt", "sx":0, "sy":0, "width":50, "height":50}, "visiable":  true, "blockView":  false},
@@ -211,23 +218,20 @@ let loadMapDatas = async (ctx, scene) => {
 			{"id":"map" , "url": "./images/sandtable/map.png" }];
 		mapDatas     = {"teams": [], "creaters": [], "furnishings": [], "doors": [], "walls": []};
 	});	
+	/*
 	for (let i = 0; i < imgResources.length; i++) {
 		let rec = imgResources[i];
-		let img = await loadImage(new Image(), rec.url).then((img, url) => {
-			return img;
-		}).catch((img, url) => { 
-			// alert('加载图片失败：' + url);
-		});
-		// scene.imageMap[rec.id] = img;
-		scene.imageMap.set(rec.id, {classType: "Image", id: rec.id, url: rec.url,
-			x:0, y:0, width: img.width, height: img.height,
-			image: {key: rec.id, sx:0, sy: 0, width: img.width, height: img.height, img: img}});
+		let img = await loadImage(new Image(), rec.url).then((img, url) => { return img; }).catch((img, url) => { });
+		let 
+		scene.imageMap.set(rec.id, );
 	}
-	loadItemsOnMap(ctx, scene, scene.walls,       scene.wallMap,       mapDatas.walls      );
-	loadItemsOnMap(ctx, scene, scene.doors,       scene.doorMap,       mapDatas.doors      );
-	loadItemsOnMap(ctx, scene, scene.furnishings, scene.furnishingMap, mapDatas.furnishings);
-	loadItemsOnMap(ctx, scene, scene.creaters,    scene.createrMap,    mapDatas.creaters   );
-	loadItemsOnMap(ctx, scene, scene.teams,       scene.teamMap,       mapDatas.teams      );
+	*/
+	await loadItemsOnMap(ctx, scene, scene.images,      scene.imageMap,      imgResources        );
+	await loadItemsOnMap(ctx, scene, scene.walls,       scene.wallMap,       mapDatas.walls      );
+	await loadItemsOnMap(ctx, scene, scene.doors,       scene.doorMap,       mapDatas.doors      );
+	await loadItemsOnMap(ctx, scene, scene.furnishings, scene.furnishingMap, mapDatas.furnishings);
+	await loadItemsOnMap(ctx, scene, scene.creaters,    scene.createrMap,    mapDatas.creaters   );
+	await loadItemsOnMap(ctx, scene, scene.teams,       scene.teamMap,       mapDatas.teams      );
 };
 
 

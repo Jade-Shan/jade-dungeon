@@ -1,14 +1,14 @@
 {
 	"status": "success", 
 	"imgResources": [
-	{"id":"chrt",         "url": "./images/sandtable/char.png"        },
-	{"id":"sdr1",         "url": "./images/sandtable/solider01.png"   },
-	{"id":"mos1",         "url": "./images/sandtable/moster.01.png"   },
-	{"id":"mos2",         "url": "./images/sandtable/moster.02.png"   },
-	{"id":"door",         "url": "./images/sandtable/door-wood.png"   },
-	{"id":"trsuBox-01-c", "url": "./images/sandtable/trsuBox-01-c.png"},
-	{"id":"trsuBox-02-c", "url": "./images/sandtable/trsuBox-02-c.png"},
-	{"id":"map",          "url": "./images/sandtable/map.png"         }],
+	{"id":"chrt",         "type":"Image", "url": "./images/sandtable/char.png"        },
+	{"id":"sdr1",         "type":"Image", "url": "./images/sandtable/solider01.png"   },
+	{"id":"mos1",         "type":"Image", "url": "./images/sandtable/moster.01.png"   },
+	{"id":"mos2",         "type":"Image", "url": "./images/sandtable/moster.02.png"   },
+	{"id":"door",         "type":"Image", "url": "./images/sandtable/door-wood.png"   },
+	{"id":"trsuBox-01-c", "type":"Image", "url": "./images/sandtable/trsuBox-01-c.png"},
+	{"id":"trsuBox-02-c", "type":"Image", "url": "./images/sandtable/trsuBox-02-c.png"},
+	{"id":"map",          "type":"Image", "url": "./images/sandtable/map.png"         }],
 	"mapDatas" : {
 		"teams": [
 		{"id": "u001", "type":"Circle", "x":250, "y":300, "radius":25, "color":"#0000FF", "img":{"imgKey":"chrt", "sx":0, "sy":0, "width":50, "height":50}, "visiable":  true, "blockView":  false},

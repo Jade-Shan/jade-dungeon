@@ -12,7 +12,7 @@ class SandTableView {
 		this.scene     = { width: 0, height: 0, 
 			campaignId: scene.campaignId, placeId: scene.placeId, sceneId: scene.sceneId,
 			shadowColor: scene.shadowColor, viewRange: scene.viewRange,
-			creaters : [], teams: [], walls: [], doors: [], furnishings: [], images:{}};
+			creaters : [], teams: [], walls: [], doors: [], furnishings: [], images:[]};
 		this.scene.createrMap    = new Map();
 		this.scene.teamMap       = new Map();
 		this.scene.wallMap       = new Map();
