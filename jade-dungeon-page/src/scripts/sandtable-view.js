@@ -56,16 +56,23 @@ class SandTableView {
 	}
 
 	replaceObserverOnMap(userId) {
+		let obtm = null;
 		if (this.scene.teams) {
-			for (let i = 0; i < this.scene.teams.length; i++) {
-				// console.log(mapDatas.teams[i].id + " <> " +  userId);
-				if (this.scene.teams[i].id == userId) { // 名字和当前用户相同的是第一视角
-					let obtm = this.scene.teams[i];
-					this.observer = new Observer(this.ctx, userId, obtm.x, obtm.y, 
-						this.scene.viewRange, obtm, "#FFFFFF", true, false);
-				}
-			}
+			let ll = this.scene.teams.filter((e) => {return e.id == userId;});
+			obtm = ll.length > 0 ? ll[0] : null;
 		}
+		if (null == obtm) {
+			let tkImg = {};
+			tkImg.sx     = 0;
+			tkImg.sy     = 0;
+			tkImg.width  = 20;
+			tkImg.height = 20;
+			tkImg.key = 'chrt'; 
+			tkImg.img = this.scene.imageMap.get('chrt').image.img;
+			obtm = new Circle(this.ctx, '旁观', 10, 10, 200, '#0000FF', tkImg, false, false);
+		}
+		this.observer = new Observer(this.ctx, userId, obtm.x, obtm.y, 
+			this.scene.viewRange, obtm, "#FFFFFF", true, false);
 	}
 
 	async drawSence() {

@@ -310,7 +310,11 @@ let loadMapDatas = async (ctx, scene) => {
 		imgResources = [
 			{"id":"chrt","type":"Image","url":"./images/sandtable/char.png"},
 			{"id":"map","type":"Image","url":"./images/sandtable/map.png"}];
-		mapDatas     = {"teams": [], "creaters": [], "furnishings": [], "doors": [], "walls": []};
+		mapDatas     = {"teams": [{"id": "default", "type":"Circle", 
+			"x":250, "y":300, "radius":25, "color":"#0000FF", 
+			"img":{"imgKey":"chrt", "sx":0, "sy":0, "width":50, "height":50}, 
+			"visiable":  false, "blockView":  false}], 
+			"creaters": [], "furnishings": [], "doors": [], "walls": []};
 	});	
 	/*
 	for (let i = 0; i < imgResources.length; i++) {

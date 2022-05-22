@@ -57,7 +57,7 @@
 				</div>
 				<div class="form-group">
 					<div class="col-sm-offset-2 col-sm-10">
-						<button type="button" class="btn btn-default" onClick="javascript:editSandtable();">编辑场景</button>
+						<button type="button" class="btn btn-default" onClick="javascript:goSandtable();">进入场景</button>
 					</div>
 				</div>
 			</form>
@@ -104,7 +104,7 @@ let pageLogin = () => {
 	});
 };
 
-let editSandtable = () => {
+let goSandtable = () => {
 	userLogin($('#username').val(), $('#password').val(), '', (data) => {
 		if ('success' == data.status) {
 			let campaignId = $('#campaignId').val();
