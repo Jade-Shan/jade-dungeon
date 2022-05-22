@@ -68,7 +68,7 @@ class SandTableView {
 		}
 		if (null == obtm) {
 			let tkImg = {img: this.scene.imageMap.get('chrt').image.img,
-				key: 'chrt', sx: 0, sy: 0, width: 20, height: 20};
+				key: 'chrt', sx: 100, sy: 100, width: 20, height: 20};
 			obtm = new Circle(this.ctx, 'spectator', 10, 10, 200, '#0000FF', tkImg, false, false);
 		}
 		this.observer = new Observer(this.ctx, userId, obtm.x, obtm.y, 
