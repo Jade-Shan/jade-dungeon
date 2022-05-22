@@ -148,6 +148,7 @@ gulp.task('min-scripts-trpg', gulp.series('clean-scripts', 'check-scripts', () =
 	return gulp.src([
 			cfg.path.src.js + 'canvas2dutils.js',
 			cfg.path.src.js + 'sandtable-comm.js',
+			cfg.path.src.js + 'sandtable-index.js',
 			cfg.path.src.js + 'sandtable-view.js',
 			cfg.path.src.js + 'sandtable-editor.js'
 	]).pipe(concat('trpg.js'))
