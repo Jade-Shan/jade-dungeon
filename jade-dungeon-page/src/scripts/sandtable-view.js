@@ -58,18 +58,18 @@ class SandTableView {
 	replaceObserverOnMap(userId) {
 		let obtm = null;
 		if (this.scene.teams) {
-			let ll = this.scene.teams.filter((e) => {return e.id == userId;});
-			obtm = ll.length > 0 ? ll[0] : null;
+			let l1 = this.scene.teams.filter((e) => {return e.id == userId;});
+			let l2 = this.scene.teams.filter((e) => {return e.id == 'spectator';});
+			if (l1.length > 0) {
+				obtm = l1[0];
+			} else if (l2.length > 0) {
+				obtm = l2[0];
+			}
 		}
 		if (null == obtm) {
-			let tkImg = {};
-			tkImg.sx     = 0;
-			tkImg.sy     = 0;
-			tkImg.width  = 20;
-			tkImg.height = 20;
-			tkImg.key = 'chrt'; 
-			tkImg.img = this.scene.imageMap.get('chrt').image.img;
-			obtm = new Circle(this.ctx, '旁观', 10, 10, 200, '#0000FF', tkImg, false, false);
+			let tkImg = {img: this.scene.imageMap.get('chrt').image.img,
+				key: 'chrt', sx: 0, sy: 0, width: 20, height: 20};
+			obtm = new Circle(this.ctx, 'spectator', 10, 10, 200, '#0000FF', tkImg, false, false);
 		}
 		this.observer = new Observer(this.ctx, userId, obtm.x, obtm.y, 
 			this.scene.viewRange, obtm, "#FFFFFF", true, false);
