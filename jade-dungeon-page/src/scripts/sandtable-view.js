@@ -72,7 +72,7 @@ class SandTableView {
 			obtm = new Circle(this.ctx, 'spectator', 10, 10, 200, '#0000FF', tkImg, false, false);
 		}
 		this.observer = new Observer(this.ctx, userId, obtm.x, obtm.y, 
-			this.scene.viewRange, obtm, "#FFFFFF", true, false);
+			this.scene.viewRange, obtm, "#FFFFFF", false, false);
 	}
 
 	async drawSence() {

@@ -843,7 +843,7 @@ class Observer {
 
 	renderTokensOnSandbox(mapImage, tokens, isObstatle) {
 		for (let p = 0; p < tokens.length; p++) {
-			if (tokens[p].blockView && tokens[p].id != this.id) {
+			if (tokens[p].blockView && tokens[p].id != this.id && tokens[p].id != 'spectator') {
 				let side = this.viewObstatleSides(tokens[p]);
 				this.drawObstatleShadows(side, mapImage);
 			}
