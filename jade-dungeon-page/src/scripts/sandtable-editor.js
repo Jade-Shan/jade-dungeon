@@ -181,7 +181,7 @@ class SandTableEditor {
 			format: 'image/png', quality: 1, 
 			width: this.scene.width, height: this.scene.height})
 		).catch((img, url) => { alert('加载图形失败：' + url); });
-		brightMap.crossOrigin='Anonymous';
+		// brightMap.crossOrigin='Anonymous';
 		this.brightMap = brightMap;
 	}
 

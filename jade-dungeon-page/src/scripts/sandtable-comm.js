@@ -72,7 +72,7 @@ function parseUrlParams() {
 let loadImage = async (image, imageURL) => {
 	return new Promise((resolve, reject) => {
 		image.src = imageURL;
-		// image.crossOrigin='Anonymous';
+		image.crossOrigin='Anonymous';
 		// image.crossorigin='anonymous';
 		// image.crossOrigin = "anonymous";
 		// image.setAttribute('crossOrigin', 'anonymous');
