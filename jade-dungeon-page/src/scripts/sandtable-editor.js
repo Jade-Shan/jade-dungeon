@@ -227,12 +227,13 @@ class SandTableEditor {
 			} else if ("canvas.shape.2d.Circle" == token.classType) {
 				token.radius = parseInt($('#tkRadius').val());
 			} else if ("Image" == token.classType) {
+				token.id  = $('#tkImgKey').val();
 				token.url = $('#tkURL').val();
 				token.image.img = await loadImage(new Image(), token.url);
-				$('#tkImgX'     ).val(0);
-				$('#tkImgY'     ).val(0);
-				$('#tkImgWidth' ).val(token.image.width );
-				$('#tkImgHeight').val(token.image.height);
+				token.image.sx     = $('#tkImgX'     ).val();
+				token.image.sy     = $('#tkImgY'     ).val();
+				token.image.width  = $('#tkImgWidth' ).val();
+				token.image.height = $('#tkImgHeight').val();
 			} 
 			token.visiable     = 'true' == $('#tkVisiable').val() ? true : false;
 			token.blockView    = 'true' == $('#tkBlock'   ).val() ? true : false;
@@ -243,7 +244,9 @@ class SandTableEditor {
 			token.image.width  = parseInt($('#tkImgWidth' ).val());
 			token.image.height = parseInt($('#tkImgHeight').val());
 			//
-			token.image.img = this.scene.imageMap.get(token.image.key).image.img;
+			if ("Image" != token.classType) {
+				token.image.img = this.scene.imageMap.get(token.image.key).image.img;
+			}
 			if (token.image.img) {
 				this.tkImgCanvas.setAttribute( 'width', token.image.img.width );
 				this.tkImgCanvas.setAttribute('height', token.image.img.height);
@@ -347,7 +350,9 @@ class SandTableEditor {
 	createToken(groupName, typeName) {
 		let id = groupName + "-" + (new Date()).getTime();
 		let color = "#0000FF";
-		let image = this.scene.imageMap.get('chrt').image;
+		let image = this.scene.imageMap.get('chrt').image.img;
+		let tkImage = {key:'chrt', sx:0, sy:0, 
+			width: image.width, height: image.height, img: image};
 		let isView  = 'Line'       == typeName  ? false : true;
 		let isBlock = 'furnishing' == groupName ? false : true;
 		if ('Line' === typeName) {
@@ -355,16 +360,16 @@ class SandTableEditor {
 				this.startX + 5, this.startY, "#0000FF", isView, isBlock);
 		} else if ('Rectangle' === typeName) {
 			this.currEditing = new Rectangle(this.ctx, id, this.startX, this.startY, 
-				50, 50, color, image, isView, isBlock);
+				50, 50, color, tkImage, isView, isBlock);
 		} else if ('Circle' === typeName) {
 			this.currEditing = new Circle(this.ctx, id, this.startX, this.startY, 
-				25, color, image, isView, isBlock);
+				25, color, tkImage, isView, isBlock);
 		} else if ('Image' === typeName) {
 			this.currEditing = {
 				classType: "Image", id: id, url: '', x: 0, y: 0, width: 0, height: 0, 
 				onScaleing: () => {}, scale: () => {},
-				image: {
-					key: id, sx:0, sy: 0, width: 10, height: 10, img: undefined}};
+				image: {key: id, sx:0, sy: 0, width: 10, height: 10, img: undefined},
+				visiable: false, blockView: false};
 		}
 		if (this.currEditing) {
 			this.isScalingItem = true;

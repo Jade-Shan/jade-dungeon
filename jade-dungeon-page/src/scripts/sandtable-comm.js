@@ -134,30 +134,33 @@ let tokenToData = (token) => {
 };
 
 let dataToToken = async (ctx, scene, rec) => {
-	let tkImg = {};
-	if ('Image' != rec.type && rec.img && rec.img.imgKey) { 
-		tkImg.key = rec.img.imgKey; 
-		tkImg.img = scene.imageMap.get(rec.img.imgKey).image.img; 
-	}
-	if (rec.img && rec.img.sx    ) { tkImg.sx     = rec.img.sx    ; }
-	if (rec.img && rec.img.sy    ) { tkImg.sy     = rec.img.sy    ; }
-	if (rec.img && rec.img.width ) { tkImg.width  = rec.img.width ; }
-	if (rec.img && rec.img.height) { tkImg.height = rec.img.height; }
-	if ('Line' === rec.type) {
-		return new Line(ctx, rec.id, rec.x, rec.y, rec.x2, rec.y2, rec.color, rec.visiable, rec.blockView);
-	} else if ('Rectangle' === rec.type) {
-		return new Rectangle(ctx, rec.id, rec.x, rec.y, rec.width, rec.height, 
-			rec.color, tkImg, rec.visiable, rec.blockView);
-	} else if ('Circle' === rec.type) {
-		return new Circle(ctx, rec.id, rec.x, rec.y, rec.radius, 
-			rec.color, tkImg, rec.visiable, rec.blockView);
-	} else if ('Image' === rec.type) {
-		let img = await loadImage(new Image(), rec.url).then(
-			(img, url) => { return img; }).catch((img, url) => { });
-		return {classType: "Image", id: rec.id, url: rec.url,
-			x:0, y:0, width: img.width, height: img.height,
-			image: {key: rec.id, sx:0, sy: 0, width: img.width, height: img.height, img: img}};
-
+	if (rec && rec.id) {
+		let tkImg = {};
+		if ('Image' != rec.type && rec.img && rec.img.imgKey) { 
+			tkImg.key = rec.img.imgKey; 
+			if (scene.imageMap.has(rec.img.imgKey)) {
+				tkImg.img = scene.imageMap.get(rec.img.imgKey).image.img; 
+				if (rec.img && rec.img.sx    ) { tkImg.sx     = rec.img.sx    ; }
+				if (rec.img && rec.img.sy    ) { tkImg.sy     = rec.img.sy    ; }
+				if (rec.img && rec.img.width ) { tkImg.width  = rec.img.width ; }
+				if (rec.img && rec.img.height) { tkImg.height = rec.img.height; }
+			}
+		}
+		if ('Line' === rec.type) {
+			return new Line(ctx, rec.id, rec.x, rec.y, rec.x2, rec.y2, rec.color, rec.visiable, rec.blockView);
+		} else if ('Rectangle' === rec.type) {
+			return new Rectangle(ctx, rec.id, rec.x, rec.y, rec.width, rec.height, 
+				rec.color, tkImg, rec.visiable, rec.blockView);
+		} else if ('Circle' === rec.type) {
+			return new Circle(ctx, rec.id, rec.x, rec.y, rec.radius, 
+				rec.color, tkImg, rec.visiable, rec.blockView);
+		} else if ('Image' === rec.type) {
+			let img = await loadImage(new Image(), rec.url).then(
+				(img, url) => { return img; }).catch((img, url) => { });
+			return {classType: "Image", id: rec.id, url: rec.url,
+				x:0, y:0, width: img.width, height: img.height,
+				image: {key: rec.id, sx:0, sy: 0, width: img.width, height: img.height, img: img}};
+		}
 	}
 };
 

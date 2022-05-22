@@ -171,11 +171,11 @@ let editorHtmlImg =  '<tr>' +
 	+ '<td>名称：</td><td><input type="text" id="tkImgKey" class="tkPropIpt" style="width:100px"></td>'
 	+ '<td>宽：</td><td><input type="text" readOnly="readOnly" id="tkImgWidth"  class="tkPropIpt" style="width:60px"></td>'
 	+ '<td>高：</td><td><input type="text" readOnly="readOnly" id="tkImgHeight" class="tkPropIpt" style="width:60px"></td>'
-	+ '<td></td><td></td><td></td><td></td>'
+	+ '<td><input type="hidden" id="tkId" class="tkPropIpt"></td><td></td><td></td><td></td>'
 	+ '</tr><tr>'
 	+ '<td></td><td><input type="hidden" id="tkColor"/></td>'
-	+ '<td>遮挡：</td><td><input type="hidden" id="tkBlock" /></td>' 
-	+ '<td>可见：</td><td><input type="hidden" id="tkVisiable" /></td>' 
+	+ '<td></td><td><input type="hidden" id="tkBlock" /></td>' 
+	+ '<td></td><td><input type="hidden" id="tkVisiable" /></td>' 
 	+ '<td></td><td></td><td></td>'
 	+ '<td><button type="button" onClick="javascript:sandtable.updateToken();" class="btn btn-primary">修改</button></td>'
 	+ '</tr>';
@@ -197,7 +197,7 @@ if (campaignId && placeId && sceneId &&
 } else {
 	window.location = '@@webRoot/sandtable-index.html?campaignId=campaign01&placeId=place01&sceneId=scene01';
 }
-
+let sandtable = {};
 let username = cookieOperator('username');
 if (username && username.length > 0) {
 	queryCampaignOwner(campaignId).then((data) => {
@@ -206,7 +206,7 @@ if (username && username.length > 0) {
 			alert(`战役名称「${campaignId}」已经被用户「${data.owner}」占用。\n请改用其他战役名称`);
 			window.location = '@@webRoot/sandtable-index.html?campaignId=campaign01&placeId=place01&sceneId=scene01';
 		} else {
-			let sandtable = new SandTableEditor(
+			sandtable = new SandTableEditor(
 				document.getElementById("canvas"), 
 				document.getElementById("tkImgCanvas"), {
 					viewRange: 500, shadowColor: 'rgba(0, 0, 0, 0.7)',

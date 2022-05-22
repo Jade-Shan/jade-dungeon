@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en" dir="dir">
+	<head>
+<link rel="stylesheet" href="@@cdn3rd/bootstrap/3.3.6/css/bootstrap.min.css" />
+<link rel="stylesheet" href="@@cdn3rd/bootstrap/3.3.6/css/bootstrap-theme.min.css" />
+		<style>
+		</style>
+		<meta charset="UTF-8">
+		<title>sand box</title>
+	</head>
+	<body class="container">
+		<div id="most-out" class="row">
+			<div class="col-12">
+			
+
+
+<h1 id="toc_1">准备图片资源</h1>
+
+<p>
+需要的图片资源的两类：
+</p>
+
+<ul>
+<li>
+场景的地图
+
+<li>
+玩家、敌人、环境物等棋子的图标
+
+</ul>
+
+<p>
+场景地图为单独一张大图：
+</p>
+
+<p>
+<img src="images/sandtable/map.jpg" width="600px" />
+</p>
+
+<p>
+为了优化网络流量，推荐把多个小图标合并为一张大图：
+</p>
+
+<p>
+<img src="images/sandtable/icons.jpg" />
+</p>
+
+<h2 id="toc_1.1">上传图片资源</h2>
+
+<p>
+因为本服务器是最便宜的服务器，没有空间可以上传图片。
+图片只能用第三方图床来外链。
+</p>
+
+<p>
+以前新浪微博的图片可以外链，现在已经不能用了。
+可以找一些速度慢免费的第三方图床，比如：路过图床<code>https://imgtu.com/</code>
+</p>
+
+
+
+<h1 id="toc_2">创建沙盘</h1>
+
+<h2 id="toc_2.1">注册登录</h2>
+
+<p>
+首先注册登录，过程略。
+</p>
+
+<h2 id="toc_2.2">新建场景沙盘</h2>
+
+<p>
+每个沙盘的场景都以：「模组」、「地点」、「场景」作为唯一标识。比如：
+</p>
+
+<img src="images/sandtable/smp-login.jpg" />
+
+<p>
+「深水城大冒险」「海拉斯特的地下城」「山下一层」
+</p>
+
+<p>
+第一个使用新的模组名称的用户将作为该模组的拥有者与维护者，
+其他人无法编辑任何使用该模组名的场景沙盘。
+</p>
+
+<h2 id="toc_2.3">编辑沙盘</h2>
+
+<p>
+沙盘上所有的元素按使用过程中操作的频率分类为：
+</p>
+
+<img src="images/sandtable/smp-grpicons.jpg" />
+
+<ul>
+<li>
+玩家
+
+<li>
+非完家生物
+
+<li>
+场景物品
+
+<li>
+门
+
+<li>
+墙壁
+
+<li>
+图片资源
+
+</ul>
+
+<h2 id="toc_2.4">图片资源</h2>
+
+<p>
+图片资源只在创建沙盘时用到，使用的频率较低。
+</p>
+
+<h3 id="toc_2.4.1">背景地图</h3>
+
+<p>
+点击图片资源的按钮，其中必须有一张名为<code>map</code>的图片，该图片是整个场景的地图背景：
+</p>
+
+<img src="images/sandtable/smp-editimg.jpg" />
+
+<p>
+编辑器会为新创建的场景生成一张默认的<code>map</code>图片。
+点击该图片，下方的编辑区中可以把图片的URL换成你场景中需要用到的地图。
+</p>
+
+<h3 id="toc_2.4.2">导入新图片资源</h3>
+
+<p>
+按下方的「创建新图像」按钮，会创建一个新的图片资源。
+下方的编辑区中可以把图片的URL换成你场景中需要用到的图片。
+</p>
+
+<img src="images/sandtable/smp-iptimg.jpg" />
+
+<h2 id="toc_2.5">墙壁元素</h2>
+
+<p>
+墙壁元素只在创建沙盘时用到，使用的频率较低。
+</p>
+
+<p>
+墙壁用来遮挡玩家的视线，有线条、圆形、方块三种按钮用来建立三种不同的墙壁。
+</p>
+
+<img src="images/sandtable/smp-wall.jpg" />
+
+<p>
+点击创建线条按钮后，再用鼠标点击沙盘，
+拖动后放开会在该位置创建一个遮挡玩家的视线墙壁。
+</p>
+
+<h2 id="toc_2.6">棋子元素</h2>
+
+<p>
+棋子元素在跑团过程会经常移动位置。
+以下这些都是棋子元素：
+</p>
+
+<ul>
+<li>
+玩家
+
+<li>
+非完家生物
+
+<li>
+场景物品
+
+<li>
+门
+
+</ul>
+
+<p>
+地图的编辑者可以通过在沙盘上点击或是在列表中选择的方式来选中棋子。
+正文的编辑区域会显示棋子的属性，如位置、大小、图标、是否可见，
+是否遮挡其他玩家的视线等。
+</p>
+
+<h3 id="toc_2.6.1">创建棋子</h3>
+
+<img src="images/sandtable/smp-edittoken.jpg" />
+<p>
+在列表中选择对应的棋子列表，列表下方会显示创建不同类型棋子的按钮。
+</p>
+
+<p>
+点击创建按钮后，再用鼠标点击沙盘会在对应的位置创建棋子。
+</p>
+
+<h3 id="toc_2.6.2">控制棋子</h3>
+
+<ul>
+<li>
+通过编辑位置属性或是按<code>Ctril</code>加鼠标拖动的方式可以移动棋子的位置。
+
+<li>
+通过编辑大小属性或是按<code>Alt</code>加鼠标拖动的方式可以改变棋子的大小。
+
+</ul>			
+			
+			
+			
+			
+			
+			
+			</div>
+
+
+		</div>
+	</body>
+	<script src="@@cdn3rd/jquery/2.1.4/jquery.min.js"></script>
+	<script src="@@cdn3rd/bootstrap/3.3.6/js/bootstrap.min.js" ></script>
+	<script type="text/javascript">
+let apiRoot = '@@apiRootSandtable/api/sandtable/';
+let apiRootAuth = '@@apiRootSandtable/api/auth/';
+
+	</script>
+</html>
