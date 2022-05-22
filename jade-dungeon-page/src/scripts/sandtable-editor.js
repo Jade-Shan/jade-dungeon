@@ -201,9 +201,15 @@ class SandTableEditor {
 	saveAllMapData() {
 		let jsonStr = this.seriseMapData();	
 		// console.log(jsonStr);
-		updateMapDatas(
-			this.scene.campaignId, this.scene.placeId, this.scene.sceneId, 
-			jsonStr);
+		updateMapDatas(this.scene.campaignId, this.scene.placeId, this.scene.sceneId, 
+			jsonStr).then((data) => {
+				console.log(data);
+			}).catch((err) => {
+				console.log(err);
+				if (err.msg == "not owner") {
+					alert('无权修改该战役');
+				}
+			});
 	}
 
 	async updateToken() {

@@ -37,6 +37,7 @@ exports.handler = {
 			conn.get(genOwnerKey(data.params.campaignId), callback);
 		});
 		let owner = res.data;
+		console.log(data.params.jsonStr);
 		let json = JSON.parse(data.params.jsonStr);
 		if (!owner || owner.length < 1) {
 			owner = json.username;

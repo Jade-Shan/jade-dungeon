@@ -5,9 +5,27 @@ let rdsUtil = require('../common/redisUtil');
 let EXPIRE_RANGE = 1000 * 60 * 60 * 24 * 100;
 let genLoginToken = (username) => {
 	let uuid = jadeutils.uuid();
-	let expire = (new Date()).getTime() + EXPIRE_RANGE;
+	let expire = Date.now() + EXPIRE_RANGE;
 	return `${username}|${uuid}|${expire}`;
 };
+let parseLoginToken = (str) => {
+	let result = {};
+	if (str && str.length > 38) {
+		let strArr = token.split('|');
+		if (strArr.length == 3 && strArr[0].length > 0 && // 
+			 strArr[1].length == 36 && strArr[2].length > 0) //
+		{
+			result.username = strArr[0];
+			try {
+				result.expire = parseInt(strArr[2]);
+			} catch (err) {
+				console.log(err);
+			}
+		}
+	}
+	return result;
+};
+
 
 let genUserInfoRrdsKey = (username) => {
 	return `jadedungeon::auth::userInfo::${username}`;
@@ -53,6 +71,7 @@ exports.handler = {
 		let username = data.params.username;
 		let password = data.params.password;
 		let token = data.params.token;
+		let tokenObj = parseLoginToken(token);
 		if (username && password && username.length > 0 && password.length > 0) {
 			let res = await rdsUtil.connect('auth').call((conn, callback) => {
 				conn.get(genUserInfoRrdsKey(username), callback);
@@ -69,39 +88,31 @@ exports.handler = {
 			} else {
 				json.msg = "username or password err";
 			}
-		} else if (token && token.length > 0) {
-			let strArr = token.split('|');
-			if (strArr.length == 3 && strArr[0].length > 0 && strArr[1].length == 36 && strArr[2].length > 0) {
-				username = strArr[0];
-				let expire = 0;
-				try {
-					expire = parseInt(strArr[2]);
-				} catch (err) {
-					console.log(err);
-				}
-				if (expire > (new Date()).getTime()) {
-					let value = await rdsUtil.connect('auth').call((conn, callback) => {
-						conn.get(genUserTokenRrdsKey(username), callback);
-					});
-					if (value && value === token) {
-						let resp = await rdsUtil.connect('auth').call((conn, callback) => {
-							conn.set(genUserTokenRrdsKey(username), token, callback);
-						});
-						json.msg = 'login success';
-						json.username = username;
-						json.token = token;
-						json.status = 'success';
-					} else {
-						json.msg = "token err or expire";
-					}
-				} else {
-					json.msg = "token err or expire";
-				}
+		} else if (tokenObj.username && tokenObj.expire) {
+			if (tokenObj.expire < (new Date()).getTime()) {
+				json.msg = "login expire";
 			} else {
-				json.msg = "miss username or password";
+				let value = await rdsUtil.connect('auth').call((conn, callback) => {
+					conn.get(genUserTokenRrdsKey(username), callback);
+				});
+				if (value && value == token) {
+					let resp = await rdsUtil.connect('auth').call((conn, callback) => {
+						conn.set(genUserTokenRrdsKey(username), token, callback);
+					});
+					json.msg = 'login success';
+					json.username = username;
+					json.token = token;
+					json.status = 'success';
+				} else {
+					json.msg = "login expire";
+				}
 			}
 		}
+		context.response.cookie("test01", "value01k", {expire: Date.now() + EXPIRE_RANGE, path: '/'});
+		context.response.cookie("test02", "value02k");
+		context.response.cookie("test03", "value03k");
 		context.response.writeHead(200, {
+			//'Set-Cookie': 'myCookie1=myValue1; Domain=localhost:8080; Expires=Fri, 26 Dec 2024 17:23:52 GMT; Path=/; HttpOnly',
 			'Content-Type': 'application/json;charset=utf-8',
 			'Access-Control-Allow-Origin': '*',
 			'Access-Control-Allow-Methods': 'GET,POST',
