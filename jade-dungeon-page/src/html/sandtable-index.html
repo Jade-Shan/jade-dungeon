@@ -58,6 +58,7 @@
 				<div class="form-group">
 					<div class="col-sm-offset-2 col-sm-10">
 						<button type="button" class="btn btn-default" onClick="javascript:goSandtable();">进入场景</button>
+						<button type="button" class="btn btn-default" onClick="javascript:editSandtable();">编辑该场景</button>
 					</div>
 				</div>
 			</form>
@@ -114,6 +115,26 @@ let goSandtable = () => {
 				campaignId.length > 0 && placeId.length > 0 && sceneId.length > 0) //
 			{
 				window.location = '@@webRoot/sandtable.html?campaignId=' + 
+					campaignId + '&placeId=' + placeId + '&sceneId=' + sceneId;
+			} else {
+				alert('请输入战役名称、地区、场景信息');
+			}
+		} else {
+			alert(data.msg);
+		}
+	});
+};
+
+let editSandtable = () => {
+	userLogin($('#username').val(), $('#password').val(), '', (data) => {
+		if ('success' == data.status) {
+			let campaignId = $('#campaignId').val();
+			let placeId    = $('#placeId'   ).val();
+			let sceneId    = $('#sceneId'   ).val();
+			if (campaignId && placeId && sceneId && 
+				campaignId.length > 0 && placeId.length > 0 && sceneId.length > 0) //
+			{
+				window.location = '@@webRoot/sandtable-editor.html?campaignId=' + 
 					campaignId + '&placeId=' + placeId + '&sceneId=' + sceneId;
 			} else {
 				alert('请输入战役名称、地区、场景信息');

@@ -189,8 +189,26 @@ let requestMapDatas = async (campaignId, placeId, sceneId) => {
 			url: apiRoot + 'load-map?campaignId=' + encodeURIComponent(campaignId) + 
 				'&placeId=' + encodeURIComponent(placeId) + '&sceneId='+ encodeURIComponent(sceneId) +
 				"&t=" + (new Date()).getTime(), 
-			type: 'GET', dataType: 'json', data: { },
-			timeout: 30000,
+			type: 'GET', dataType: 'json', data: { }, timeout: 30000, 
+			xhrFields: {'Access-Control-Allow-Origin':'*'}, 
+			success: function(data, status, xhr) {
+				if ('success' == data.status) { // console.log(data);
+					resolve(data);
+				} else { reject(data); }
+			},
+			error: function(xhr, errorType, error) { reject(xhr); },
+			complete: function(xhr, status) { }
+		});
+	});
+};
+
+let queryCampaignOwner = async (campaignId) => {
+	return new Promise((resolve, reject) => {
+		$.ajax({ 
+			url: apiRoot + 'map-owner?campaignId=' + encodeURIComponent(campaignId) + 
+				"&t=" + (new Date()).getTime(), 
+			type: 'GET', dataType: 'json', data: { }, timeout: 30000, 
+			xhrFields: {'Access-Control-Allow-Origin':'*'}, 
 			success: function(data, status, xhr) {
 				if ('success' == data.status) { // console.log(data);
 					resolve(data);
@@ -208,8 +226,8 @@ let updateMapDatas = async (campaignId, placeId, sceneId, jsonStr) => {
 			url: apiRoot + 'save-map?campaignId=' + encodeURIComponent(campaignId) + 
 				'&placeId=' + encodeURIComponent(placeId) + '&sceneId='+ encodeURIComponent(sceneId) +
 				"&t=" + (new Date()).getTime(), 
-			type: 'POST', dataType: 'json', data: {jsonStr: jsonStr},
-			timeout: 30000,
+			type: 'POST', dataType: 'json', data: {jsonStr: jsonStr}, timeout: 30000,
+			xhrFields: {'Access-Control-Allow-Origin':'*'}, 
 			success: function(data, status, xhr) {
 				if ('success' == data.status) { // console.log(data);
 					resolve(data);

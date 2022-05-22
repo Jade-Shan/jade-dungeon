@@ -75,21 +75,6 @@
 	<script type="text/javascript">
 let apiRoot = '@@apiRootSandtable/api/sandtable/';
 
-let params     = parseUrlParams();
-let campaignId = params.get('campaignId');
-let placeId    = params.get('placeId'   );
-let sceneId    = params.get('sceneId'   );
-
-if (campaignId && placeId && sceneId) { /* ok */ } else {
-	window.location = '@@webRoot/sandtable-editor.html?campaignId=campaign01&placeId=place01&sceneId=scene01';
-//	campaignId = (new Date()).getTime();
-//	placeId    = (new Date()).getTime();
-//	sceneId    = (new Date()).getTime();
-//	window.location = '@@webRoot/sandtable-editor.html?campaignId=' + campaignId +
-//		'&placeId=' + placeId + '&sceneId=' + sceneId;
-}
-
-
 let editorHtmlLine =  '<tr>' +
 	'<td style=\'width:60px\'>线条：</td><td><input type="text" id="tkId" class="tkPropIpt" style="width:100px"></td>'
 	+ '<td>x：</td><td><input type="text" id="tkX" class="tkPropIpt" style="width:60px"></td>'
@@ -195,20 +180,51 @@ let editorHtmlImg =  '<tr>' +
 	+ '<td><button type="button" onClick="javascript:sandtable.updateToken();" class="btn btn-primary">修改</button></td>'
 	+ '</tr>';
 
-let sandtable = new SandTableEditor(
-	document.getElementById("canvas"), 
-	document.getElementById("tkImgCanvas"), {
-		viewRange: 500, shadowColor: 'rgba(0, 0, 0, 0.7)',
-		campaignId: campaignId, placeId: placeId, sceneId: sceneId}, 
-	"u001");
-
-window.addEventListener('resize', sandtable.resizeLayout);
-
-sandtable.drawSandTable();
-
 function changeEditColor() {
 	let color = $('#tkColor').val();
 	$('#tkColor').attr('style','color:' + color + ';background-color:#505050');
 };
+
+let params     = parseUrlParams();
+let campaignId = params.get('campaignId');
+let placeId    = params.get('placeId'   );
+let sceneId    = params.get('sceneId'   );
+
+if (campaignId && placeId && sceneId && 
+	campaignId.length > 0 && placeId.length > 0 && sceneId.length > 0) //
+{
+	/* ok */ 
+} else {
+	window.location = '@@webRoot/sandtable-index.html?campaignId=campaign01&placeId=place01&sceneId=scene01';
+}
+
+let username = cookieOperator('username');
+if (username && username.length > 0) {
+	queryCampaignOwner(campaignId).then((data) => {
+		console.log(data);
+		if (data && data.owner && data.owner.length > 0 && data.owner != username) {
+			alert(`战役名称「${campaignId}」已经被用户「${data.owner}」占用。\n请改用其他战役名称`);
+			window.location = '@@webRoot/sandtable-index.html?campaignId=campaign01&placeId=place01&sceneId=scene01';
+		} else {
+			let sandtable = new SandTableEditor(
+				document.getElementById("canvas"), 
+				document.getElementById("tkImgCanvas"), {
+					viewRange: 500, shadowColor: 'rgba(0, 0, 0, 0.7)',
+					campaignId: campaignId, placeId: placeId, sceneId: sceneId}, 
+				username);
+			window.addEventListener('resize', sandtable.resizeLayout);
+			sandtable.drawSandTable();
+		}
+	}).catch((err) => {
+		console.log(err);
+		alert('系统异常');
+		window.location = '@@webRoot/sandtable-index.html?campaignId=campaign01&placeId=place01&sceneId=scene01';
+	});
+} else {
+	alert('登录信息已经过期，请重新登录');
+	window.location = '@@webRoot/sandtable-index.html?campaignId=campaign01&placeId=place01&sceneId=scene01';
+}
+
+
 	</script>
 </html>

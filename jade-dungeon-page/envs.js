@@ -13,7 +13,7 @@ exports.deployEnvs = {
 		webRoot: ".",
 		staticRoot: ".",
 		apiRoot: ".",
-		apiRootSandtable: "//localhost:8088",
+		apiRootSandtable: "//www.jade-dungeon.net:8088",
 		cdnRoot: "//www.jade-dungeon.net:8081",
 		cdn3rd : "//cdn.bootcss.com"
 	}

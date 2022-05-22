@@ -5,8 +5,8 @@ let login = async (username, password, token) => {
 		$.ajax({ 
 			url: apiRootAuth + 'login?t=' + (new Date()).getTime(), 
 			type: 'POST', dataType: 'json', 
-			data: {username: username, password: password, token: token},
-			timeout: 30000,
+			data: {username: username, password: password, token: token}, timeout: 30000,
+			xhrFields: {'Access-Control-Allow-Origin':'*'}, 
 			success: function(data, status, xhr) {
 				if ('success' == data.status) { // console.log(data);
 					resolve(data);
@@ -38,8 +38,8 @@ let regist = async (username, password) => {
 		$.ajax({ 
 			url: apiRootAuth + 'regist?t=' + (new Date()).getTime(), 
 			type: 'POST', dataType: 'json', 
-			data: {username: username, password: password},
-			timeout: 30000,
+			data: {username: username, password: password}, timeout: 30000,
+			xhrFields: {'Access-Control-Allow-Origin':'*'}, 
 			success: function(data, status, xhr) {
 				if ('success' == data.status) { // console.log(data);
 					resolve(data);
