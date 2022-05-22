@@ -70,6 +70,11 @@ function parseUrlParams() {
 }
 
 let loadImage = async (image, imageURL) => {
+	// console.log(imageURL);
+	if (imageURL.indexOf('http') == 0) {
+		let encodeSrc = encodeURIComponent(imageURL);
+		imageURL = 'http://localhost:8088/api/sandtable/parseImage?src=' + encodeSrc;
+	}
 	return new Promise((resolve, reject) => {
 		image.src = imageURL;
 		image.crossOrigin='Anonymous';

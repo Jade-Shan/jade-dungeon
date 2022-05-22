@@ -14,12 +14,17 @@ let genOwnerKey = (campaignId, placeId, sceneId) => {
 exports.handler = {
 	"/api/sandtable/parseImage": async (context, data) => {
 		let json = {status:"error", msg: "unknow err"};
+		let src = data.params.src;
+		console.log(src);
 
 		const buffers = [];
 		let contenttype = '';
 		let body = null;
 
-		let request = https.get('https://s1.ax1x.com/2022/05/22/OxLaNj.jpg', (res) => {
+		let request = https.get(
+			src
+			// 'https://s1.ax1x.com/2022/05/22/OxLaNj.jpg'
+			, (res) => {
 			console.log(res.headers);
 			console.log(res.headers['content-type']);
 		contenttype = res.headers['content-type'];
@@ -43,6 +48,7 @@ exports.handler = {
 				console.log('Retrieved all data');
 		context.response.writeHead(200, {
 			'Content-Type':contenttype,
+'Cache-Control':'public,s-maxage=300,max-age=300',
 			'Access-Control-Allow-Origin':'*',
 			'Access-Control-Allow-Methods':'GET,POST',
 			'Access-Control-Allow-Headers':'x-requested-with,content-type'});
