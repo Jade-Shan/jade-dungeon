@@ -13,7 +13,7 @@ let genOwnerKey = (campaignId, placeId, sceneId) => {
 
 exports.handler = {
 	"/api/sandtable/parseImage": async (context, data) => {
-		let json = {status:"error", msg: "unknow err"};
+		let json = { status: "error", msg: "unknow err" };
 		let src = data.params.src;
 		console.log(src);
 
@@ -21,44 +21,33 @@ exports.handler = {
 		let contenttype = '';
 		let body = null;
 
-		let request = https.get(
-			src
-			// 'https://s1.ax1x.com/2022/05/22/OxLaNj.jpg'
-			, (res) => {
-			console.log(res.headers);
-			console.log(res.headers['content-type']);
-		contenttype = res.headers['content-type'];
+		let request = https.get(src, (res) => {
+			contenttype = res.headers['content-type'];
 			if (res.statusCode !== 200) {
 				console.error(`Did not get an OK from the server. Code: ${res.statusCode}`);
-				res.resume();
-				return;
+				context.response.writeHead(404, {
+					'Content-Type': contenttype,
+					'Cache-Control': 'public,s-maxage=300,max-age=300',
+					'Access-Control-Allow-Origin': '*',
+					'Access-Control-Allow-Methods': 'GET,POST',
+					'Access-Control-Allow-Headers': 'x-requested-with,content-type'
+				});
+				context.response.end('');
 			}
-
-			res.on('head', (data) => {
-				console.log(data);
-
-			});
-
-			res.on('data', (chunk) => {
-				buffers.push(chunk);
-			});
-
+			res.on('data', (chunk) => { buffers.push(chunk); });
 			res.on('close', () => {
 				body = Buffer.concat(buffers);
-				console.log('Retrieved all data');
-		context.response.writeHead(200, {
-			'Content-Type':contenttype,
-'Cache-Control':'public,s-maxage=300,max-age=300',
-			'Access-Control-Allow-Origin':'*',
-			'Access-Control-Allow-Methods':'GET,POST',
-			'Access-Control-Allow-Headers':'x-requested-with,content-type'});
-		// context.response.end(JSON.stringify(json));
-		context.response.end(body);
+				// console.log('Retrieved all data');
+				context.response.writeHead(200, {
+					'Content-Type': contenttype,
+					'Cache-Control': 'public,s-maxage=300,max-age=300',
+					'Access-Control-Allow-Origin': '*',
+					'Access-Control-Allow-Methods': 'GET,POST',
+					'Access-Control-Allow-Headers': 'x-requested-with,content-type'
+				});
+				context.response.end(body);
 			});
 		});
-
-
-
 	},
 
 	//http://localhost:8088/api/sandtable/load-map?campaignId=campaign01&placeId=place01&sceneId=scene01

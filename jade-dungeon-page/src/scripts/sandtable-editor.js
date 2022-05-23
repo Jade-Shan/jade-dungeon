@@ -176,8 +176,7 @@ class SandTableEditor {
 		this.scene.allTokens.forEach((e, i) => { e.drawDesign(); });
 
 		// 缓存当前图片
-		let brightMap = new Image();
-		await loadImage(brightMap, canvas.toDataURL({
+		let brightMap = await loadImage(new Image(), canvas.toDataURL({
 			format: 'image/png', quality: 1, 
 			width: this.scene.width, height: this.scene.height})
 		).catch((img, url) => { alert('加载图形失败：' + url); });
@@ -244,7 +243,7 @@ class SandTableEditor {
 			token.image.width  = parseInt($('#tkImgWidth' ).val());
 			token.image.height = parseInt($('#tkImgHeight').val());
 			//
-			if ("Image" != token.classType) {
+			if ("Image" != token.classType && "canvas.shape.2d.Line" != token.classType) {
 				token.image.img = this.scene.imageMap.get(token.image.key).image.img;
 			}
 			if (token.image.img) {

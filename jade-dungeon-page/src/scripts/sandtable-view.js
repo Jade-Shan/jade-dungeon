@@ -81,11 +81,10 @@ class SandTableView {
 		this.ctx.drawImage(this.scene.imageMap.get('map').image.img, 0, 0);
 		this.ctx.fillStyle = this.scene.shadowColor;
 		this.ctx.fillRect(0, 0, this.scene.width, this.scene.height);
-		let darkMap = new Image();
-		await loadImage(darkMap, canvas.toDataURL({
+		let darkMap = await loadImage(new Image(), canvas.toDataURL({
 			format: 'image/png', quality: 1, 
 			width: this.scene.width, height: this.scene.height})
-		).catch((img, url) => { alert('加载图形失败：' + url); });
+		);
 		darkMap.crossOrigin='Anonymous';
 
 		this.ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -105,8 +104,7 @@ class SandTableView {
 		this.observer.renderTokensOnSandboxInView(darkMap, this.scene.doors);
 
 
-		let brightMap = new Image();
-		await loadImage(brightMap, canvas.toDataURL({
+		let brightMap = await loadImage(new Image(), canvas.toDataURL({
 			format: 'image/png', quality: 1, 
 			width: this.scene.width, height: this.scene.height})
 		).catch((img, url) => { alert('加载图形失败：' + url); });
@@ -125,8 +123,7 @@ class SandTableView {
 		this.fc.setAttribute( 'width', this.scene.width );
 		this.fc.setAttribute('height', this.scene.height);
 		// let fctx = fc.getContext("2d");
-		let viewMap = new Image();
-		await loadImage(viewMap, canvas.toDataURL({
+		let viewMap = await loadImage(new Image(), canvas.toDataURL({
 			format: 'image/png', quality: 1, 
 			width: this.scene.width, height: this.scene.height})
 		).catch((img, url) => { alert('加载图形失败：' + url); });
