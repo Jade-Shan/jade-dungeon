@@ -189,7 +189,6 @@ let dataToToken = async (ctx, scene, rec) => {
 				rec.color, tkImg, rec.visiable, rec.blockView);
 		} else if ('Image' === rec.type) {
 			let img = await loadImage(new Image(), rec.url);
-
 			return {classType: "Image", id: rec.id, url: rec.url,
 				x:0, y:0, width: img.width, height: img.height,
 				image: {key: rec.id, sx:0, sy: 0, width: img.width, height: img.height, img: img}};
@@ -362,7 +361,7 @@ let loadMapDatas = async (ctx, scene) => {
 		mapDatas     = data.mapDatas;
 	}).catch((e) => {
 		imgResources = [
-			{"id":"chrt","type":"Image","url":"./images/sandtable/icons.jpg"},
+			{"id":"icons","type":"Image","url":"./images/sandtable/icons.jpg"},
 			{"id":"map","type":"Image","url":"./images/sandtable/map.jpg"}];
 		mapDatas     = {"teams": [{"id": "default", "type":"Circle", 
 			"x":250, "y":300, "radius":25, "color":"#0000FF", 
