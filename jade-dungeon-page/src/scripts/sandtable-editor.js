@@ -69,9 +69,11 @@ class SandTableEditor {
 				groupName + '\',\'Circle\');" class="btn btn-default">&#9711</button>';
 		}
 		if ('image' == groupName) {
-			html = html + '<button type="button" onClick="javascript:sandtable.preCreateToken(\'' + 
+			html = html + '<button type="button" onClick="javascript:sandtable.createToken(\'' + 
 				groupName + '\',\'Image\');" class="btn btn-default">&#9711</button>';
 		}
+		html = html + '<button onClick="javascript:sandtable.saveAllMapData();"' +
+			'type="button" class="btn btn-default">保存全部</button>';
 		$('#tokenCreateBtns').html(html);
 		$('#tokenCreateText').html(this.scene.tokenGroupText[groupName]);
 	}
@@ -141,17 +143,15 @@ class SandTableEditor {
 		let tokenGroupBtns  = document.querySelector("#tokenGroupBtns");
 		let tokenListArea   = document.querySelector("#tokenListArea");
 		let createTokenArea = document.querySelector("#createTokenArea");
-		let saveAllBtnArea  = document.querySelector("#saveAllBtnArea");
 
 		let cpHeight  = parseInt(propImgArea.clientHeight);
 		let tgbHeight = parseInt(tokenGroupBtns.clientHeight);
 		let tlaHeight = parseInt(tokenListArea.clientHeight);
 		let tcbHeight = parseInt(createTokenArea.clientHeight);
-		let sabHeight = parseInt(saveAllBtnArea.clientHeight);
 
 		let maHeight = wHeight - cpHeight;
 		mapArea.style.height = maHeight + "px";
-		let tlHeight = maHeight - tgbHeight - tcbHeight - sabHeight;
+		let tlHeight = maHeight - tgbHeight - tcbHeight - 30;
 		tokenListArea.style.height = tlHeight + 'px';
 	}
 
