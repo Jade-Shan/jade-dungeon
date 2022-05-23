@@ -2,10 +2,11 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "run-sandtable",
             "type": "node",
             "request": "launch",
-            "name": "Launch Program",
-            "program": "${workspaceFolder}/javascript/main.js"
+            "program": "${workspaceFolder}/javascript/main.js",
+            "skipFiles": [ "<node_internals>/**" ]
          }
     ]
 }

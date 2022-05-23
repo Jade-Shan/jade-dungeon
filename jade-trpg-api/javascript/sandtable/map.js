@@ -11,6 +11,10 @@ let genOwnerKey = (campaignId, placeId, sceneId) => {
 	return `jadedungeon::sandtable::campaignOwner::${campaignId}`;
 };
 
+let genLogKey = (campaignId, placeId, sceneId) => {
+	return `jadedungeon::sandtable::log::${campaignId}::${placeId}::${sceneId}`;
+};
+
 exports.handler = {
 	"/api/sandtable/parseImage": async (context, data) => {
 		let json = { status: "error", msg: "unknow err" };
