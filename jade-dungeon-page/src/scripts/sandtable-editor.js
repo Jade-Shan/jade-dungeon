@@ -76,7 +76,7 @@ class SandTableEditor {
 		$('#tokenCreateBtns').html(html);
 		$('#tokenCreateText').html(this.scene.tokenGroupText[groupName]);
 		$('#optSaveBtns').html('<button onClick="javascript:sandtable.saveAllMapData();"' +
-			'type="button" class="btn btn-default">保存</button>' + 
+			'type="button" class="btn btn-default">保存并发布</button>' + 
 			'<button onClick="javascript:sandtable.loadMoveRequest();"' +
 			'type="button" class="btn btn-default">刷新请求</button>');
 	}
