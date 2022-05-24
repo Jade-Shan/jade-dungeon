@@ -161,6 +161,7 @@ class SandTableEditor {
 	}
 
 	async drawSandTable() {
+		this.defaultImg = await loadImage(new Image(), defaultImgData);
 		await loadMapDatas(this.ctx, this.scene);
 		await this.initSence();
 		await this.drawSence();
@@ -377,7 +378,7 @@ class SandTableEditor {
 	createToken(groupName, typeName) {
 		let id = groupName + "-" + (new Date()).getTime();
 		let color = "#0000FF";
-		let image = this.scene.imageMap.get('chrt').image.img;
+		let image = this.defaultImg;//
 		let tkImage = {key:'chrt', sx:0, sy:0, 
 			width: image.width, height: image.height, img: image};
 		let isView  = 'Line'       == typeName  ? false : true;

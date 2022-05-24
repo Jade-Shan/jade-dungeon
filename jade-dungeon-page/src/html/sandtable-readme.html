@@ -167,7 +167,7 @@
 
 <ul>
 <li>
-玩家
+玩家（代表玩家的棋子的ID必须与玩家注册的用户名一致）
 
 <li>
 非完家生物
@@ -221,7 +221,109 @@
 
 </ul>			
 			
-			
+
+<h2 id="toc_2.7">保存元素</h2>
+
+<p>
+点击「保存并发布」按钮保存编辑结果，并让所有玩家看到沙盘的变化：
+</p>
+
+<img src="images/sandtable/smp-save.jpg" />
+
+
+
+<h1 id="toc_3">玩家操作</h1>
+
+<h2 id="toc_3.1">玩家登录</h1>
+
+<h3 id="toc_3.1.1">团队成员玩家</h3>
+
+<p>
+团队成员玩家注册的用户名必须与对应棋子的ID一致，这样才能把自己的视野绑定到对应的棋子上，
+关向DM发出移动棋子的请求：
+</p>
+
+<img src="images/sandtable/smp-rndet-01.jpg" />
+
+<h3 id="toc_3.1.2">旁观者</h3>
+
+<p>
+旁观者的视野被绑定在由DM创建的名为`spectator`的棋子上，该棋子的位置由DM控制：
+</p>
+
+<img src="images/sandtable/smp-spter.jpg" />
+
+<p>
+如果DM没有创建的名为`spectator`的棋子，那么旁观者打开沙盘时视野被固定在左上角。
+这个位置很有可能神墙壁给卡住，什么也看不到：
+</p>
+
+<img src="images/sandtable/smp-sptwl.jpg" />
+
+<h2 id="toc_3.2">移动棋子</h2>
+
+<p>
+本沙盘工具没有碰撞体积检测功能，所以棋子的移动是否符合移动范围与地形条件全靠人工判断。
+所以玩家只能提出移动棋子的请求，然后DM来裁定是否可以移动到指定位置。
+</p>
+
+<h2 id="toc_3.3">玩家出称动棋子的请求</h2>
+
+<p>
+玩家按住「Ctrl」加鼠标拖动棋子的操作，在沙盘上标示出想要移动的目标位置：
+</p>
+
+<img src="images/sandtable/smp-rndet-01.jpg" />
+
+<p>
+玩家如果想要撤消请求，直接鼠标点代表目的地的圆圈即可。
+撤消请求以后可以再次拖动，发出新的请求。
+</p>
+
+
+<h2 id="toc_3.4">DM裁定玩家的请求</h2>
+
+<p>
+因为服务器资源限制，为了减少请求的数量与网络流量。需要DM手动按刷新请求按钮：
+</p>
+
+<img src="images/sandtable/smp-rndet-04.jpg" />
+
+<p>
+可以在沙盘上看到所有玩家提出的移动请求：
+</p>
+
+<img src="images/sandtable/smp-rndet-02.jpg" />
+
+<p>
+DM按「Ctrl」加鼠标拖动棋子的操作可以直接操作棋子。
+</p>
+
+<img src="images/sandtable/smp-rndet-03.jpg" />
+
+<p>
+如果DM有异议，直接通过聊天与玩家讨论，讨论完后再移动。
+</p>
+
+
+<h2 id="toc_3.5">DM发布沙盘的变化</h2>
+
+<p>
+移动棋子完成以后，DM点击「保存并发布」按钮保存编辑结果。把修改后的沙盘广播给各位玩家：
+</p>
+
+<img src="images/sandtable/smp-save.jpg" />
+
+<h2 id="toc_3.6">玩家刷新沙盘</h2>
+
+<p>
+因为服务器资源限制，为了减少请求的数量与网络流量。需要玩家刷新网页（按F5或
+Ctrl+R都可以）才能看到新的位置与在新位置的视野范围内看到的新界面：
+</p>
+
+<img src="images/sandtable/smp-rndet-05.jpg" />
+
+
 			
 			
 			
