@@ -228,6 +228,8 @@ class Canvas2dShape {
 
 	scale(num) {}
 
+	onWantMoveing(dx, dy) {}
+
 	onMoveing(dx, dy) {}
 
 	onScaleing(dx, dy) {}
@@ -305,25 +307,29 @@ class Line extends Canvas2dShape {
 				new Ray(pos1[0], pos1[1], 0, 0, angl1, cAngl1, range1)];
 	}
 
-	onMoveing(x, y, x1, y1) {
+	onWantMoveing(cvsCtx, x, y, x1, y1) {
 		let dx = x1 - x;
 		let dy = y1 - y;
-		this.cvsCtx.save();
-		this.cvsCtx.strokeStyle = 'rgba(0, 0, 255, 0.7)';
-		this.cvsCtx.lineWidth = 8;
-		this.cvsCtx.beginPath();
-		this.cvsCtx.moveTo(dx + this.x , dy + this.y );
-		this.cvsCtx.lineTo(dx + this.x2, dy + this.y2);
-		this.cvsCtx.stroke();
-		this.draw();
-		this.cvsCtx.strokeStyle = 'rgba(0, 255, 0, 0.7)';
-		this.cvsCtx.lineWidth = 3;
-		this.cvsCtx.beginPath();
-		this.cvsCtx.moveTo(dx + this.x , dy + this.y );
-		this.cvsCtx.lineTo(dx + this.x2, dy + this.y2);
-		this.cvsCtx.stroke();
-		this.draw();
-		this.cvsCtx.restore();
+		cvsCtx.save();
+		cvsCtx.strokeStyle = 'rgba(0, 0, 255, 0.7)';
+		cvsCtx.lineWidth = 8;
+		cvsCtx.beginPath();
+		cvsCtx.moveTo(dx + this.x , dy + this.y );
+		cvsCtx.lineTo(dx + this.x2, dy + this.y2);
+		cvsCtx.stroke();
+		// this.draw();
+		cvsCtx.strokeStyle = 'rgba(0, 255, 0, 0.7)';
+		cvsCtx.lineWidth = 3;
+		cvsCtx.beginPath();
+		cvsCtx.moveTo(dx + this.x , dy + this.y );
+		cvsCtx.lineTo(dx + this.x2, dy + this.y2);
+		cvsCtx.stroke();
+		// this.draw();
+		cvsCtx.restore();
+	}
+
+	onMoveing(x, y, x1, y1) {
+		this.onWantMoveing(this.cvsCtx, x, y, x1, y1);
 	}
 
 	onScaleing(x, y, x2, y2) {
@@ -485,16 +491,20 @@ class Rectangle extends Canvas2dShape {
 			this.calVtxDstAngle(this.vtx[3][0], this.vtx[3][1], x, y, quad)];
 	}
 
-	onMoveing(x, y, x1, y1) {
+	onWantMoveing(cvsCtx, x, y, x1, y1) {
 		let dx = x1 - x;
 		let dy = y1 - y;
-		this.cvsCtx.save();
-		this.cvsCtx.lineWidth = 5;
-		this.cvsCtx.fillStyle   = "rgba(0, 0, 255, 0.7)";
-		this.cvsCtx.fillRect(this.x + dx, this.y + dy, this.width, this.height);
-		this.cvsCtx.strokeStyle = "rgba(0, 255, 0, 0.7)";
-		this.cvsCtx.strokeRect(this.x + dx, this.y + dy, this.width, this.height);
-		this.cvsCtx.restore();
+		cvsCtx.save();
+		cvsCtx.lineWidth = 5;
+		cvsCtx.fillStyle   = "rgba(0, 0, 255, 0.7)";
+		cvsCtx.fillRect(this.x + dx, this.y + dy, this.width, this.height);
+		cvsCtx.strokeStyle = "rgba(0, 255, 0, 0.7)";
+		cvsCtx.strokeRect(this.x + dx, this.y + dy, this.width, this.height);
+		cvsCtx.restore();
+	}
+
+	onMoveing(x, y, x1, y1) {
+		this.onWantMoveing(this.cvsCtx, x, y, x1, y1);
 	}
 
 	onScaleing(x, y, x1, y1) {
@@ -671,18 +681,22 @@ class Circle extends Canvas2dShape {
 		this.cvsCtx.restore();
 	}
 
-	onMoveing(x, y, x1, y1) {
+	onWantMoveing(cvsCtx, x, y, x1, y1) {
 		let dx = x1 - x;
 		let dy = y1 - y;
-		this.cvsCtx.save();
-		this.cvsCtx.lineWidth = 5;
-		this.cvsCtx.beginPath();
-		this.cvsCtx.arc(this.x + dx, this.y + dy, this.radius, 0, PI_DOUBLE, true);
-		this.cvsCtx.fillStyle   = "rgba(0, 0, 255, 0.7)";
-		this.cvsCtx.fill();
-		this.cvsCtx.strokeStyle = "rgba(0, 255, 0, 0.7)";
-		this.cvsCtx.stroke();
-		this.cvsCtx.restore();
+		cvsCtx.save();
+		cvsCtx.lineWidth = 5;
+		cvsCtx.beginPath();
+		cvsCtx.arc(this.x + dx, this.y + dy, this.radius, 0, PI_DOUBLE, true);
+		cvsCtx.fillStyle   = "rgba(0, 0, 255, 0.7)";
+		cvsCtx.fill();
+		cvsCtx.strokeStyle = "rgba(0, 255, 0, 0.7)";
+		cvsCtx.stroke();
+		cvsCtx.restore();
+	}
+
+	onMoveing(x, y, x1, y1) {
+		this.onWantMoveing(this.cvsCtx, x, y, x1, y1);
 	}
 
 	onScaleing(x, y, x1, y1) {

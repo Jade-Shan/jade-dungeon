@@ -35,11 +35,54 @@ class SandTableView {
 		this.resizeLayout();
 	}
 
+	sumCanvasOffset(docNode, result) {
+		result.x = result.x + docNode.offsetLeft - docNode.scrollLeft;
+		result.y = result.y + docNode.offsetTop  - docNode.scrollTop;
+		return docNode.offsetParent ? 
+			this.sumCanvasOffset(docNode.offsetParent, result) :
+			result;
+	}
+
 	async initSence() {
 		this.scene.width  = this.scene.imageMap.get('map').image.img.width;
 		this.scene.height = this.scene.imageMap.get('map').image.img.height;
 		canvas.setAttribute( 'width', this.scene.width );
 		canvas.setAttribute('height', this.scene.height);
+
+		this.isMovingItem  = false;
+		let self = this;
+		this.fc.onmousedown = (e) => {
+			let offset = self.sumCanvasOffset(self.canvas, {x:0, y:0});
+			// console.log(`${offset.x}, ${offset.y}`);
+			self.startX = parseInt(e.pageX - offset.x);
+			self.startY = parseInt(e.pageY - offset.y);
+			self.canvasMouseDown(self.startX, self.startY);
+		};
+		this.fc.onmousemove = (e) => {
+			let offset = self.sumCanvasOffset(self.canvas, {x:0, y:0});
+			// console.log(`${offset.x}, ${offset.y}`);
+			self.endX = parseInt(e.pageX - offset.x);
+			self.endY = parseInt(e.pageY - offset.y);
+			self.canvasMouseDrag(self.endX, self.endY);
+		};
+		this.fc.onmouseup = (e) => {
+			let offset = self.sumCanvasOffset(self.canvas, {x:0, y:0});
+			// console.log(`${offset.x}, ${offset.y}`);
+			self.endX = parseInt(e.pageX - offset.x);
+			self.endY = parseInt(e.pageY - offset.y);
+			self.canvasMouseUp(self.endX, self.endY);
+		};
+		document.addEventListener("keydown", (e) => {
+			// console.log(`${e.key} - ${e.key == 'Control'} - ${e.key == 'Alt'}`);
+			if (e.key == 'Control'){
+				self.isMovingItem  = true;
+			}
+		});
+		document.addEventListener("keyup", (e) => {
+			if (e.key == 'Control'){
+				self.isMovingItem  = false;
+			}
+		});
 	}
 
 	resizeLayout() {
@@ -123,11 +166,45 @@ class SandTableView {
 		this.fc.setAttribute( 'width', this.scene.width );
 		this.fc.setAttribute('height', this.scene.height);
 		// let fctx = fc.getContext("2d");
-		let viewMap = await loadImage(new Image(), canvas.toDataURL({
+		this.viewMap = await loadImage(new Image(), canvas.toDataURL({
 			format: 'image/png', quality: 1, 
 			width: this.scene.width, height: this.scene.height})
 		).catch((img, url) => { alert('加载图形失败：' + url); });
-		this. fctx.drawImage(viewMap, 0, 0);
+		this.fctx.drawImage(this.viewMap, 0, 0);
+	}
+
+	canvasMouseDown(x, y) {
+		console.log(`click: ${x}, ${y}`);
+		this.currDragging = undefined;
+		for(let i=0; i < this.scene.teams.length; i++) {
+			let token = this.scene.teams[i];
+			if (token.isHit(x, y)) {
+				console.log(`hit: ${token.id}`);
+				this.currDragging = token;
+				break;
+			}
+		}
+	}
+
+
+	canvasMouseDrag(x, y) {
+		if (this.currDragging && this.isMovingItem) {
+			this.fctx.clearRect(0, 0, this.fc.width, this.fc.height);
+			this.fctx.drawImage(this.viewMap, 0, 0);
+			this.currDragging.onWantMoveing(this.fctx, this.startX, this.startY, x, y);
+			console.log('666');
+		}
+	}
+
+	canvasMouseUp(x, y) {
+		if (this.currDragging && this.isMovingItem) {
+		//	requestMoveTo(this.scene.campaignId, scene.placeId, scene.sceneId, 
+		//		cookieOperator('username'), x, y);
+		}
+		this.isMovingItem  = false;
+		this.currDragging  = undefined;
+		this.addTokenGroup = undefined;
+		this.addTokenType  = undefined;
 	}
 
 }
