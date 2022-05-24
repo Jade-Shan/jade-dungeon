@@ -164,12 +164,13 @@ class Canvas2dShape {
 		this.id      = id;
 		this.x       = x;
 		this.y       = y;
-		this.centerX = x;
-		this.centerY = x;
 		this.color   = color;
 		this.visiable  = visiable ;
 		this.blockView = blockView;
 	}
+
+	centerX() {return this.x;} 
+	centerY() {return this.y;} 
 
 	/* 外部点到当前图像内个关键点的最近距离 */
 	minDistance(x, y) { }
@@ -253,11 +254,12 @@ class Line extends Canvas2dShape {
 		this.classType = this.classType + '.Line';
 		this.x2 = x2;
 		this.y2 = y2;
-		this.centerX = Math.abs(this.x - this.x2) / 2 + (this.x > this.x2 ? this.x2: this.x);
-		this.centerY = Math.abs(this.y - this.y2) / 2 + (this.y > this.y2 ? this.y2: this.y);
 		this.vtx = [[x,y], [x2, y2]];
 		this.image = {key: 'unknow', sx: 0, sy: 0, width: 1, height: 1};  
 	}
+
+	centerX() {return Math.abs(this.x - this.x2) / 2 + (this.x > this.x2 ? this.x2: this.x);} 
+	centerY() {return Math.abs(this.y - this.y2) / 2 + (this.y > this.y2 ? this.y2: this.y);} 
 
 	clone() {
 		return new Line(this.cvsCtx, this.id, this.x, this.y, this.x2, this.y2, 
@@ -321,33 +323,34 @@ class Line extends Canvas2dShape {
 	onWantMoveing(cvsCtx, x, y, x1, y1) {
 		let dx = x1 - x;
 		let dy = y1 - y;
+		let p1 = {x: this.x  + dx, y: this.y  + dy};
+		let p2 = {x: this.x2 + dx, y: this.y2 + dy};
+
+		let centerX = Math.abs(p1.x - p2.x) / 2 + (p1.x > p2.x ? p2.x: p1.x);
+		let centerY = Math.abs(p1.y - p2.y) / 2 + (p1.y > p2.y ? p2.y: p1.y);
+
+
 		// 画起点与终点之间的连线
 		cvsCtx.strokeStyle = 'rgba(255, 0, 0, 0.7)';
 		cvsCtx.lineWidth = 3;
 		cvsCtx.beginPath();
-		cvsCtx.moveTo(this.centerX, this.centerY);
-		cvsCtx.lineTo(x1, y1);
+		cvsCtx.moveTo(this.centerX(), this.centerY());
+		cvsCtx.lineTo(centerX, centerY);
 		cvsCtx.stroke();
-		// cvsCtx.strokeStyle = 'rgba(255, 0, 0, 0.7)';
-		// cvsCtx.lineWidth = 1;
-		// cvsCtx.beginPath();
-		// cvsCtx.moveTo(mx,  my );
-		// cvsCtx.lineTo(x1, y1);
-		// cvsCtx.stroke();
 		// 画终点
 		cvsCtx.save();
 		cvsCtx.strokeStyle = 'rgba(0, 0, 255, 0.7)';
 		cvsCtx.lineWidth = 8;
 		cvsCtx.beginPath();
-		cvsCtx.moveTo(dx + this.x , dy + this.y );
-		cvsCtx.lineTo(dx + this.x2, dy + this.y2);
+		cvsCtx.moveTo(p1.x, p1.y);
+		cvsCtx.lineTo(p2.x, p2.y);
 		cvsCtx.stroke();
 		// this.draw();
 		cvsCtx.strokeStyle = 'rgba(0, 0, 255, 0.7)';
 		cvsCtx.lineWidth = 3;
 		cvsCtx.beginPath();
-		cvsCtx.moveTo(dx + this.x , dy + this.y );
-		cvsCtx.lineTo(dx + this.x2, dy + this.y2);
+		cvsCtx.moveTo(p1.x, p1.y);
+		cvsCtx.lineTo(p2.x, p2.y);
 		cvsCtx.stroke();
 		// this.draw();
 		cvsCtx.restore();
@@ -464,8 +467,6 @@ class Rectangle extends Canvas2dShape {
 		this.classType = this.classType + '.Rectangle';
 		this.height = height > 10 ? height : 10;
 		this.width  = width  > 10 ? width  : 10;
-		this.centerX = this.x + this.width / 2;
-		this.centerY = this.y + this.height / 2;
 		this.color  = color;
 		this.image  = image;
 		this.image.key    = image.key;
@@ -475,6 +476,9 @@ class Rectangle extends Canvas2dShape {
 		this.image.height = image.height ? image.height: this.height;
 		this.vtx = [[x,y], [x + width,y], [x + width, y + height], [x, y + height]];
 	}
+	centerX() {return this.x + this.width  / 2;} 
+	centerY() {return this.y + this.height / 2;} 
+
 
 	clone() {
 		return new Rectangle(this.cvsCtx, this.id, this.x, this.y, this.width, this.height, 
@@ -538,8 +542,8 @@ class Rectangle extends Canvas2dShape {
 		cvsCtx.strokeStyle = 'rgba(255, 0, 0, 0.7)';
 		cvsCtx.lineWidth = 3;
 		cvsCtx.beginPath();
-		cvsCtx.moveTo(this.centerX, this.centerY);
-		cvsCtx.lineTo(x1, y1);
+		cvsCtx.moveTo(this.centerX(), this.centerY());
+		cvsCtx.lineTo(this.x + dx + this.width / 2, this.y + dy + this.height / 2);
 		cvsCtx.stroke();
 		//
 		cvsCtx.lineWidth = 5;
@@ -644,6 +648,7 @@ class Circle extends Canvas2dShape {
 		this.image.width  = image.width  ? image.width  : 2 * radius;
 		this.image.height = image.height ? image.height : 2 * radius;
 	}
+
 
 	clone() {
 		return new Circle(this.cvsCtx, this.id, this.x, this.y, this.radius,
