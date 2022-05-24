@@ -7,15 +7,84 @@ let genSceneKey = (campaignId, placeId, sceneId) => {
 	return `jadedungeon::sandtable::scence::${campaignId}::${placeId}::${sceneId}`;
 };
 
-let genOwnerKey = (campaignId, placeId, sceneId) => {
+let genOwnerKey = (campaignId) => {
 	return `jadedungeon::sandtable::campaignOwner::${campaignId}`;
 };
 
-let genLogKey = (campaignId, placeId, sceneId) => {
-	return `jadedungeon::sandtable::log::${campaignId}::${placeId}::${sceneId}`;
+let genMoveReqKey = (campaignId, placeId, sceneId) => {
+	return `jadedungeon::sandtable::moveReq::${campaignId}::${placeId}::${sceneId}`;
 };
 
 exports.handler = {
+	"/api/sandtable/load-move-request": async (context, data) => {
+		let json = {status:"error", msg: ""};
+		let campaignId = data.params.campaignId;
+		let placeId    = data.params.placeId   ;
+		let sceneId    = data.params.sceneId   ;
+		if (campaignId && placeId && sceneId && campaignId.length > 0 && 
+			placeId.length > 0 && sceneId.length > 0) //
+		{
+			let res = await rdsUtil.connect('trpg').call((conn, callback) => {
+				conn.get(genMoveReqKey(campaignId, placeId, sceneId), callback);
+			});
+			console.log(res);
+			if (!res.isSuccess) { json.msg = res.err; } else {
+				if (!res.isSuccess) { result.msg = res.err; } else {
+					json.data = {};
+					try {
+						console.log(res);
+						json.data = null == res.data ? {} : JSON.parse(res.data);
+					} catch (e) { /* */ }
+				}
+				json.status = 'success';
+			}
+		} else { json.msg = "miss params"; }
+		context.response.writeHead(200, {
+			'Content-Type':'application/json;charset=utf-8',
+			'Access-Control-Allow-Origin':'*',
+			'Access-Control-Allow-Methods':'GET,POST',
+			'Access-Control-Allow-Headers':'x-requested-with,content-type'});
+		context.response.end(JSON.stringify(json));
+	},
+
+	"/api/sandtable/request-move": async (context, data) => {
+		let result = {status:'err'};
+		let campaignId = data.params.campaignId;
+		let placeId    = data.params.placeId ;
+		let sceneId    = data.params.sceneId ;
+		let username   = data.params.username;
+		let x          = data.params.x       ;
+		let y          = data.params.y       ;
+		if (campaignId && placeId && sceneId && username && x && y &&
+			campaignId.length > 0 && placeId.length > 0 && sceneId.length > 0 && 
+			username.length > 0 && x.length > 0 && y.length > 0) //
+		{
+			let res = await rdsUtil.connect('trpg').call((conn, callback) => {
+				conn.get(genMoveReqKey(campaignId, placeId, sceneId), callback);
+			});
+			if (!res.isSuccess) { result.msg = res.err; } else {
+				let moveData = {};
+				try {
+					moveData = null == res.data ? {} : JSON.parse(res.data);
+				} catch (e) { /* */ }
+				moveData[username] = {x:x, y:y};
+				res = await rdsUtil.connect('trpg').call((conn, callback) => {
+					conn.set(genMoveReqKey(campaignId, placeId, sceneId), JSON.stringify(moveData), callback);
+				});
+				if (!res.isSuccess) { result.msg = res.err; } else {
+					result.status = 'success';
+				}
+			}
+		} else {result.msg = 'miss params';}
+
+		context.response.writeHead(200, {
+			'Content-Type':'application/json;charset=utf-8',
+			'Access-Control-Allow-Origin':'*',
+			'Access-Control-Allow-Methods':'GET,POST',
+			'Access-Control-Allow-Headers':'x-requested-with,content-type'});
+		context.response.end(JSON.stringify(result));
+	},
+
 	"/api/sandtable/parseImage": async (context, data) => {
 		let json = { status: "error", msg: "unknow err" };
 		let src = data.params.src;
