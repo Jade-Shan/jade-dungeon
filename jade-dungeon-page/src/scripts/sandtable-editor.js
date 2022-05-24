@@ -172,10 +172,18 @@ class SandTableEditor {
 		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 		this.ctx.drawImage(this.scene.imageMap.get('map').image.img, 0, 0);
 
-		this.scene.allTokens = this.scene.walls.concat(this.scene.doors).concat( 
-						this.scene.furnishings).concat(this.scene.creaters.concat(this.scene.teams));
+		this.scene.allTokens = this.scene.walls.concat(
+			this.scene.doors).concat(this.scene.furnishings).concat(
+				this.scene.creaters.concat(this.scene.teams));
 
 		this.scene.allTokens.forEach((e, i) => { e.drawDesign(); });
+
+		// 缓存当前图片
+		this.brightMap = await loadImage(new Image(), canvas.toDataURL({
+			format: 'image/png', quality: 1, 
+			width: this.scene.width, height: this.scene.height})
+		).catch((img, url) => { alert('加载图形失败：' + url); });
+		// brightMap.crossOrigin='Anonymous';
 
 		await this.loadMoveRequest();
 
@@ -191,8 +199,8 @@ class SandTableEditor {
 		await loadMoveRequest(this.scene.campaignId, this.scene.placeId, 
 			this.scene.sceneId).then(async (data) => {
 				// console.log(data);
-				// this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-				// this.ctx.drawImage(this.brightMap, 0, 0);
+				this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+				this.ctx.drawImage(this.brightMap, 0, 0);
 				for(let key in data.data) {
 					let pos   = data.data[key];
 					let token = this.scene.teamMap.get(key);
