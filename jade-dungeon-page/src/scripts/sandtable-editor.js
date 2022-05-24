@@ -188,7 +188,7 @@ class SandTableEditor {
 		await this.loadMoveRequest();
 
 		// 缓存当前图片
-		this.brightMap = await loadImage(new Image(), canvas.toDataURL({
+		this.moveReqMap = await loadImage(new Image(), canvas.toDataURL({
 			format: 'image/png', quality: 1, 
 			width: this.scene.width, height: this.scene.height})
 		).catch((img, url) => { alert('加载图形失败：' + url); });
@@ -445,11 +445,11 @@ class SandTableEditor {
 		if (this.currDragging /* && r > 10 */) {
 			if (this.isMovingItem) {
 				this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-				this.ctx.drawImage(this.brightMap, 0, 0);
+				this.ctx.drawImage(this.moveReqMap, 0, 0);
 				this.currDragging.onMoveing(this.startX, this.startY, x, y);
 			} else if (this.isScalingItem) {
 				this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-				this.ctx.drawImage(this.brightMap, 0, 0);
+				this.ctx.drawImage(this.moveReqMap, 0, 0);
 				this.currDragging.onScaleing(this.startX, this.startY, x, y);
 			}
 		}
