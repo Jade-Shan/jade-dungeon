@@ -25,15 +25,20 @@ exports.handler = {
 			placeId.length > 0 && sceneId.length > 0) //
 		{
 			let res = await rdsUtil.connect('trpg').call((conn, callback) => {
-				conn.get(genMoveReqKey(campaignId, placeId, sceneId), callback);
+				conn.hgetall(genMoveReqKey(campaignId, placeId, sceneId), callback);
 			});
 			console.log(res);
 			if (!res.isSuccess) { json.msg = res.err; } else {
 				if (!res.isSuccess) { result.msg = res.err; } else {
 					json.data = {};
 					try {
-						console.log(res);
-						json.data = null == res.data ? {} : JSON.parse(res.data);
+						// console.log(res.data);
+						for (let key in res.data) {
+							try {
+								json.data[key] = JSON.parse(res.data[key]);
+							} catch(e) {/* do nothing */}
+						}
+						// json.data = null == res.data ? {} : JSON.parse(res.data);
 					} catch (e) { /* */ }
 				}
 				json.status = 'success';
@@ -55,22 +60,23 @@ exports.handler = {
 		let username   = data.params.username;
 		let x          = data.params.x       ;
 		let y          = data.params.y       ;
-		if (campaignId && placeId && sceneId && username && x && y &&
-			campaignId.length > 0 && placeId.length > 0 && sceneId.length > 0 && 
-			username.length > 0 && x.length > 0 && y.length > 0) //
+		if (campaignId && placeId && sceneId && username && campaignId.length > 0 && 
+			placeId.length > 0 && sceneId.length > 0 && username.length > 0) //
 		{
-			let res = await rdsUtil.connect('trpg').call((conn, callback) => {
-				conn.get(genMoveReqKey(campaignId, placeId, sceneId), callback);
-			});
-			if (!res.isSuccess) { result.msg = res.err; } else {
-				let moveData = {};
-				try {
-					moveData = null == res.data ? {} : JSON.parse(res.data);
-				} catch (e) { /* */ }
-				moveData[username] = {x:x, y:y};
-				res = await rdsUtil.connect('trpg').call((conn, callback) => {
-					conn.set(genMoveReqKey(campaignId, placeId, sceneId), JSON.stringify(moveData), callback);
+			if (x && y && x > -1 && y >-1) {
+				let res = await rdsUtil.connect('trpg').call((conn, callback) => {
+					conn.hset(genMoveReqKey(campaignId, placeId, sceneId), username, `{"x":${x},"y":${y}}`, callback);
+					// conn.del(genMoveReqKey(campaignId, placeId, sceneId), username, callback);
 				});
+				console.log(res);
+				if (!res.isSuccess) { result.msg = res.err; } else {
+					result.status = 'success';
+				}
+			} else {
+				let res = await rdsUtil.connect('trpg').call((conn, callback) => {
+					conn.hdel(genMoveReqKey(campaignId, placeId, sceneId), username, callback);
+				});
+				console.log(res);
 				if (!res.isSuccess) { result.msg = res.err; } else {
 					result.status = 'success';
 				}

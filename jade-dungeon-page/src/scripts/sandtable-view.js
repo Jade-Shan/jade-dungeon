@@ -179,13 +179,14 @@ class SandTableView {
 		for(let i=0; i < this.scene.teams.length; i++) {
 			let token = this.scene.teams[i];
 			if (token.isHit(x, y) && token.id == cookieOperator('username')) {
-				console.log(`hit: ${token.id}`);
+				// console.log(`hit: ${token.id}`);
 				this.currDragging = token;
 				break;
 			}
 		}
 		if (this.reqMoveDst && this.reqMoveDst.isHit(x, y)) //
 		{
+			// 撤消移动
 			this.fctx.clearRect(0, 0, this.fc.width, this.fc.height);
 			this.fctx.drawImage(this.viewMap, 0, 0);
 		}
