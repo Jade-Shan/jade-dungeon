@@ -160,11 +160,13 @@ class Canvas2dShape {
 
 	constructor(canvasContext, id, x, y, color, visiable, blockView) {
 		this.classType = 'canvas.shape.2d';
-		this.cvsCtx = canvasContext;
-		this.id     = id;
-		this.x      = x;
-		this.y      = y;
-		this.color  = color;
+		this.cvsCtx  = canvasContext;
+		this.id      = id;
+		this.x       = x;
+		this.y       = y;
+		this.centerX = x;
+		this.centerY = x;
+		this.color   = color;
 		this.visiable  = visiable ;
 		this.blockView = blockView;
 	}
@@ -251,6 +253,8 @@ class Line extends Canvas2dShape {
 		this.classType = this.classType + '.Line';
 		this.x2 = x2;
 		this.y2 = y2;
+		this.centerX = Math.abs(this.x - this.x2) / 2 + (this.x > this.x2 ? this.x2: this.x);
+		this.centerY = Math.abs(this.y - this.y2) / 2 + (this.y > this.y2 ? this.y2: this.y);
 		this.vtx = [[x,y], [x2, y2]];
 		this.image = {key: 'unknow', sx: 0, sy: 0, width: 1, height: 1};  
 	}
@@ -318,12 +322,10 @@ class Line extends Canvas2dShape {
 		let dx = x1 - x;
 		let dy = y1 - y;
 		// 画起点与终点之间的连线
-		let mx  = Math.abs(this.x - this.x2) / 2 + (this.x > this.x2 ? this.x2: this.x);
-		let my  = Math.abs(this.y - this.y2) / 2 + (this.y > this.y2 ? this.y2: this.y);
 		cvsCtx.strokeStyle = 'rgba(255, 0, 0, 0.7)';
 		cvsCtx.lineWidth = 3;
 		cvsCtx.beginPath();
-		cvsCtx.moveTo(mx,  my );
+		cvsCtx.moveTo(this.centerX, this.centerY);
 		cvsCtx.lineTo(x1, y1);
 		cvsCtx.stroke();
 		// cvsCtx.strokeStyle = 'rgba(255, 0, 0, 0.7)';
@@ -462,6 +464,8 @@ class Rectangle extends Canvas2dShape {
 		this.classType = this.classType + '.Rectangle';
 		this.height = height > 10 ? height : 10;
 		this.width  = width  > 10 ? width  : 10;
+		this.centerX = this.x + this.width / 2;
+		this.centerY = this.y + this.height / 2;
 		this.color  = color;
 		this.image  = image;
 		this.image.key    = image.key;
@@ -534,7 +538,7 @@ class Rectangle extends Canvas2dShape {
 		cvsCtx.strokeStyle = 'rgba(255, 0, 0, 0.7)';
 		cvsCtx.lineWidth = 3;
 		cvsCtx.beginPath();
-		cvsCtx.moveTo(this.x + this.width / 2, this.y + this.height / 2);
+		cvsCtx.moveTo(this.centerX, this.centerY);
 		cvsCtx.lineTo(x1, y1);
 		cvsCtx.stroke();
 		//
