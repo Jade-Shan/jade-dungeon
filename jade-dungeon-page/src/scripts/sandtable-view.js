@@ -184,12 +184,11 @@ class SandTableView {
 				break;
 			}
 		}
-		// if (this.reqMoveDst && this.reqMoveDst.isHit(x, y) && 
-		// 	this.scene.teamMap.has(this.reqMoveDst.id)) //
-		// {
-		// 		this.currDragging = this.reqMoveDst;
-		// 		console.log(this.currDragging.id);
-		// }
+		if (this.reqMoveDst && this.reqMoveDst.isHit(x, y)) //
+		{
+			this.fctx.clearRect(0, 0, this.fc.width, this.fc.height);
+			this.fctx.drawImage(this.viewMap, 0, 0);
+		}
 	}
 
 
