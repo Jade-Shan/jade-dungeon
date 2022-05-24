@@ -187,6 +187,8 @@ class SandTableView {
 		if (this.reqMoveDst && this.reqMoveDst.isHit(x, y)) //
 		{
 			// 撤消移动
+			requestMoveTo(this.scene.campaignId, this.scene.placeId, this.scene.sceneId, 
+				cookieOperator('username'), 0, 0);
 			this.fctx.clearRect(0, 0, this.fc.width, this.fc.height);
 			this.fctx.drawImage(this.viewMap, 0, 0);
 		}
@@ -204,8 +206,8 @@ class SandTableView {
 
 	canvasMouseUp(x, y) {
 		if (this.currDragging && this.isMovingItem) {
-		//	requestMoveTo(this.scene.campaignId, scene.placeId, scene.sceneId, 
-		//		cookieOperator('username'), x, y);
+			requestMoveTo(this.scene.campaignId, this.scene.placeId, this.scene.sceneId, 
+				cookieOperator('username'), this.reqMoveDst.x, this.reqMoveDst.y);
 		}
 		this.isMovingItem  = false;
 		this.currDragging  = undefined;
