@@ -72,12 +72,13 @@ class SandTableEditor {
 			html = html + '<button type="button" onClick="javascript:sandtable.createToken(\'' + 
 				groupName + '\',\'Image\');" class="btn btn-default">&#9711</button>';
 		}
-		html = html + '<button onClick="javascript:sandtable.saveAllMapData();"' +
-			'type="button" class="btn btn-default">保存</button>' + 
-			'<button onClick="javascript:sandtable.loadMoveRequest();"' +
-			'type="button" class="btn btn-default">刷新请求</button>';
+		html = html + '';
 		$('#tokenCreateBtns').html(html);
 		$('#tokenCreateText').html(this.scene.tokenGroupText[groupName]);
+		$('#optSaveBtns').html('<button onClick="javascript:sandtable.saveAllMapData();"' +
+			'type="button" class="btn btn-default">保存</button>' + 
+			'<button onClick="javascript:sandtable.loadMoveRequest();"' +
+			'type="button" class="btn btn-default">刷新请求</button>');
 	}
 
 
@@ -145,15 +146,17 @@ class SandTableEditor {
 		let tokenGroupBtns  = document.querySelector("#tokenGroupBtns");
 		let tokenListArea   = document.querySelector("#tokenListArea");
 		let createTokenArea = document.querySelector("#createTokenArea");
+		let optSaveBtnsArea = document.querySelector("#optSaveBtnsArea");
 
 		let cpHeight  = parseInt(propImgArea.clientHeight);
 		let tgbHeight = parseInt(tokenGroupBtns.clientHeight);
 		let tlaHeight = parseInt(tokenListArea.clientHeight);
 		let tcbHeight = parseInt(createTokenArea.clientHeight);
+		let osbHeight = parseInt(optSaveBtnsArea.clientHeight);
 
-		let maHeight = wHeight - cpHeight;
+		let maHeight = wHeight - cpHeight - 10;
 		mapArea.style.height = maHeight + "px";
-		let tlHeight = maHeight - tgbHeight - tcbHeight - 30;
+		let tlHeight = maHeight - tgbHeight - tcbHeight - osbHeight - 30;
 		tokenListArea.style.height = tlHeight + 'px';
 	}
 
