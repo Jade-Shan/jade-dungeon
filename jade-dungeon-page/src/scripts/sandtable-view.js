@@ -174,16 +174,22 @@ class SandTableView {
 	}
 
 	canvasMouseDown(x, y) {
-		console.log(`click: ${x}, ${y}`);
 		this.currDragging = undefined;
+		// console.log(`click: ${x}, ${y}`);
 		for(let i=0; i < this.scene.teams.length; i++) {
 			let token = this.scene.teams[i];
-			if (token.isHit(x, y)) {
+			if (token.isHit(x, y) && token.id == cookieOperator('username')) {
 				console.log(`hit: ${token.id}`);
 				this.currDragging = token;
 				break;
 			}
 		}
+		// if (this.reqMoveDst && this.reqMoveDst.isHit(x, y) && 
+		// 	this.scene.teamMap.has(this.reqMoveDst.id)) //
+		// {
+		// 		this.currDragging = this.reqMoveDst;
+		// 		console.log(this.currDragging.id);
+		// }
 	}
 
 
@@ -191,8 +197,8 @@ class SandTableView {
 		if (this.currDragging && this.isMovingItem) {
 			this.fctx.clearRect(0, 0, this.fc.width, this.fc.height);
 			this.fctx.drawImage(this.viewMap, 0, 0);
-			this.currDragging.onWantMoveing(this.fctx, this.startX, this.startY, x, y);
-			console.log('666');
+			this.reqMoveDst = this.currDragging.onWantMoveing(this.fctx, //
+				this.startX, this.startY, x, y);
 		}
 	}
 

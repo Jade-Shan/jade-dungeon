@@ -239,6 +239,8 @@ class Canvas2dShape {
 	draw() { }
 
 	drawDesign () {}
+
+	clone() {}
 }
 
 /* 线段 */
@@ -251,6 +253,11 @@ class Line extends Canvas2dShape {
 		this.y2 = y2;
 		this.vtx = [[x,y], [x2, y2]];
 		this.image = {key: 'unknow', sx: 0, sy: 0, width: 1, height: 1};  
+	}
+
+	clone() {
+		return new Line(this.cvsCtx, this.id, this.x, this.y, this.x2, this.y2, 
+			this.color, this.visiable, this.blockView);
 	}
 
 	/* 外部点到当前图像内个关键点的最近距离 */
@@ -310,6 +317,22 @@ class Line extends Canvas2dShape {
 	onWantMoveing(cvsCtx, x, y, x1, y1) {
 		let dx = x1 - x;
 		let dy = y1 - y;
+		// 画起点与终点之间的连线
+		let mx  = Math.abs(this.x - this.x2) / 2 + (this.x > this.x2 ? this.x2: this.x);
+		let my  = Math.abs(this.y - this.y2) / 2 + (this.y > this.y2 ? this.y2: this.y);
+		cvsCtx.strokeStyle = 'rgba(255, 0, 0, 0.7)';
+		cvsCtx.lineWidth = 3;
+		cvsCtx.beginPath();
+		cvsCtx.moveTo(mx,  my );
+		cvsCtx.lineTo(x1, y1);
+		cvsCtx.stroke();
+		// cvsCtx.strokeStyle = 'rgba(255, 0, 0, 0.7)';
+		// cvsCtx.lineWidth = 1;
+		// cvsCtx.beginPath();
+		// cvsCtx.moveTo(mx,  my );
+		// cvsCtx.lineTo(x1, y1);
+		// cvsCtx.stroke();
+		// 画终点
 		cvsCtx.save();
 		cvsCtx.strokeStyle = 'rgba(0, 0, 255, 0.7)';
 		cvsCtx.lineWidth = 8;
@@ -318,7 +341,7 @@ class Line extends Canvas2dShape {
 		cvsCtx.lineTo(dx + this.x2, dy + this.y2);
 		cvsCtx.stroke();
 		// this.draw();
-		cvsCtx.strokeStyle = 'rgba(0, 255, 0, 0.7)';
+		cvsCtx.strokeStyle = 'rgba(0, 0, 255, 0.7)';
 		cvsCtx.lineWidth = 3;
 		cvsCtx.beginPath();
 		cvsCtx.moveTo(dx + this.x , dy + this.y );
@@ -326,6 +349,13 @@ class Line extends Canvas2dShape {
 		cvsCtx.stroke();
 		// this.draw();
 		cvsCtx.restore();
+		//
+		let dstToken = this.clone();
+		dstToken.x  = dx + this.x ;
+		dstToken.y  = dy + this.y ;
+		dstToken.x2 = dx + this.x2;
+		dstToken.y2 = dy + this.y2;
+		return dstToken;
 	}
 
 	onMoveing(x, y, x1, y1) {
@@ -442,6 +472,11 @@ class Rectangle extends Canvas2dShape {
 		this.vtx = [[x,y], [x + width,y], [x + width, y + height], [x, y + height]];
 	}
 
+	clone() {
+		return new Rectangle(this.cvsCtx, this.id, this.x, this.y, this.width, this.height, 
+			this.color, this.image, this.visiable, this.blockView);
+	}
+
 	/* 外部点到当前图像内个关键点的最近距离 */
 	minDistance(x, y) {
 		let minIdx = 0;
@@ -495,12 +530,25 @@ class Rectangle extends Canvas2dShape {
 		let dx = x1 - x;
 		let dy = y1 - y;
 		cvsCtx.save();
+		// 画起点与终点之间的连线
+		cvsCtx.strokeStyle = 'rgba(255, 0, 0, 0.7)';
+		cvsCtx.lineWidth = 3;
+		cvsCtx.beginPath();
+		cvsCtx.moveTo(this.x + this.width / 2, this.y + this.height / 2);
+		cvsCtx.lineTo(x1, y1);
+		cvsCtx.stroke();
+		//
 		cvsCtx.lineWidth = 5;
 		cvsCtx.fillStyle   = "rgba(0, 0, 255, 0.7)";
 		cvsCtx.fillRect(this.x + dx, this.y + dy, this.width, this.height);
 		cvsCtx.strokeStyle = "rgba(0, 255, 0, 0.7)";
 		cvsCtx.strokeRect(this.x + dx, this.y + dy, this.width, this.height);
 		cvsCtx.restore();
+		//
+		let dstToken = this.clone();
+		dstToken.x  = dx + this.x ;
+		dstToken.y  = dy + this.y ;
+		return dstToken;
 	}
 
 	onMoveing(x, y, x1, y1) {
@@ -591,6 +639,11 @@ class Circle extends Canvas2dShape {
 		this.image.sy     = image.sy     ? image.sy     : 0;
 		this.image.width  = image.width  ? image.width  : 2 * radius;
 		this.image.height = image.height ? image.height : 2 * radius;
+	}
+
+	clone() {
+		return new Circle(this.cvsCtx, this.id, this.x, this.y, this.radius,
+			this.color, this.image, this.visiable, this.blockView);
 	}
 
 	/* 外部点到当前图像内个关键点的最近距离 */
@@ -685,6 +738,14 @@ class Circle extends Canvas2dShape {
 		let dx = x1 - x;
 		let dy = y1 - y;
 		cvsCtx.save();
+		// 画起点与终点之间的连线
+		cvsCtx.strokeStyle = 'rgba(255, 0, 0, 0.7)';
+		cvsCtx.lineWidth = 3;
+		cvsCtx.beginPath();
+		cvsCtx.moveTo(this.x, this.y);
+		cvsCtx.lineTo(x1, y1);
+		cvsCtx.stroke();
+		//
 		cvsCtx.lineWidth = 5;
 		cvsCtx.beginPath();
 		cvsCtx.arc(this.x + dx, this.y + dy, this.radius, 0, PI_DOUBLE, true);
@@ -693,6 +754,11 @@ class Circle extends Canvas2dShape {
 		cvsCtx.strokeStyle = "rgba(0, 255, 0, 0.7)";
 		cvsCtx.stroke();
 		cvsCtx.restore();
+		//
+		let dstToken = this.clone();
+		dstToken.x  = dx + this.x ;
+		dstToken.y  = dy + this.y ;
+		return dstToken;
 	}
 
 	onMoveing(x, y, x1, y1) {
