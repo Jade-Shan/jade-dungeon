@@ -178,6 +178,7 @@ class SandTableEditor {
 		this.scene.allTokens.forEach((e, i) => { e.drawDesign(); });
 
 		await this.loadMoveRequest();
+
 		// 缓存当前图片
 		this.brightMap = await loadImage(new Image(), canvas.toDataURL({
 			format: 'image/png', quality: 1, 
@@ -200,9 +201,7 @@ class SandTableEditor {
 						token.drawDesign();
 					}
 				}
-			}).catch((err) => {
-				alert("网络异常");
-			});
+			}).catch((err) => { alert("网络异常"); });
 	}
 
 	seriseMapData () {
