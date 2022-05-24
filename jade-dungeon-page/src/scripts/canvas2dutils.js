@@ -752,7 +752,7 @@ class Circle extends Canvas2dShape {
 		cvsCtx.lineWidth = 3;
 		cvsCtx.beginPath();
 		cvsCtx.moveTo(this.x, this.y);
-		cvsCtx.lineTo(x1, y1);
+		cvsCtx.lineTo(this.x + dx, this.y + dy);
 		cvsCtx.stroke();
 		//
 		cvsCtx.lineWidth = 5;
