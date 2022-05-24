@@ -73,7 +73,9 @@ class SandTableEditor {
 				groupName + '\',\'Image\');" class="btn btn-default">&#9711</button>';
 		}
 		html = html + '<button onClick="javascript:sandtable.saveAllMapData();"' +
-			'type="button" class="btn btn-default">保存全部</button>';
+			'type="button" class="btn btn-default">保存</button>' + 
+			'<button onClick="javascript:sandtable.loadMoveRequest();"' +
+			'type="button" class="btn btn-default">刷新请求</button>';
 		$('#tokenCreateBtns').html(html);
 		$('#tokenCreateText').html(this.scene.tokenGroupText[groupName]);
 	}
@@ -167,21 +169,37 @@ class SandTableEditor {
 		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 		this.ctx.drawImage(this.scene.imageMap.get('map').image.img, 0, 0);
 
-		this.scene.allTokens = this.scene.creaters.concat( 
-			this.scene.teams) .concat( 
-				this.scene.walls).concat( 
-					this.scene.doors).concat( 
-						this.scene.furnishings);
+		this.scene.allTokens = this.scene.walls.concat(this.scene.doors).concat( 
+						this.scene.furnishings).concat(this.scene.creaters.concat(this.scene.teams));
 
 		this.scene.allTokens.forEach((e, i) => { e.drawDesign(); });
 
+		await this.loadMoveRequest();
 		// 缓存当前图片
-		let brightMap = await loadImage(new Image(), canvas.toDataURL({
+		this.brightMap = await loadImage(new Image(), canvas.toDataURL({
 			format: 'image/png', quality: 1, 
 			width: this.scene.width, height: this.scene.height})
 		).catch((img, url) => { alert('加载图形失败：' + url); });
 		// brightMap.crossOrigin='Anonymous';
-		this.brightMap = brightMap;
+	}
+
+	async loadMoveRequest() {
+		await loadMoveRequest(this.scene.campaignId, this.scene.placeId, 
+			this.scene.sceneId).then(async (data) => {
+				// console.log(data);
+				// this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+				// this.ctx.drawImage(this.brightMap, 0, 0);
+				for(let key in data.data) {
+					let pos   = data.data[key];
+					let token = this.scene.teamMap.get(key);
+					if (token && pos && pos.x && pos.y) {
+						token.onMoveing(token.x + 5, token.y + 5, pos.x, pos.y);
+						token.drawDesign();
+					}
+				}
+			}).catch((err) => {
+				alert("网络异常");
+			});
 	}
 
 	seriseMapData () {

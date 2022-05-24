@@ -188,7 +188,7 @@ class SandTableView {
 		{
 			// 撤消移动
 			requestMoveTo(this.scene.campaignId, this.scene.placeId, this.scene.sceneId, 
-				cookieOperator('username'), 0, 0);
+				cookieOperator('username'), -1, -1);
 			this.fctx.clearRect(0, 0, this.fc.width, this.fc.height);
 			this.fctx.drawImage(this.viewMap, 0, 0);
 		}

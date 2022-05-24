@@ -218,6 +218,25 @@ let loadItemsOnMap = async (ctx, scene, itemList, itemMap, itemDatas) => {
 	}
 };
 
+let loadMoveRequest = async (campaignId, placeId, sceneId) => {
+	return new Promise((resolve, reject) => {
+		$.ajax({ 
+			url: apiRoot + 'load-move-request?campaignId=' + encodeURIComponent(campaignId) + 
+				'&placeId=' + encodeURIComponent(placeId) + '&sceneId='+ encodeURIComponent(sceneId) +
+				'&t=' + (new Date()).getTime(), 
+			type: 'GET', dataType: 'json', data: { }, timeout: 30000, 
+			xhrFields: {'Access-Control-Allow-Origin':'*'}, 
+			success: function(data, status, xhr) {
+				if ('success' == data.status) { // console.log(data);
+					resolve(data);
+				} else { reject(data); }
+			},
+			error: function(xhr, errorType, error) { reject(xhr); },
+			complete: function(xhr, status) { }
+		});
+	});
+};
+
 let requestMoveTo = async (campaignId, placeId, sceneId, username, x, y) => {
 	return new Promise((resolve, reject) => {
 		$.ajax({ 
