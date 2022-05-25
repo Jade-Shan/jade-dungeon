@@ -1,3 +1,4 @@
+let rdsUtil = require('../common/redisUtil');
 
 
 let genRollResultKey = (campaignId, placeId, sceneId) => {
@@ -17,7 +18,7 @@ exports.handler = {
             username.length > 0 && rollCmd.length > 0) //
         {
             let rollArr = rollCmd.match(/(\d*d)?\d+/gi);
-            console.log(rollArr);
+            // console.log(rollArr);
             let sum = 0;
             let sumStr = '';
             if (rollArr && rollArr.length > 0) {
@@ -45,8 +46,16 @@ exports.handler = {
                         sumStr = sumStr + '+' + n + `(${s})`;
                     }
                 }
-                sumStr = `${sum}`.substring(1);
+                sumStr = `${sum}=` + sumStr.substring(1);
                 console.log(sumStr);
+				let res = await rdsUtil.connect('trpg').call((conn, callback) => {
+					conn.hset(genRollResultKey(campaignId, placeId, sceneId), username, sumStr, callback);
+				});
+				// console.log(res);
+				if (!res.isSuccess) { result.msg = res.err; } else {
+					json.status = 'success';
+                    json.msg = sumStr;
+				}
             } else { json.msg = 'roll command format err'; }
         } else { json.msg = 'miss params'; }
         context.response.writeHead(200, {
