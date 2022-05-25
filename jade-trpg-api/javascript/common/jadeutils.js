@@ -11,7 +11,3 @@ exports.uuid = () => {
     s[19] = hexDigs.substr((s[19] & 0x3) | 0x8, 1);
     return s.join("");
 };
-
-exports.serializeCookie = (key, value, expireDays) => {
-    
-}

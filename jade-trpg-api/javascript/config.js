@@ -9,6 +9,7 @@ exports.globalCfg = {
 	moduleNames : [
 		"./auth/login.js",
 		"./sandtable/map",
+		"./sandtable/dice",
 		"./test"]                                // 测试模块
 };
 

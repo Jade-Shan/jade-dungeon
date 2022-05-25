@@ -6,6 +6,10 @@
             "type": "node",
             "request": "launch",
             "program": "${workspaceFolder}/javascript/main.js",
+            "runtimeArgs": [
+                "--preserve-symlinks",
+                "--preserve-symlinks-main"
+            ],
             "skipFiles": [ "<node_internals>/**" ]
          }
     ]
