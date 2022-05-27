@@ -93,7 +93,7 @@ class SandTableView {
 		let cpHeight = 150; // parseInt(ctrlPanel.style.height);
 
 		let maWidth  = wWidth - 30;
-		let maHeight = wHeight - cpHeight - 30;
+		let maHeight = wHeight - 30;
 		mapArea.style.width  = maWidth  + "px";
 		mapArea.style.height = maHeight + "px";
 	}
