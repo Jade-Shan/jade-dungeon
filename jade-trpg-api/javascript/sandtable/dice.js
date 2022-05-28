@@ -120,6 +120,42 @@ exports.handler = {
             'Access-Control-Allow-Headers': 'x-requested-with,content-type'
         });
         context.response.end(JSON.stringify(json));
-    }
+    },
 
+    // http://localhost:8088/api/sandtable/get-roll-result?campaignId=campaign01&placeId=place01&sceneId=scene01
+    "/api/sandtable/get-roll-result": async (context, data) => {
+		let json = {status:"error", msg: ""};
+		let campaignId = data.params.campaignId;
+		let placeId    = data.params.placeId   ;
+		let sceneId    = data.params.sceneId   ;
+		if (campaignId && placeId && sceneId && campaignId.length > 0 && 
+			placeId.length > 0 && sceneId.length > 0) //
+		{
+			let res = await rdsUtil.connect('trpg').call((conn, callback) => {
+				conn.hgetall(genRollResultKey(campaignId, placeId, sceneId), callback);
+			});
+			console.log(res);
+			if (!res.isSuccess) { json.msg = res.err; } else {
+				if (!res.isSuccess) { result.msg = res.err; } else {
+					json.data = {};
+					try {
+						// console.log(res.data);
+						for (let key in res.data) {
+							try {
+								json.data[key] = JSON.parse(res.data[key]);
+							} catch(e) {/* do nothing */}
+						}
+						// json.data = null == res.data ? {} : JSON.parse(res.data);
+					} catch (e) { /* */ }
+				}
+				json.status = 'success';
+			}
+		} else { json.msg = "miss params"; }
+		context.response.writeHead(200, {
+			'Content-Type':'application/json;charset=utf-8',
+			'Access-Control-Allow-Origin':'*',
+			'Access-Control-Allow-Methods':'GET,POST',
+			'Access-Control-Allow-Headers':'x-requested-with,content-type'});
+		context.response.end(JSON.stringify(json));
+    }
 }

@@ -37,6 +37,10 @@ const cfg = {
 	env : {} 
 };
 
+const sleep = (timeountMS) => new Promise((resolve) => {
+  setTimeout(resolve, timeountMS);
+});
+
 // =======================
 // MockApi
 // =======================
@@ -69,14 +73,15 @@ gulp.task('copy-misc', gulp.series('clean-misc', () => {
 // images
 // =======================
 
-gulp.task('clean-images', () => {
-		return gulp.src([cfg.path.dst.img + '**/*'], 
-			{read: false, allowEmpty: true}).pipe(clean());
+gulp.task('clean-images', (done) => {
+	gulp.src([cfg.path.dst.img + '**/*'], 
+		{read: false, allowEmpty: true}).pipe(clean());
+	done();
 });
 
-gulp.task('copy-images', gulp.series('clean-images', () => {
-		return gulp.src([cfg.path.src.img + '**/*.*'])
-		.pipe(gulp.dest(cfg.path.dst.img))
+gulp.task('copy-images', gulp.series('clean-images', (done) => {
+	gulp.src([cfg.path.src.img + '**/*.*']).pipe(gulp.dest(cfg.path.dst.img));
+	done();
 }));
 
 // =======================

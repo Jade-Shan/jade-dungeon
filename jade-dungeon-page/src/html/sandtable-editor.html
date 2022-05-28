@@ -14,24 +14,24 @@
 	</head>
 	<body class="container-fluid">
 		<div id="most-out" class="row">
-			<div class="col-lg-9 col-md-8 col-sm-6 col-xs-6">
+			<div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">
 				<div class="row">
 					<div id="mapArea" class="col-12">
 						<canvas id="canvas" height="300" width="300"></canvas>	
 					</div>
 				</div>
-			<div class="row">
-				<div id="ctrlPanel" class="col-lg-8 col-md-8 col-sm-6 col-xs-6">
-					<table class="table table-striped">
-						<tbody id="tk-prop-editer"></tbody>
-					</table>
-				</div>
-				<div id="propImgArea" class="col-lg-4 col-md-4 col-sm-6 col-xs-6">
-					<canvas id="tkImgCanvas" height="100" width="100"></canvas>	
+				<div class="row">
+					<div id="ctrlPanel" class="col-lg-8 col-md-8 col-sm-6 col-xs-6">
+						<table class="table table-striped">
+							<tbody id="tk-prop-editer"></tbody>
+						</table>
+					</div>
+					<div id="propImgArea" class="col-lg-4 col-md-4 col-sm-6 col-xs-6">
+						<canvas id="tkImgCanvas" height="100" width="100"></canvas>	
+					</div>
 				</div>
 			</div>
-			</div>
-			<div class="container col-lg-3 col-md-4 col-sm-6 col-xs-6">
+			<div class="container col-lg-3 col-md-3 col-sm-3 col-xs-3">
 				<div id='tokenGroupBtns' class="row">
 					<div class="btn-group col-12">
 						<button type="button"	id="btn-lst-teams"      onClick="javascript:sandtable.listGroupTokens('team'      );" class="btn btn-default">&#128100</button>
@@ -55,6 +55,20 @@
 				</div>
 				<div id="optSaveBtnsArea" class="row">
 					<div  id="optSaveBtns" class="btn-group col-12"></div>
+				</div>
+				<div id="logInfoArea" class="row">
+					<textarea id="logInfo" class="form-control col-12" rows="10" readonly='readonly' onClick="javascript:sandtable.queryRollResult()"></textarea>
+				</div>
+				<div id="rollDiceArea" class="row">
+					<div class="col-lg-4">
+						<select id="rollDiceUser" class="form-control" ></select>
+					</div>
+					<div class="col-lg-5">
+						<input id="rollDiceThreshold" type="text" class="form-control" placeholder="threshold" >
+					</div>
+					<div class="col-lg-3">
+						<button type="button"	id="rollDiceReqSubmit" onClick="javascript:sandtable.requestRollThreshold()" class="btn btn-default">提交</button>
+					</div>
 				</div>
 			</div>
 		</div>

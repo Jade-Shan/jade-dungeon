@@ -147,16 +147,20 @@ class SandTableEditor {
 		let tokenListArea   = document.querySelector("#tokenListArea");
 		let createTokenArea = document.querySelector("#createTokenArea");
 		let optSaveBtnsArea = document.querySelector("#optSaveBtnsArea");
+		let roll1Area = document.querySelector("#logInfoArea");
+		let roll2Area = document.querySelector("#rollDiceArea");
 
 		let cpHeight  = parseInt(propImgArea.clientHeight);
 		let tgbHeight = parseInt(tokenGroupBtns.clientHeight);
 		let tlaHeight = parseInt(tokenListArea.clientHeight);
 		let tcbHeight = parseInt(createTokenArea.clientHeight);
 		let osbHeight = parseInt(optSaveBtnsArea.clientHeight);
+		let roll1bHeight = parseInt(roll1Area.clientHeight);
+		let roll2bHeight = parseInt(roll2Area.clientHeight);
 
-		let maHeight = wHeight - cpHeight - 10;
+		let maHeight = wHeight - cpHeight - 20;
 		mapArea.style.height = maHeight + "px";
-		let tlHeight = maHeight - tgbHeight - tcbHeight - osbHeight - 30;
+		let tlHeight = wHeight - tgbHeight - tcbHeight - osbHeight - roll1bHeight- roll2bHeight - 30;
 		tokenListArea.style.height = tlHeight + 'px';
 	}
 
@@ -167,6 +171,16 @@ class SandTableEditor {
 		await this.drawSence();
 		this.resizeLayout();
 		this.listGroupTokens('team');
+		this.initRollDiceMembers();
+	}
+
+	initRollDiceMembers() {
+		let rollMembersHtml = '';
+		for (let e of this.scene.teamMap) {
+			// console.log(e);
+			rollMembersHtml = rollMembersHtml + '<option value="' + e[0] + '">' + e[0] + '</option>';
+		}
+		$('#rollDiceUser').html(rollMembersHtml);
 	}
 
 	async drawSence() {
@@ -472,6 +486,45 @@ class SandTableEditor {
 		this.currDragging = undefined;
 		this.addTokenGroup = undefined;
 		this.addTokenType  = undefined;
+	}
+
+	async requestRollThreshold() {
+		let username  = $('#rollDiceUser').val();
+		let threshold =  $('#rollDiceThreshold').val();
+		if (username && username.length > 0&& /[0-9]+/gi.test($('#rollDiceThreshold').val())) {
+			await requestRollThreshold(this.scene.campaignId, this.scene.placeId, 
+				this.scene.sceneId, username, threshold).then(async (data) => {
+					console.log(data);
+				}).catch((err) => { alert("网络异常"); });
+		} else {
+			alert('请输入要求投骰子的用户名与通过阈值');
+		}
+	}
+
+	async queryRollResult () {
+		let rollResult = {};
+		await queryRollResult(this.scene.campaignId, this.scene.placeId, 
+			this.scene.sceneId, username).then(async (data) => {
+				console.log(data);
+				rollResult = data.data;
+			}).catch((err) => { alert("网络异常"); });
+		//
+		let text = '';
+		for(let key in rollResult) {
+			let rec = rollResult[key];
+			let threshold = rec.threshold;
+			let sum = rec.sum;
+			let msg = rec.msg;
+			text = text + '* ' + key + '    ';
+			if (sum > 0) {
+				text = text + '阈值：' + threshold + '\n';
+				text = text + (sum < threshold ? '  失败：' : '  成功：');
+				text = text + msg + '\n';
+			} else {
+				text = text + '阈值：' + threshold + '\n  等待中……\n';
+			}
+		}
+		$('#logInfo').val(text);
 	}
 
 }

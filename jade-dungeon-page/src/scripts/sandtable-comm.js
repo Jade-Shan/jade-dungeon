@@ -257,6 +257,45 @@ let requestMoveTo = async (campaignId, placeId, sceneId, username, x, y) => {
 	});
 };
 
+let queryRollResult = async (campaignId, placeId, sceneId) => {
+	return new Promise((resolve, reject) => {
+		$.ajax({ 
+			url: apiRoot + 'get-roll-result?campaignId=' + encodeURIComponent(campaignId) + 
+				'&placeId=' + encodeURIComponent(placeId) + '&sceneId='+ encodeURIComponent(sceneId) +
+				'&t=' + (new Date()).getTime(), 
+			type: 'GET', dataType: 'json', data: { }, timeout: 30000, 
+			xhrFields: {'Access-Control-Allow-Origin':'*'}, 
+			success: function(data, status, xhr) {
+				if ('success' == data.status) { // console.log(data);
+					resolve(data);
+				} else { reject(data); }
+			},
+			error: function(xhr, errorType, error) { reject(xhr); },
+			complete: function(xhr, status) { }
+		});
+	});
+};
+
+let requestRollThreshold = async (campaignId, placeId, sceneId, username, threshold) => {
+	return new Promise((resolve, reject) => {
+		$.ajax({ 
+			url: apiRoot + 'set-roll-threshold?campaignId=' + encodeURIComponent(campaignId) + 
+				'&placeId=' + encodeURIComponent(placeId) + '&sceneId='+ encodeURIComponent(sceneId) +
+				'&username=' + encodeURIComponent(username) + '&threshold=' + encodeURIComponent(threshold) + 
+				'&t=' + (new Date()).getTime(), 
+			type: 'GET', dataType: 'json', data: { }, timeout: 30000, 
+			xhrFields: {'Access-Control-Allow-Origin':'*'}, 
+			success: function(data, status, xhr) {
+				if ('success' == data.status) { // console.log(data);
+					resolve(data);
+				} else { reject(data); }
+			},
+			error: function(xhr, errorType, error) { reject(xhr); },
+			complete: function(xhr, status) { }
+		});
+	});
+};
+
 let requestMapDatas = async (campaignId, placeId, sceneId) => {
 	return new Promise((resolve, reject) => {
 		$.ajax({ 
