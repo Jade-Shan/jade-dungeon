@@ -222,6 +222,6 @@ gulp.task('process-html', gulp.series('clean-html-rls', async (callback) => {
 gulp.task('default', gulp.parallel('copy-mock-api', 'copy-misc', 'copy-images', 
 'build-styles', 'copy-scripts', 'include-html'));
 
-gulp.task('release', gulp.parallel('copy-mock-api', 'copy-misc', 'copy-images', 
+gulp.task('release', gulp.series('copy-mock-api', 'copy-misc', 'copy-images', 
 'min-styles', 'min-scripts-trpg', 'min-scripts', 'process-html'));
 

@@ -86,15 +86,15 @@ class SandTableView {
 	}
 
 	resizeLayout() {
-		let wWidth    = parseInt(window.innerWidth);
+		// let wWidth    = parseInt(window.innerWidth);
 		let wHeight   = parseInt(window.innerHeight);
 		let mapArea   = document.querySelector("#mapArea");
 		let ctrlPanel = document.querySelector("#ctrlPanel");
 		let cpHeight = 150; // parseInt(ctrlPanel.style.height);
 
-		let maWidth  = wWidth - 30;
+		// let maWidth  = wWidth - 30;
 		let maHeight = wHeight - 30;
-		mapArea.style.width  = maWidth  + "px";
+		// mapArea.style.width  = maWidth  + "px";
 		mapArea.style.height = maHeight + "px";
 	}
 
@@ -213,6 +213,50 @@ class SandTableView {
 		this.currDragging  = undefined;
 		this.addTokenGroup = undefined;
 		this.addTokenType  = undefined;
+	}
+
+	async rollDice() {
+		let rollResult = {};
+		let username = cookieOperator('username');
+		let rollCmd  = $('#rollDiceCmd').val();
+		if (rollCmd && rollCmd.length > 0) {
+			await rollDice(this.scene.campaignId, this.scene.placeId, 
+				this.scene.sceneId, username, rollCmd).then(async (data) => {
+					console.log(data);
+					rollResult = data.data;
+				}).catch((err) => { 
+					if (err && err.msg) {
+						alert(err.msg);
+					} else { alert('网络异常'); }		
+				});
+			this.queryRollResult();
+		} else { alert('请输入roll命令');}
+	}
+
+	async queryRollResult () {
+		let rollResult = {};
+		let username = cookieOperator('username');
+		await queryRollResult(this.scene.campaignId, this.scene.placeId, 
+			this.scene.sceneId, username).then(async (data) => {
+				console.log(data);
+				rollResult = data.data;
+			}).catch((err) => { alert("网络异常"); });
+		//
+		let text = '';
+		for(let key in rollResult) {
+			let rec = rollResult[key];
+			let threshold = rec.threshold;
+			let sum = rec.sum;
+			let msg = rec.msg;
+			text = text + '* ' + key + '    ';
+			if (sum > 0) {
+				text = text + (sum < threshold ? '  失败：' : '  成功：');
+				text = text + msg + '\n';
+			} else {
+				text = text + '  等待中……\n';
+			}
+		}
+		$('#logInfo').val(text);
 	}
 
 }

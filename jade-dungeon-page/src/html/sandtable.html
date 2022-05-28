@@ -1,21 +1,36 @@
 <!DOCTYPE html>
 <html lang="en" dir="dir">
 	<head>
+<link rel="stylesheet" href="@@cdn3rd/bootstrap/3.3.6/css/bootstrap.min.css" />
+<link rel="stylesheet" href="@@cdn3rd/bootstrap/3.3.6/css/bootstrap-theme.min.css" />
 		<style>
 			div#hideImgs { display: none;}
-			div#mapArea {width: 900px; height: 700px; overflow: auto;}	
-			button {
-				width : 150px; height: 50px;
-				border-radius: 20%; font-size: 15px;}
-			/* button {border-radius: 20%;} */
-			button.clicked { background-color: #141E27; color: #EEEDDE;}
+			div#mapArea {overflow: auto;}	
 		</style>
 		<meta charset="UTF-8">
 		<title>sand box</title>
 	</head>
-	<body>
-		<div id="mapArea">
-			<canvas id="finalCanvas" height="300" width="300"></canvas>	
+	<body class="container-fluid">
+
+		<div id="most-out" class="row">
+			<div id="mapArea" class="col-lg-9 col-md-9 col-sm-9 col-xs-9">
+				<canvas id="finalCanvas" height="300" width="300"></canvas>	
+			</div>
+			<div id="sidePanel" class="container col-lg-3 col-md-3 col-sm-3 col-xs-3">
+				<div class="row">
+					<div class="col-12">
+						<textarea id="logInfo" class="form-control col-12" rows="10" readonly='readonly' onClick="javascript:sandtable.queryRollResult()" style="width:100%"></textarea>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
+						<input id="rollDiceCmd" type="text" class="form-control" placeholder="example: 2d6+1d4+3" >
+					</div>
+						<div class="container col-lg-2 col-md-2 col-sm-2 col-xs-2">
+							<button type="button"	id="rollDiceBtn" onClick="javascript:sandtable.rollDice()"  class="btn btn-default">roll</button>
+						</div>
+				</div>
+			</div>
 		</div>
 
 		<div id="ctrlPanel">
@@ -45,6 +60,7 @@
 		</div>
 
 		<script src="@@cdn3rd/jquery/2.1.4/jquery.min.js"></script>
+		<script src="@@cdn3rd/bootstrap/3.3.6/js/bootstrap.min.js" ></script>
 <!--build:js @@webRoot/scripts/trpg.min.js?v=@@buildversion-->
 		<script src="@@webRoot/scripts/canvas2dutils.js?v=@@buildversion" ></script>
 		<script src="@@webRoot/scripts/sandtable-comm.js?v=@@buildversion" ></script>

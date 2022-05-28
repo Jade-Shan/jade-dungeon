@@ -81,6 +81,8 @@ exports.handler = {
                         json.sum = rollRes.sum;
                     }
                 }
+            } else {
+                json.msg = 'not your turn';
             }
         } else { json.msg = 'miss params'; }
         context.response.writeHead(200, {

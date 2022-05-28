@@ -257,6 +257,26 @@ let requestMoveTo = async (campaignId, placeId, sceneId, username, x, y) => {
 	});
 };
 
+let rollDice = async (campaignId, placeId, sceneId, username, rollCmd) => {
+	return new Promise((resolve, reject) => {
+		$.ajax({ 
+			url: apiRoot + 'roll-dice?campaignId=' + encodeURIComponent(campaignId) + 
+				'&placeId=' + encodeURIComponent(placeId) + '&sceneId='+ encodeURIComponent(sceneId) +
+				'&username=' + encodeURIComponent(username) + '&rollCmd='+ encodeURIComponent(rollCmd) +
+				'&t=' + (new Date()).getTime(), 
+			type: 'GET', dataType: 'json', data: { }, timeout: 30000, 
+			xhrFields: {'Access-Control-Allow-Origin':'*'}, 
+			success: function(data, status, xhr) {
+				if ('success' == data.status) { // console.log(data);
+					resolve(data);
+				} else { reject(data); }
+			},
+			error: function(xhr, errorType, error) { reject(xhr); },
+			complete: function(xhr, status) { }
+		});
+	});
+};
+
 let queryRollResult = async (campaignId, placeId, sceneId) => {
 	return new Promise((resolve, reject) => {
 		$.ajax({ 
