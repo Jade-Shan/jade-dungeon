@@ -12,10 +12,24 @@
 		<meta charset="UTF-8">
 		<title>sandtable</title>
 	</head>
-	<body class="container">
+	<body class="container-fluid">
 		<div id="most-out" class="row">
-			<div id="mapArea" class="col-lg-9 col-md-8 col-sm-6 col-xs-6">
-				<canvas id="canvas" height="300" width="300"></canvas>	
+			<div class="col-lg-9 col-md-8 col-sm-6 col-xs-6">
+				<div class="row">
+					<div id="mapArea" class="col-12">
+						<canvas id="canvas" height="300" width="300"></canvas>	
+					</div>
+				</div>
+			<div class="row">
+				<div id="ctrlPanel" class="col-lg-8 col-md-8 col-sm-6 col-xs-6">
+					<table class="table table-striped">
+						<tbody id="tk-prop-editer"></tbody>
+					</table>
+				</div>
+				<div id="propImgArea" class="col-lg-4 col-md-4 col-sm-6 col-xs-6">
+					<canvas id="tkImgCanvas" height="100" width="100"></canvas>	
+				</div>
+			</div>
 			</div>
 			<div class="container col-lg-3 col-md-4 col-sm-6 col-xs-6">
 				<div id='tokenGroupBtns' class="row">
@@ -42,16 +56,6 @@
 				<div id="optSaveBtnsArea" class="row">
 					<div  id="optSaveBtns" class="btn-group col-12"></div>
 				</div>
-			</div>
-		</div>
-		<div class="row">
-			<div id="ctrlPanel" class="col-lg-8 col-md-8 col-sm-6 col-xs-6">
-				<table class="table table-striped">
-					<tbody id="tk-prop-editer"></tbody>
-				</table>
-			</div>
-			<div id="propImgArea" class="col-lg-4 col-md-4 col-sm-6 col-xs-6">
-				<canvas id="tkImgCanvas" height="100" width="100"></canvas>	
 			</div>
 		</div>
 
