@@ -41,13 +41,13 @@ const cfg = {
 // MockApi
 // =======================
 
-gulp.task('clean-mock-api', async () => {
-		return await gulp.src([cfg.path.dst.api], 
+gulp.task('clean-mock-api', () => {
+		return gulp.src([cfg.path.dst.api], 
 			{read: false, allowEmpty: true}).pipe(clean());
 });
 
-gulp.task('copy-mock-api', gulp.series('clean-mock-api', async () => {
-		return await gulp.src([cfg.path.src.api + '**/*'])
+gulp.task('copy-mock-api', gulp.series('clean-mock-api', () => {
+		return gulp.src([cfg.path.src.api + '**/*'])
 		.pipe(gulp.dest(cfg.path.dst.api))
 }));
 
@@ -55,13 +55,13 @@ gulp.task('copy-mock-api', gulp.series('clean-mock-api', async () => {
 // misc-files 
 // =======================
 
-gulp.task('clean-misc', async () => {
-		return await gulp.src([cfg.path.dst.misc + '**/*'], 
+gulp.task('clean-misc', () => {
+		return gulp.src([cfg.path.dst.misc + '**/*'], 
 			{read: false, allowEmpty: true}).pipe(clean());
 });
 
-gulp.task('copy-misc', gulp.series('clean-misc', async () => {
-		return await gulp.src([cfg.path.src.misc+ '**/*.*'])
+gulp.task('copy-misc', gulp.series('clean-misc', () => {
+		return gulp.src([cfg.path.src.misc+ '**/*.*'])
 		.pipe(gulp.dest(cfg.path.dst.misc))
 }));
 
@@ -69,13 +69,13 @@ gulp.task('copy-misc', gulp.series('clean-misc', async () => {
 // images
 // =======================
 
-gulp.task('clean-images', async () => {
-		return await gulp.src([cfg.path.dst.img + '**/*'], 
+gulp.task('clean-images', () => {
+		return gulp.src([cfg.path.dst.img + '**/*'], 
 			{read: false, allowEmpty: true}).pipe(clean());
 });
 
-gulp.task('copy-images', gulp.series('clean-images', async () => {
-		return await gulp.src([cfg.path.src.img + '**/*.*'])
+gulp.task('copy-images', gulp.series('clean-images', () => {
+		return gulp.src([cfg.path.src.img + '**/*.*'])
 		.pipe(gulp.dest(cfg.path.dst.img))
 }));
 
@@ -83,19 +83,19 @@ gulp.task('copy-images', gulp.series('clean-images', async () => {
 // css
 // =======================
 
-gulp.task('clean-styles', async () => {
-		return await gulp.src([cfg.path.dst.css + '**/*.css'], 
+gulp.task('clean-styles', () => {
+		return gulp.src([cfg.path.dst.css + '**/*.css'], 
 			{read: false, allowEmpty: true}).pipe(clean());
 });
 
-gulp.task('build-styles', gulp.series('clean-styles', async () => {
-	return await gulp.src(cfg.path.src.less + '**/*.less')
+gulp.task('build-styles', gulp.series('clean-styles', () => {
+	return gulp.src(cfg.path.src.less + '**/*.less')
 		.pipe(less({compress: true})).on('error', (e) => {console.log(e)})
 		.pipe(gulp.dest(cfg.path.dst.css));
 }));
 
-gulp.task('min-styles',   gulp.series('clean-styles', async () => {
-	return await gulp.src(cfg.path.src.less + '**/*.less')
+gulp.task('min-styles',   gulp.series('clean-styles', () => {
+	return gulp.src(cfg.path.src.less + '**/*.less')
 		.pipe(less({compress: true})).on('error', (e) => {console.log(e)})
 		.pipe(concat('blog.css'))            // 合并文件为all.css
 		.pipe(rename({suffix: '.min'}))      // 重命名all.css为 all.min.css
@@ -107,20 +107,20 @@ gulp.task('min-styles',   gulp.series('clean-styles', async () => {
 // javascript
 // =======================
 
-gulp.task('clean-scripts', async () => {
-	return await gulp.src([cfg.path.dst.js + '**/*.js'], 
+gulp.task('clean-scripts', () => {
+	return gulp.src([cfg.path.dst.js + '**/*.js'], 
 		{read: false, allowEmpty: true}).pipe(clean());
 });
 
 // 检查javascript
-gulp.task('check-scripts', async () => {
-	return await gulp.src(cfg.path.src.js + '**/*.js').pipe(jshint())
+gulp.task('check-scripts', () => {
+	return gulp.src(cfg.path.src.js + '**/*.js').pipe(jshint())
 		.pipe(jshint.reporter('default'));
 });
 
 // 复制末处理的源文件供调试用
-gulp.task('copy-scripts', gulp.series('clean-scripts', 'check-scripts', async () => {
-	return await gulp.src([
+gulp.task('copy-scripts', gulp.series('clean-scripts', 'check-scripts', () => {
+	return gulp.src([
 			cfg.path.src.js + 'base.js',
 			cfg.path.src.js + 'canvas2dutils.js',
 			cfg.path.src.js + 'sandtable-comm.js',
@@ -133,8 +133,8 @@ gulp.task('copy-scripts', gulp.series('clean-scripts', 'check-scripts', async ()
 }));
 
 // 合并、压缩、重命名javascript
-gulp.task('min-scripts', gulp.series('clean-scripts', 'check-scripts', async () => {
-	return await gulp.src([
+gulp.task('min-scripts', gulp.series('clean-scripts', 'check-scripts', () => {
+	return gulp.src([
 			cfg.path.src.js + 'base.js',
 			cfg.path.src.js + 'journal.js',
 			cfg.path.src.js + 'gallery.js'
@@ -144,8 +144,8 @@ gulp.task('min-scripts', gulp.series('clean-scripts', 'check-scripts', async () 
 }));
 
 // 合并、压缩、重命名javascript
-gulp.task('min-scripts-trpg', gulp.series('clean-scripts', 'check-scripts', async () => {
-	return await gulp.src([
+gulp.task('min-scripts-trpg', gulp.series('clean-scripts', 'check-scripts', () => {
+	return gulp.src([
 			cfg.path.src.js + 'canvas2dutils.js',
 			cfg.path.src.js + 'sandtable-comm.js',
 			cfg.path.src.js + 'sandtable-index.js',
@@ -171,24 +171,24 @@ function configEnv(envEntry) {
 }
 
 
-gulp.task('clean-html-dev', async () => {
+gulp.task('clean-html-dev', () => {
 	configEnv(envs.deployEnvs.dev);
-	return await gulp.src([cfg.path.dst.html + '**/*.html'], {read: false}).pipe(clean());
+	return gulp.src([cfg.path.dst.html + '**/*.html'], {read: false}).pipe(clean());
 });
 
 gulp.task('include-html', gulp.series('clean-html-dev', async (callback) => {
-	return await gulp.src([cfg.path.src.html + "**/*.html"])
+	return gulp.src([cfg.path.src.html + "**/*.html"])
 		.pipe(fileinclude({prefix: '@@', basepath: '@root', context: cfg.env}))
 		.pipe(gulp.dest(cfg.path.dst.html));
 }));
 
-gulp.task('clean-html-rls', async () => {
+gulp.task('clean-html-rls', () => {
 	configEnv(envs.deployEnvs.rls);
-	return await gulp.src([cfg.path.dst.html + '**/*.html'], {read: false}).pipe(clean());
+	return gulp.src([cfg.path.dst.html + '**/*.html'], {read: false}).pipe(clean());
 });
 
 gulp.task('process-html', gulp.series('clean-html-rls', async (callback) => {
-	return await gulp.src([cfg.path.src.html + "**/*.html", cfg.path.src.tpls + "**/*.html"])
+	return gulp.src([cfg.path.src.html + "**/*.html", cfg.path.src.tpls + "**/*.html"])
 		.pipe(fileinclude({prefix: '@@', basepath: '@root', context: cfg.env}))
     .pipe(processhtml())
 		.pipe(gulp.dest(cfg.path.dst.html));
