@@ -120,6 +120,12 @@ class SandTableEditor {
 			self.endY = parseInt(e.pageY - offset.y);
 			self.canvasMouseUp(self.endX, self.endY);
 		};
+		$('#rollDiceThreshold').keydown((e) => { 
+			// console.log("Key: " + e.which + "ss" + e.key);
+			if ('Enter' == e.key) {
+				self.requestRollThreshold();
+			}
+		});	
 		document.addEventListener("keydown", (e) => {
 			// console.log(`${e.key} - ${e.key == 'Control'} - ${e.key == 'Alt'}`);
 			if (e.key == 'Control'){

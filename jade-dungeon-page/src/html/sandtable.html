@@ -22,19 +22,19 @@
 						<textarea id="logInfo" class="form-control col-12" rows="10" readonly='readonly' onClick="javascript:sandtable.queryRollResult()" style="width:100%"></textarea>
 					</div>
 				</div>
-				<div class="row">
-					<div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
-						<input id="rollDiceCmd" type="text" class="form-control" placeholder="example: 2d6+1d4+3" >
-					</div>
-						<div class="container col-lg-2 col-md-2 col-sm-2 col-xs-2">
-							<button type="button"	id="rollDiceBtn" onClick="javascript:sandtable.rollDice()"  class="btn btn-default">roll</button>
+				<div class="form-horizontal">
+					<div class="form-group">
+						<label for="firstname" class="col-sm-2 control-label">Roll: </label>
+						<div class="col-sm-10">
+							<input id="rollDiceCmd" type="text" class="form-control" placeholder="example: 2d6+1d4+3" />
 						</div>
+					</div>
 				</div>
 			</div>
 		</div>
 
-		<div id="ctrlPanel">
 			<!-- 
+		<div id="ctrlPanel">
 			<table>
 				<tr>
 					<td></td>
@@ -52,8 +52,8 @@
 					<td></td>
 				</tr>
 			</table>
-			-->
 		</div>
+			-->
 
 		<div id="hideImgs">
 			<canvas id="canvas" height="300" width="300"></canvas>	
@@ -61,7 +61,7 @@
 
 		<script src="@@cdn3rd/jquery/2.1.4/jquery.min.js"></script>
 		<script src="@@cdn3rd/bootstrap/3.3.6/js/bootstrap.min.js" ></script>
-<!--build:js @@webRoot/scripts/trpg.min.js?v=@@buildversion-->
+<!--build:js @@webRoot/scripts/all.min.js?v=@@buildversion-->
 		<script src="@@webRoot/scripts/canvas2dutils.js?v=@@buildversion" ></script>
 		<script src="@@webRoot/scripts/sandtable-comm.js?v=@@buildversion" ></script>
 		<script src="@@webRoot/scripts/sandtable-view.js?v=@@buildversion" ></script>
