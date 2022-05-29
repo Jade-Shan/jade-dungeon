@@ -74,7 +74,7 @@ gulp.task('copy-misc', gulp.series('clean-misc', () => {
 // =======================
 
 gulp.task('clean-images', (done) => {
-	gulp.src([cfg.path.dst.img + '**/*'], 
+	gulp.src([cfg.path.dst.img + ''], 
 		{read: false, allowEmpty: true}).pipe(clean());
 	done();
 });
