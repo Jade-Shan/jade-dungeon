@@ -83,10 +83,14 @@ class SandTableEditor {
 
 
 	sumCanvasOffset(docNode, result) {
-		result.x = result.x + docNode.offsetLeft - docNode.scrollLeft;
-		result.y = result.y + docNode.offsetTop  - docNode.scrollTop;
-		return docNode.offsetParent ? 
-			this.sumCanvasOffset(docNode.offsetParent, result) :
+		let offsetTop  = docNode.offsetTop  ? docNode.offsetTop  : 0;
+		let offsetLeft = docNode.offsetLeft ? docNode.offsetLeft : 0;
+		let scrollTop  = docNode.scrollTop  ? docNode.scrollTop  : 0;
+		let scrollLeft = docNode.scrollLeft ? docNode.scrollLeft : 0;
+		result.x = result.x - offsetLeft + scrollLeft;
+		result.y = result.y - offsetTop  + scrollTop ;
+		return docNode.parentNode ? 
+			this.sumCanvasOffset(docNode.parentNode, result) : 
 			result;
 	}
 
@@ -102,22 +106,22 @@ class SandTableEditor {
 		this.canvas.onmousedown = (e) => {
 			let offset = self.sumCanvasOffset(self.canvas, {x:0, y:0});
 			// console.log(`${offset.x}, ${offset.y}`);
-			self.startX = parseInt(e.pageX - offset.x);
-			self.startY = parseInt(e.pageY - offset.y);
+			self.startX = parseInt(e.pageX + offset.x);
+			self.startY = parseInt(e.pageY + offset.y);
 			self.canvasMouseDown(self.startX, self.startY);
 		};
 		this.canvas.onmousemove = (e) => {
 			let offset = self.sumCanvasOffset(self.canvas, {x:0, y:0});
 			// console.log(`${offset.x}, ${offset.y}`);
-			self.endX = parseInt(e.pageX - offset.x);
-			self.endY = parseInt(e.pageY - offset.y);
+			self.endX = parseInt(e.pageX + offset.x);
+			self.endY = parseInt(e.pageY + offset.y);
 			self.canvasMouseDrag(self.endX, self.endY);
 		};
 		this.canvas.onmouseup = (e) => {
 			let offset = self.sumCanvasOffset(self.canvas, {x:0, y:0});
 			// console.log(`${offset.x}, ${offset.y}`);
-			self.endX = parseInt(e.pageX - offset.x);
-			self.endY = parseInt(e.pageY - offset.y);
+			self.endX = parseInt(e.pageX + offset.x);
+			self.endY = parseInt(e.pageY + offset.y);
 			self.canvasMouseUp(self.endX, self.endY);
 		};
 		$('#rollDiceThreshold').keydown((e) => { 
