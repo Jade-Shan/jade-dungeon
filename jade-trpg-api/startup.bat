@@ -1,3 +1,3 @@
 
-node ./javascript/expressDemo.js
+node ./javascript/main.js
 
