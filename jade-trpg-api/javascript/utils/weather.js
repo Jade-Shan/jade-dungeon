@@ -1,5 +1,6 @@
 let httpServer = require('../common/simpleHTTPServer');
-let weatherAPI = require('./weatherapi.js');
+let weatherAPI = require('./weatherapi');
+let openWeatherMap = require('./openweathermap');
 const https = require('https');
 
 let forecastDays = [];
@@ -9,14 +10,18 @@ let windDirtCodeMap = new Map();
 exports.handler = {
     "/api/weather/forecast": async (context, data) => {
         let result = { status: 'err' };
-        let appKey = data.params.appKey ? data.params.appKey : "";
+        let appKey1 = data.params.appKey1 ? data.params.appKey1 : "";
+        let appKey2 = data.params.appKey2 ? data.params.appKey2 : "";
         let cityName = data.params.cityName ? data.params.cityName : "Shanghai";
-        let days = data.params.days ? data.params.days : "5";
-        // https://api.openweathermap.org/data/2.5/forecast?lat=31.18&lon=121.43&units=metric&mode=json&appid=48afd2aa7f47491dc494e13f8e7b5db5
-        // https://openweathermap.org/forecast5
+        let forecastDays = data.params.days ? data.params.days : "5";
 
-        if (appKey && appKey.length > 6) {
-            result = await weatherAPI.fetchForecast(appKey, cityName, days);
+        if (appKey1 && appKey1.length > 6 && appKey2 && appKey2.length > 6) {
+            result = await weatherAPI.fetchForecast(appKey1, cityName, forecastDays);
+        let lat = data.params.lat ? data.params.lat : "31.18";
+        let lon = data.params.lon ? data.params.lon : "121.43";
+            let days = await openWeatherMap.fetchForecast(appKey2, lat, lon);
+            result.forecastDays[3] = days[3];
+            result.forecastDays[4] = days[4];
             result.fontStr = transForecastFormatFontText(result.forecastDays);
             context.response.writeHead(200, {
                 // 'Content-Type': 'application/json',
@@ -28,44 +33,6 @@ exports.handler = {
             });
             // context.response.end(JSON.stringify(result));
             context.response.end(result.fontStr);
-            /*
-            const buffers = [];
-            let body = null;
-            let request = https.get(url, (res) => {
-                if (res.statusCode != 200) {
-                    console.error(`Did not get an OK from the server. Code: ${res.statusCode}`);
-                    context.response.writeHead(404, {
-                        'Content-Type': 'application/json',
-                        'Cache-Control': 'public,s-maxage=300,max-age=300',
-                        'Access-Control-Allow-Origin': '*',
-                        'Access-Control-Allow-Methods': 'GET,POST',
-                        'Access-Control-Allow-Headers': 'x-requested-with,content-type'
-                    });
-                    result.msg = `Did not get an OK from the server. Code: ${res.statusCode}`;
-                    context.response.end(JSON.stringify(result));
-                }
-                res.on('data', (chunk) => { buffers.push(chunk); });
-                res.on('close', () => {
-                    body = Buffer.concat(buffers);
-                    // console.log('Retrieved all data');
-                    if (res.statusCode == 200) {
-                        context.response.writeHead(200, {
-                            // 'Content-Type': 'application/json',
-                            'Content-Type': 'text/pain',
-                            'Cache-Control': 'public,s-maxage=300,max-age=300',
-                            'Access-Control-Allow-Origin': '*',
-                            'Access-Control-Allow-Methods': 'GET,POST',
-                            'Access-Control-Allow-Headers': 'x-requested-with,content-type'
-                        });
-                    }
-                    let dataStr = body.toString('utf8');
-                    result.oriData = JSON.parse(dataStr);
-                    result.fontStr = transForecastFormatFontText(result.oriData);
-                    // context.response.end(JSON.stringify(result));
-                    context.response.end(result.fontStr);
-                });
-            });
-            */
         } else {
             if (res.statusCode != 200) {
                 console.error(`miss app key `);
@@ -76,46 +43,13 @@ exports.handler = {
                     'Access-Control-Allow-Methods': 'GET,POST',
                     'Access-Control-Allow-Headers': 'x-requested-with,content-type'
                 });
-                result.msg = 'miss appKey'
+                result.msg = 'miss appKey1'
                 context.response.end(JSON.stringify(result));
             }
         }
     }
 };
 
-
-weatherCodeMap.set(1000000,{"code":1000000,"iconChar":{"day":"a","night":"K"},"cn":"晴天","ens":"Clear"             ,"en":"Clear"                          });
-weatherCodeMap.set(1000001,{"code":1000001,"iconChar":{"day":"c","night":"m"},"cn":"多云","ens":"Cloudy"            ,"en":"Cloudy"                         });
-weatherCodeMap.set(1000002,{"code":1000002,"iconChar":{"day":"d","night":"n"},"cn":"阴天","ens":"Overcast"          ,"en":"Overcast"                       });
-weatherCodeMap.set(1000010,{"code":1000010,"iconChar":{"day":"e","night":"o"},"cn":"小雾","ens":"Light Fog"         ,"en":"Light Fog"                      });
-weatherCodeMap.set(1000020,{"code":1000020,"iconChar":{"day":"e","night":"o"},"cn":"中雾","ens":"Moderate Fog"      ,"en":"Moderate Fog"                   });
-weatherCodeMap.set(1000030,{"code":1000030,"iconChar":{"day":"e","night":"o"},"cn":"大雾","ens":"Heavy Fog"         ,"en":"Heavy Fog"                      });
-weatherCodeMap.set(1000100,{"code":1000100,"iconChar":{"day":"g","night":"q"},"cn":"小雨","ens":"Light rain"        ,"en":"Light rain"                     });
-weatherCodeMap.set(1000200,{"code":1000200,"iconChar":{"day":"h","night":"r"},"cn":"中雨","ens":"Moderate rain"     ,"en":"Moderate rain"                  });
-weatherCodeMap.set(1000300,{"code":1000300,"iconChar":{"day":"h","night":"r"},"cn":"大雨","ens":"Heavy rain"        ,"en":"Heavy rain"                     });
-weatherCodeMap.set(1001000,{"code":1001000,"iconChar":{"day":"k","night":"u"},"cn":"小雪","ens":"Light snow"        ,"en":"Light snow"                     });
-weatherCodeMap.set(1002000,{"code":1002000,"iconChar":{"day":"k","night":"u"},"cn":"中雪","ens":"Mid snow"          ,"en":"Moderate snow"                  });
-weatherCodeMap.set(1003000,{"code":1003000,"iconChar":{"day":"k","night":"u"},"cn":"大雪","ens":"Heavy snow"        ,"en":"Heavy snow"                     });
-weatherCodeMap.set(1010000,{"code":1010000,"iconChar":{"day":"h","night":"r"},"cn":"冰雹","ens":"Mid Hvy sleet Shwr","en":"Moderate or heavy sleet showers"});
-weatherCodeMap.set(1020000,{"code":1020000,"iconChar":{"day":"h","night":"r"},"cn":"雷电","ens":"Thundery outbreaks","en":"Thundery outbreaks in nearby"   });
-weatherCodeMap.set(1030000,{"code":1030000,"iconChar":{"day":"j","night":"t"},"cn":"霜冻","ens":"Frozen Ice"        ,"en":"Frozen Ice"                     });
-
-windDirtCodeMap.set("N"  ,{"code":"N"  ,"iconChar":"a","name":"North"          ,"angle":  "0.00°"});
-windDirtCodeMap.set("NNE",{"code":"NNE","iconChar":"b","name":"North-Northeast","angle": "22.50°"});
-windDirtCodeMap.set("NE" ,{"code":"NE" ,"iconChar":"c","name":"Northeast"      ,"angle": "45.00°"});
-windDirtCodeMap.set("ENE",{"code":"ENE","iconChar":"d","name":"East-Northeast" ,"angle": "67.50°"});
-windDirtCodeMap.set("E"  ,{"code":"E"  ,"iconChar":"e","name":"East"           ,"angle": "90.00°"});
-windDirtCodeMap.set("ESE",{"code":"ESE","iconChar":"f","name":"East-Southeast" ,"angle":"112.50°"});
-windDirtCodeMap.set("SE" ,{"code":"SE" ,"iconChar":"g","name":"Southeast"      ,"angle":"135.00°"});
-windDirtCodeMap.set("SSE",{"code":"SSE","iconChar":"h","name":"South-Southeast","angle":"157.50°"});
-windDirtCodeMap.set("S"  ,{"code":"S"  ,"iconChar":"i","name":"South"          ,"angle":"180.00°"});
-windDirtCodeMap.set("SSW",{"code":"SSW","iconChar":"j","name":"South-Southwest","angle":"202.50°"});
-windDirtCodeMap.set("SW" ,{"code":"SW" ,"iconChar":"k","name":"Southwest"      ,"angle":"225.00°"});
-windDirtCodeMap.set("WSW",{"code":"WSW","iconChar":"l","name":"West-Southwest" ,"angle":"247.50°"});
-windDirtCodeMap.set("W"  ,{"code":"W"  ,"iconChar":"m","name":"West"           ,"angle":"270.00°"});
-windDirtCodeMap.set("WNW",{"code":"WNW","iconChar":"n","name":"West-Northwest" ,"angle":"292.50°"});
-windDirtCodeMap.set("NW" ,{"code":"NW" ,"iconChar":"o","name":"Northwest"      ,"angle":"315.00°"});
-windDirtCodeMap.set("NNW",{"code":"NNW","iconChar":"p","name":"North-Northwest","angle":"337.50°"});
 
 let transMoonPhaseFont = (moonPhase) => {
     let mmMoonIcon = 5;
@@ -132,7 +66,7 @@ let transMoonPhaseFont = (moonPhase) => {
 
 let splitWeatherDesc = (str) => {
     let result = ['',''];
-    if (str) {
+    if (str && str.length > 0) {
         if (str.length > 30) { str.substring(0, 30); }
         if (str.length < 16) {
             result[0] = str;
@@ -174,12 +108,31 @@ forecastDays = [{
     windSpeed: 0, windDir: 'N', humedPct: 0, preciPct: 0, sunrise: '', sunset: ''
 }];
 
+let getWeatherIconChar = (code) => {
+    let weather = weatherCodeMap.get(code);
+    // console.log(`${code.toString(2).padStart(16, 0)} : ${weather}`);
+    if (weather && weather.iconChar && weather.iconChar.day) {
+        // 
+    } else {
+        weather = weatherCodeMap.get(0b100);
+        for (let i = 1; i < 16; i++) {
+            let p = 2 ** i;
+            console.log(`2 ** ${i} = ${p}`);
+            if ((code | 2 ** i) > 0) {
+                weather = weatherCodeMap.get(p);
+            }
+        }
+    }
+    return weather.iconChar.day;
+}
+
 let transForecastFormatFontText = (forecastDays) => {
-    console.log(forecastDays);
+    // console.log(forecastDays);
+    // console.log(forecastDays[0].weatherDesc);
     let weatherStrArr = splitWeatherDesc(forecastDays[0].weatherDesc);
     let fontStr = '';
     fontStr = fontStr + `${forecastDays[0].location}\n`;
-    fontStr = fontStr + `${weatherCodeMap.get(forecastDays[0].weatherCode).iconChar.day}\n`;
+    fontStr = fontStr + `${getWeatherIconChar(forecastDays[0].weatherCode)}\n`;
     fontStr = fontStr + `${transMoonPhaseFont(forecastDays[0].moonPhase)}\n`;
     fontStr = fontStr + `${forecastDays[0].temp}\n`;
     fontStr = fontStr + `${forecastDays[0].tempBodyFeel}\n`;
@@ -193,7 +146,7 @@ let transForecastFormatFontText = (forecastDays) => {
     fontStr = fontStr + `${forecastDays[0].preciPct}%\n`;
     fontStr = fontStr + `${forecastDays[0].sunrise} ~ ${forecastDays[0].sunset}\n`;
     fontStr = fontStr + `${forecastDays[1].dayOfWeek.padStart(8, ' ')}  ${forecastDays[2].dayOfWeek.padStart(8, ' ')}  ${forecastDays[3].dayOfWeek.padStart(8, ' ')}  ${forecastDays[4].dayOfWeek.padStart(8, ' ')}\n`;
-    fontStr = fontStr + `  ${weatherCodeMap.get(forecastDays[1].weatherCode).iconChar.day}  ${weatherCodeMap.get(forecastDays[2].weatherCode).iconChar.day}   ${weatherCodeMap.get(forecastDays[3].weatherCode).iconChar.day}   ${weatherCodeMap.get(forecastDays[4].weatherCode).iconChar.day}\n`;
+    fontStr = fontStr + `  ${getWeatherIconChar(forecastDays[1].weatherCode)}  ${getWeatherIconChar(forecastDays[2].weatherCode)}   ${getWeatherIconChar(forecastDays[3].weatherCode)}   ${getWeatherIconChar(forecastDays[4].weatherCode)}\n`;
     fontStr = fontStr + `${`${forecastDays[1].preciPct}%`   .padStart(10, ' ')}${`${forecastDays[2].preciPct}%`   .padStart(10, ' ')}${`${forecastDays[3].preciPct}%`   .padStart(10, ' ')}${`${forecastDays[4].preciPct}%`   .padStart(10, ' ')}\n`;
     fontStr = fontStr + `${`${forecastDays[1].windSpeed}Kph`.padStart(10, ' ')}${`${forecastDays[2].windSpeed}Kph`.padStart(10, ' ')}${`${forecastDays[3].windSpeed}Kph`.padStart(10, ' ')}${`${forecastDays[4].windSpeed}Kph`.padStart(10, ' ')}\n`;
     fontStr = fontStr + `${windDirtCodeMap.get(forecastDays[1].windDir).iconChar}\n`;
@@ -202,6 +155,76 @@ let transForecastFormatFontText = (forecastDays) => {
     fontStr = fontStr + `${windDirtCodeMap.get(forecastDays[4].windDir).iconChar}\n`;
     fontStr = fontStr + `${`${forecastDays[1].tempMax}C`.padStart(10, ' ')}${`${forecastDays[2].tempMax}C`.padStart(10, ' ')}${`${forecastDays[3].tempMax}C`.padStart(10, ' ')}${`${forecastDays[4].tempMax}C`.padStart(10, ' ')}\n`;
     fontStr = fontStr + `${`${forecastDays[1].tempMin}C`.padStart(10, ' ')}${`${forecastDays[2].tempMin}C`.padStart(10, ' ')}${`${forecastDays[3].tempMin}C`.padStart(10, ' ')}${`${forecastDays[4].tempMin}C`.padStart(10, ' ')}\n`;
-    console.log(fontStr);
+    // console.log(fontStr);
     return fontStr;
 }
+
+windDirtCodeMap.set("N"  ,{"code":"N"  ,"iconChar":"a","name":"North"          ,"angle":  "0.00°"});
+windDirtCodeMap.set("NNE",{"code":"NNE","iconChar":"b","name":"North-Northeast","angle": "22.50°"});
+windDirtCodeMap.set("NE" ,{"code":"NE" ,"iconChar":"c","name":"Northeast"      ,"angle": "45.00°"});
+windDirtCodeMap.set("ENE",{"code":"ENE","iconChar":"d","name":"East-Northeast" ,"angle": "67.50°"});
+windDirtCodeMap.set("E"  ,{"code":"E"  ,"iconChar":"e","name":"East"           ,"angle": "90.00°"});
+windDirtCodeMap.set("ESE",{"code":"ESE","iconChar":"f","name":"East-Southeast" ,"angle":"112.50°"});
+windDirtCodeMap.set("SE" ,{"code":"SE" ,"iconChar":"g","name":"Southeast"      ,"angle":"135.00°"});
+windDirtCodeMap.set("SSE",{"code":"SSE","iconChar":"h","name":"South-Southeast","angle":"157.50°"});
+windDirtCodeMap.set("S"  ,{"code":"S"  ,"iconChar":"i","name":"South"          ,"angle":"180.00°"});
+windDirtCodeMap.set("SSW",{"code":"SSW","iconChar":"j","name":"South-Southwest","angle":"202.50°"});
+windDirtCodeMap.set("SW" ,{"code":"SW" ,"iconChar":"k","name":"Southwest"      ,"angle":"225.00°"});
+windDirtCodeMap.set("WSW",{"code":"WSW","iconChar":"l","name":"West-Southwest" ,"angle":"247.50°"});
+windDirtCodeMap.set("W"  ,{"code":"W"  ,"iconChar":"m","name":"West"           ,"angle":"270.00°"});
+windDirtCodeMap.set("WNW",{"code":"WNW","iconChar":"n","name":"West-Northwest" ,"angle":"292.50°"});
+windDirtCodeMap.set("NW" ,{"code":"NW" ,"iconChar":"o","name":"Northwest"      ,"angle":"315.00°"});
+windDirtCodeMap.set("NNW",{"code":"NNW","iconChar":"p","name":"North-Northwest","angle":"337.50°"});
+
+weatherCodeMap.set(0b0000000000000000, { "code": 0b0000000000000000,"iconChar":{"day":"a","night":"K"},"cn": "晴天", "ens": "Clear", "en": "Clear" });
+weatherCodeMap.set(0b0000000000000001, { "code": 0b0000000000000001,"iconChar":{"day":"j","night":"t"},"cn": "霜冻", "ens": "Fozen", "en": "Fozen" });
+weatherCodeMap.set(0b0000000000000010, { "code": 0b0000000000000010,"iconChar":{"day":"e","night":"o"},"cn": "雾", "ens": "Fog", "en": "Fog" });
+weatherCodeMap.set(0b0000000000000100, { "code": 0b0000000000000100,"iconChar":{"day":"c","night":"m"},"cn": "局部多云", "ens": "Partly Cloudy", "en": "Partly Cloudy" });
+weatherCodeMap.set(0b0000000000001000, { "code": 0b0000000000001000,"iconChar":{"day":"c","night":"m"},"cn": "多云", "ens": "Cloudy", "en": "Cloudy" });
+weatherCodeMap.set(0b0000000000010000, { "code": 0b0000000000010000,"iconChar":{"day":"d","night":"n"},"cn": "阴天", "ens": "Overcast", "en": "Overcast" });
+weatherCodeMap.set(0b0000000000100000, { "code": 0b0000000000100000,"iconChar":{"day":"g","night":"q"},"cn": "小雨", "ens": "Light rain", "en": "Light rain" });
+weatherCodeMap.set(0b0000000001000000, { "code": 0b0000000001000000,"iconChar":{"day":"k","night":"u"},"cn": "中雨", "ens": "Moderate rain", "en": "Moderate rain" });
+weatherCodeMap.set(0b0000000010000000, { "code": 0b0000000010000000,"iconChar":{"day":"k","night":"u"},"cn": "大雨", "ens": "Heavy rain", "en": "Heavy rain" });
+weatherCodeMap.set(0b0000000100000000, { "code": 0b0000000100000000,"iconChar":{"day":"k","night":"u"},"cn": "暴风雨", "ens": "Torrent rain Shwr", "en": "Torrential rain shower" });
+weatherCodeMap.set(0b0000001000000000, { "code": 0b0000001000000000,"iconChar":{"day":"k","night":"u"},"cn": "小冰雹雨", "ens": "Light sleet Shwr", "en": "Light sleet showers" });
+weatherCodeMap.set(0b0000010000000000, { "code": 0b0000010000000000,"iconChar":{"day":"k","night":"u"},"cn": "中度或大冰雹雨", "ens": "Mid Hvy sleet Shwr", "en": "Moderate or heavy sleet showers" });
+weatherCodeMap.set(0b0000100000000000, { "code": 0b0000100000000000,"iconChar":{"day":"k","night":"u"},"cn": "小雪", "ens": "Light snow", "en": "Light snow" });
+weatherCodeMap.set(0b0001000000000000, { "code": 0b0001000000000000,"iconChar":{"day":"k","night":"u"},"cn": "中雪", "ens": "Mid snow", "en": "Moderate snow" });
+weatherCodeMap.set(0b0010000000000000, { "code": 0b0010000000000000,"iconChar":{"day":"k","night":"u"},"cn": "大雪", "ens": "Heavy snow", "en": "Heavy snow" });
+weatherCodeMap.set(0b0100000000000000, { "code": 0b0100000000000000,"iconChar":{"day":"k","night":"u"},"cn": "暴风雪", "ens": "Blizzard", "en": "Blizzard" });
+weatherCodeMap.set(0b1000000000000000, { "code": 0b1000000000000000,"iconChar":{"day":"h","night":"r"},"cn": "雷电", "ens": "Thunder", "en": "Thundery outbreak" });
+//                                   
+weatherCodeMap.set(0b0000000000000010, { "code": 0b0000000000000010,"iconChar":{"day":"e","night":"o"},"cn": "薄雾", "ens": "Mist", "en": "Mist" });
+weatherCodeMap.set(0b0000000000000011, { "code": 0b0000000000000011,"iconChar":{"day":"j","night":"t"},"cn": "冻雾", "ens": "Freezing fog", "en": "Freezing fog" });
+weatherCodeMap.set(0b0000000000100000, { "code": 0b0000000000100000,"iconChar":{"day":"g","night":"q"},"cn": "周边有零星小雨", "ens": "Ptch rain nerby", "en": "Patchy rain nearby" });
+weatherCodeMap.set(0b0000000000100000, { "code": 0b0000000000100000,"iconChar":{"day":"g","night":"q"},"cn": "小阵雨", "ens": "Light rain Shwr", "en": "Light rain shower" });
+weatherCodeMap.set(0b0000000000100000, { "code": 0b0000000000100000,"iconChar":{"day":"g","night":"q"},"cn": "片状小雨", "ens": "Ptch light rain", "en": "Patchy light rain" });
+weatherCodeMap.set(0b0000000000100000, { "code": 0b0000000000100000,"iconChar":{"day":"g","night":"q"},"cn": "细雨", "ens": "Light drizzle", "en": "Light drizzle" });
+weatherCodeMap.set(0b0000000000100000, { "code": 0b0000000000100000,"iconChar":{"day":"g","night":"q"},"cn": "零星细雨", "ens": "Ptch light Drz", "en": "Patchy light drizzle" });
+weatherCodeMap.set(0b0000000001000000, { "code": 0b0000000001000000,"iconChar":{"day":"k","night":"u"},"cn": "偶尔有中雨", "ens": "Mid rain at times", "en": "Moderate rain at times" });
+weatherCodeMap.set(0b0000000010000000, { "code": 0b0000000010000000,"iconChar":{"day":"k","night":"u"},"cn": "偶尔有大雨", "ens": "Heavy rain at times", "en": "Heavy rain at times" });
+weatherCodeMap.set(0b0000000011000000, { "code": 0b0000000011000000,"iconChar":{"day":"k","night":"u"},"cn": "中雨或大阵雨", "ens": "Mid or Hvy rain Shwr", "en": "Moderate or heavy rain shower" });
+weatherCodeMap.set(0b0000000000100010, { "code": 0b0000000000100010,"iconChar":{"day":"g","night":"q"},"cn": "微冻雨", "ens": "Light Frez rain", "en": "Light freezing rain" });
+weatherCodeMap.set(0b0000000001000010, { "code": 0b0000000001000010,"iconChar":{"day":"k","night":"u"},"cn": "中度或大冻雨", "ens": "Mid or Hvy Frez rain", "en": "Moderate or heavy freezing rain" });
+weatherCodeMap.set(0b0000000000100011, { "code": 0b0000000000100011,"iconChar":{"day":"g","night":"q"},"cn": "周边有有零星小冻雾雨", "ens": "Ptch Frez Drz nerby", "en": "Patchy freezing drizzle nearby" });
+weatherCodeMap.set(0b0000000001000011, { "code": 0b0000000001000011,"iconChar":{"day":"k","night":"u"},"cn": "冻雾雨", "ens": "Frez drizzle", "en": "Freezing drizzle" });
+weatherCodeMap.set(0b0000000010000011, { "code": 0b0000000010000011,"iconChar":{"day":"k","night":"u"},"cn": "大冻雾雨", "ens": "Heavy Frez Drz", "en": "Heavy freezing drizzle" });
+weatherCodeMap.set(0b1000000000100000, { "code": 0b1000000000100000,"iconChar":{"day":"h","night":"r"},"cn": "小雷雨", "ens": "Thundery outbreaks", "en": "Thundery outbreaks in nearby" });
+weatherCodeMap.set(0b1000000001000000, { "code": 0b1000000001000000,"iconChar":{"day":"h","night":"r"},"cn": "中到大雷雨", "ens": "Thundery outbreaks", "en": "Thundery outbreaks in nearby" });
+weatherCodeMap.set(0b0000001000000000, { "code": 0b0000001000000000,"iconChar":{"day":"k","night":"u"},"cn": "冰丸", "ens": "Ice pellets", "en": "Ice pellets" });
+weatherCodeMap.set(0b0000001000000000, { "code": 0b0000001000000000,"iconChar":{"day":"k","night":"u"},"cn": "冰丸小雨", "ens": "Light ice Plts", "en": "Light showers of ice pellets" });
+weatherCodeMap.set(0b0000010000000000, { "code": 0b0000010000000000,"iconChar":{"day":"k","night":"u"},"cn": "中度或大冰丸", "ens": "Mid Hvy ice Plts", "en": "Moderate or heavy showers of ice pellets" });
+weatherCodeMap.set(0b1000000000100000, { "code": 0b1000000000100000,"iconChar":{"day":"h","night":"r"},"cn": "雷区有零星小雨", "ens": "Ptch light rain thndr", "en": "Patchy light rain in area with thunder" });
+weatherCodeMap.set(0b1000000010000000, { "code": 0b1000000010000000,"iconChar":{"day":"h","night":"r"},"cn": "雷区有中或大雨", "ens": "Mid Hvy rain thunder", "en": "Moderate or heavy rain in area with thunder" });
+weatherCodeMap.set(0b1000100000000000, { "code": 0b1000100000000000,"iconChar":{"day":"h","night":"r"},"cn": "雷区有零星小雪", "ens": "Ptch light snow thndr", "en": "Patchy light snow in area with thunder" });
+weatherCodeMap.set(0b1001000000000000, { "code": 0b1001000000000000,"iconChar":{"day":"h","night":"r"},"cn": "雷区有中或大雪", "ens": "Mid or Hvy snow thndr", "en": "Moderate or heavy snow in area with thunder" });
+weatherCodeMap.set(0b0000100000000000, { "code": 0b0000100000000000,"iconChar":{"day":"k","night":"u"},"cn": "微雨夹雪", "ens": "Light sleet", "en": "Light sleet" });
+weatherCodeMap.set(0b0000100000000000, { "code": 0b0000100000000000,"iconChar":{"day":"k","night":"u"},"cn": "周边有零星小雪", "ens": "Ptch snow nerby", "en": "Patchy snow nearby" });
+weatherCodeMap.set(0b0000000000000000, { "code": 0b0000000000000000,"iconChar":{"day":"k","night":"u"},"cn": "小阵雪", "ens": "Light snow Shwr", "en": "Light snow showers" });
+weatherCodeMap.set(0b0000100000000000, { "code": 0b0000100000000000,"iconChar":{"day":"k","night":"u"},"cn": "零星小雪", "ens": "Ptch light snow", "en": "Patchy light snow" });
+weatherCodeMap.set(0b0001000000000000, { "code": 0b0001000000000000,"iconChar":{"day":"k","night":"u"},"cn": "零星中雪", "ens": "Ptch Mid snow", "en": "Patchy moderate snow" });
+weatherCodeMap.set(0b0001000000000000, { "code": 0b0001000000000000,"iconChar":{"day":"k","night":"u"},"cn": "飞雪", "ens": "Blowing snow", "en": "Blowing snow" });
+weatherCodeMap.set(0b0010000000000000, { "code": 0b0010000000000000,"iconChar":{"day":"k","night":"u"},"cn": "零星大雪", "ens": "Ptch Hvy snow", "en": "Patchy heavy snow" });
+weatherCodeMap.set(0b0011000000000000, { "code": 0b0011000000000000,"iconChar":{"day":"k","night":"u"},"cn": "中度或大阵雪", "ens": "Mid or Hvy snow Shwr", "en": "Moderate or heavy snow showers" });
+weatherCodeMap.set(0b0000100000100000, { "code": 0b0000100000100000,"iconChar":{"day":"k","night":"u"},"cn": "周边有零星小雨夹雪", "ens": "Ptch sleet nerby", "en": "Patchy sleet nearby" });
+weatherCodeMap.set(0b0011000000100000, { "code": 0b0011000000100000,"iconChar":{"day":"k","night":"u"},"cn": "中度或大雨夹雪", "ens": "Mid or Hvy sleet", "en": "Moderate or heavy sleet" });
