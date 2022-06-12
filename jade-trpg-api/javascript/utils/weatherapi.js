@@ -78,7 +78,7 @@ let fetchForecastData = async (appKey, cityName, days) => {
 
 let transForecastFormatFontText = (oriData) => {
     let forecastDays = createEmptyRecs();
-    console.log(oriData);
+    // console.log(oriData);
     forecastDays[0].location = `${oriData.location.region}, ${oriData.location.country}`;
     forecastDays[0].date = '';
     forecastDays[0].weatherDesc = oriData.current.condition.text;
