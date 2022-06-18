@@ -38,8 +38,8 @@
 	};
 	self.loadGallery = function (authorId, page) {
 		$.ajax({ 
-			url: encodeURI(self.initCfg.apiRoot + "findGalleryByUser/" + authorId +"/" + 
-						 page),
+			url: encodeURI(self.initCfg.apiRoot + "gallery/loadByUser?userId=" + authorId +
+				"&page=" + page),
 			xhrFields: {'Access-Control-Allow-Origin':'*'}, 
 			type: 'GET', dataType: 'json', data: { },
 			timeout: net.jadedungeon.ajaxTimeout,

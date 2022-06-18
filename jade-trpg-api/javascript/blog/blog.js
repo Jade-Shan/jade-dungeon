@@ -68,7 +68,7 @@ exports.handler = {
             // console.log(res);
 			if (!res.isSuccess) { json.msg = res.err; } else {
                 let recCount = res.data;
-                if (recCount < 2) {
+                if (recCount < pageSize) {
                     json.pageCount = 1;
                 } else {
                     json.pageCount = parseInt((recCount + 1) / pageSize);

@@ -3,7 +3,7 @@ var util = require('util');
 // var path = require('path');
 var express = require('express');
 var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
+// var bodyParser = require('body-parser');
 var multer  = require('multer');
 
 
@@ -29,13 +29,13 @@ exports.init = (globalCfg, application, handlers) => {
 		});
 	}
 	/* 创建 application/x-www-form-urlencoded 编码解析 */
-	let urlencodedParser = bodyParser.urlencoded(
-		{ extended: false, limit:'50mb', parameterLimit: 50000 });
+	// let urlencodedParser = bodyParser.urlencoded(
+	// 	{ extended: false, limit:'50mb', parameterLimit: 50000 });
 		//bodyParser.json({limit: '10mb'}
 	/* application context */
 	let context = {
 		globalCfg        : globalCfg, 
-		urlencodedParser : urlencodedParser,
+		// urlencodedParser : urlencodedParser,
 		application      : application
 	};
 	/* bind handlers */
@@ -106,7 +106,7 @@ var HttpMethods = [{
 	},{
 		method   : HTTP_POST,
 		bindFunc : (context, urlPtn, bindFunc) => {
-			context.application.post(urlPtn, context.urlencodedParser, 
+			context.application.post(urlPtn, // context.urlencodedParser, 
 				function (request, response) {
 					context.request = request;
 					context.response = response;

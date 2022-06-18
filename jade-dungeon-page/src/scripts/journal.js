@@ -38,7 +38,7 @@
 	};
 	self.loadBlog = function (authorId, page) {
 		$.ajax({ 
-			url: self.initCfg.apiRoot + "loadByUser?userId=" + encodeURI(authorId) +
+			url: self.initCfg.apiRoot + "blog/loadByUser?userId=" + encodeURI(authorId) +
 			"&page=" + page, 
 			xhrFields: {'Access-Control-Allow-Origin':'*'}, 
 			type: 'GET', dataType: 'json', data: { },
