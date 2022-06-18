@@ -22,7 +22,7 @@
 			html = html + net.jadedungeon.renderArticle(itm);
 		});
 		html = html + net.jadedungeon.renderPagination(
-			data.page, data.count, "page.loadPage");
+			data.page, data.pageCount, "page.loadPage");
 		$("#articles").html(html);
 		$("#articles>.item>.body>p>img").each(function (idx, item) {
 			var img = $(item);
@@ -38,8 +38,9 @@
 	};
 	self.loadBlog = function (authorId, page) {
 		$.ajax({ 
-			url: encodeURI(self.initCfg.apiRoot + "findJournalByUser/" + authorId + "/" + 
-						 page), 
+			url: self.initCfg.apiRoot + "loadByUser?userId=" + encodeURI(authorId) +
+			"&page=" + page, 
+			xhrFields: {'Access-Control-Allow-Origin':'*'}, 
 			type: 'GET', dataType: 'json', data: { },
 			timeout: net.jadedungeon.ajaxTimeout,
 			success: function(data, status, xhr) {

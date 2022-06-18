@@ -179,7 +179,8 @@ var net = net || {};
 
 	self.loadUserById = function (apiRoot, userId) {
 		$.ajax({ 
-			url: encodeURI(apiRoot + "loadUserById/" + userId), 
+			url: encodeURI(apiRoot + "loadUserById?userId=" + userId), 
+			xhrFields: {'Access-Control-Allow-Origin':'*'}, 
 			type: 'GET', dataType: 'json', data: { },
 			timeout: net.jadedungeon.ajaxTimeout,
 			success: function(data, status, xhr) {
@@ -209,6 +210,7 @@ var net = net || {};
 	self.loadRecommadArticles = function (apiRoot) {
 		$.ajax({ 
 			url: encodeURI(apiRoot + "loadRecommandArticles"), 
+			xhrFields: {'Access-Control-Allow-Origin':'*'}, 
 			type: 'GET', dataType: 'json', data: { },
 			timeout: net.jadedungeon.ajaxTimeout,
 			success: function(data, status, xhr) {

@@ -40,6 +40,7 @@
 		$.ajax({ 
 			url: encodeURI(self.initCfg.apiRoot + "findGalleryByUser/" + authorId +"/" + 
 						 page),
+			xhrFields: {'Access-Control-Allow-Origin':'*'}, 
 			type: 'GET', dataType: 'json', data: { },
 			timeout: net.jadedungeon.ajaxTimeout,
 			success: function(data, status, xhr) {
