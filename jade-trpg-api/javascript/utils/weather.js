@@ -144,11 +144,15 @@ let transTime12to24 = (timeStr) => {
 let checkIsDay = (sunrise, sunset) => {
     let now = new Date();
     let hour = now.getHours();
-    let min  = now.getMinutes();
-    if (hour < sunrise.hour) { return false; }
-    else if (hour == sunrise.hour ) { return min < sunrise.min ? false : true; }
-    else if (hour > sunset.hour) { return false; }
-    else if (hour == sunset.hour) { return min < sunset.min ? true : false ; }
+    let min = now.getMinutes();
+    if (hour < sunrise.hour || hour > sunset.hour || //
+        (hour == sunrise.hour && min < sunrise.min) || //
+        (hour == sunset.hour && min > sunset.min)) // 
+    {
+        return false;
+    } else {
+        return true;
+    }
 };
 
 let transForecastFormatFontText = (forecastDays) => {
