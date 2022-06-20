@@ -181,7 +181,7 @@ let transForecastFormatFontText = (forecastDays) => {
     fontStr = fontStr + `${forecastDays[0].preciPct}%\n`;
     fontStr = fontStr + `${`${sunrise.hour}`.padStart(2, '0')}:${`${sunrise.min}`.padStart(2, '0')} ~ ${`${sunset.hour}`.padStart(2, '0')}:${`${sunset.min}`.padStart(2, '0')}\n`;
     fontStr = fontStr + `${forecastDays[1].dayOfWeek.padStart(8, ' ')}  ${forecastDays[2].dayOfWeek.padStart(8, ' ')}  ${forecastDays[3].dayOfWeek.padStart(8, ' ')}  ${forecastDays[4].dayOfWeek.padStart(8, ' ')}\n`;
-    fontStr = fontStr + ` ${getWeatherIconChar(forecastDays[1].weatherCode, true)}  ${getWeatherIconChar(forecastDays[2].weatherCode, true)}  ${getWeatherIconChar(forecastDays[3].weatherCode, true)}   ${getWeatherIconChar(forecastDays[4].weatherCode, true)}\n`;
+    fontStr = fontStr + `  ${getWeatherIconChar(forecastDays[1].weatherCode, true)}  ${getWeatherIconChar(forecastDays[2].weatherCode, true)}  ${getWeatherIconChar(forecastDays[3].weatherCode, true)}   ${getWeatherIconChar(forecastDays[4].weatherCode, true)}\n`;
     fontStr = fontStr + `${`${forecastDays[1].preciPct}%`   .padStart(10, ' ')}${`${forecastDays[2].preciPct}%`   .padStart(10, ' ')}${`${forecastDays[3].preciPct}%`   .padStart(10, ' ')}${`${forecastDays[4].preciPct}%`   .padStart(10, ' ')}\n`;
     fontStr = fontStr + `${`${forecastDays[1].windSpeed}Kph`.padStart(10, ' ')}${`${forecastDays[2].windSpeed}Kph`.padStart(10, ' ')}${`${forecastDays[3].windSpeed}Kph`.padStart(10, ' ')}${`${forecastDays[4].windSpeed}Kph`.padStart(10, ' ')}\n`;
     fontStr = fontStr + `${windDirtCodeMap.get(forecastDays[1].windDir).iconChar}\n`;
