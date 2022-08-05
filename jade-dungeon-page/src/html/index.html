@@ -7,6 +7,8 @@
 	     "keywords": "jade-dungeon, Journal",
 	 "description": "jade-dungeon, Journal"
 })
+
+<script src="https://unpkg.com/webamp"></script>
 </head>
 <body>
 
@@ -34,6 +36,7 @@
 	role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 </div>
 
+<div id="webAmpDiv"></div>
 </body>
 <script type="text/javascript">
 var cfg = {
@@ -47,5 +50,15 @@ var page = new net.jadedungeon.journal(cfg);
 page.render();
 page.loadPage(1);
 
+/*
+
+https://webamp.org/
+
+https://github.com/captbaritone/webamp
+
+*/
+const webAmpDiv = document.getElementById("webAmpDiv")
+const webamp = new Webamp();
+webamp.renderWhenReady(webAmpDiv);
 </script>
 </html>
