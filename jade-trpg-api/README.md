@@ -5,7 +5,7 @@
 * [基础框架](docs/framework.md)
 * [博客后端](docs/blog.md)
 * [网络相册后端](docs/gallery.md)
-* [天气预报服务后端](docs/)
+* [天气预报服务后端](docs/weather.md)
 * [TRPG沙盘工具后端](docs/)
 
 ## 打包与发布
