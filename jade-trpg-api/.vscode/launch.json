@@ -1,7 +1,6 @@
 {
     "version": "0.2.0",
-    "configurations": [
-        {
+    "configurations": [{
             "name": "run-sandtable",
             "type": "node",
             "request": "launch",
@@ -11,6 +10,15 @@
                 "--preserve-symlinks-main"
             ],
             "skipFiles": [ "<node_internals>/**" ]
-         }
-    ]
+         }, {
+            "name": "backup-website",
+            "type": "node",
+            "request": "launch",
+            "program": "${workspaceFolder}/javascript/backup.js",
+            "runtimeArgs": [
+                "--preserve-symlinks",
+                "--preserve-symlinks-main"
+            ],
+            "skipFiles": [ "<node_internals>/**" ]
+    }]
 }

@@ -24,3 +24,11 @@ cd appdir
 tar -xvf patch.tar.gz
 node .javascript/main.js
 ```
+
+## 备份博客与相册
+
+备份的脚本`javascript/backup.js`：
+
+```bash
+node javascript/bacjup.js <base_url> <backup_folder>
+```
