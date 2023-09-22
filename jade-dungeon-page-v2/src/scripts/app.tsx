@@ -4,6 +4,7 @@ import { createRoot } from 'react-dom/client';
 import { BrowserRouter, NavLink, Route, Routes, useLocation } from "react-router-dom"
 
 import { Hello } from "./components/Hello";
+import {Navbar} from "./ui/navbar";
 
 import '../styles/base.css';
 import '../styles/h1.less';
@@ -21,23 +22,20 @@ let App = () => {
 }
 
 let Home = () => {
-	let location = useLocation();
-	let pathName = location.pathname;
 	return <>
-		<h1>This is Home Page {pathName}</h1>
-		<br />
-		<NavLink to="/">Home</NavLink> <br />
-		<NavLink to="/about">About</NavLink> <br />
-		<NavLink to="/dashboard">Dashboard</NavLink> <br />
+		<Navbar title="Sand Table" />
+		<div className="container">
+			<Hello compiler="TypeScript" framework="React" />
+		</div>
 	</>;
 }
 let About = () => {
+	let location = useLocation();
+	let pathName = location.pathname;
 	return <>
-		<Hello compiler="TypeScript" framework="React" />
+		<Navbar title="Sand Table" />
+		<h1>This is About Page {pathName}</h1>
 		<br />
-		<NavLink to="/">Home</NavLink> <br />
-		<NavLink to="/about">About</NavLink> <br />
-		<NavLink to="/dashboard">Dashboard</NavLink> <br />
 	</>;
 }
 
@@ -45,16 +43,14 @@ let Dashboard = () => {
 	let location = useLocation();
 	let pathName = location.pathname;
 	return <>
+		<Navbar title="Sand Table" />
 		<h1>This is Dashboard Page {pathName}</h1>
 		<br />
-		<NavLink to="/">Home</NavLink> <br />
-		<NavLink to="/about">About</NavLink> <br />
-		<NavLink to="/dashboard">Dashboard</NavLink> <br />
 	</>
 }
 
 
-const container = document.getElementById('example');
+const container = document.getElementById('app-root');
 const root = createRoot(container!);
 root.render(<App></App>);
 // export default App;
