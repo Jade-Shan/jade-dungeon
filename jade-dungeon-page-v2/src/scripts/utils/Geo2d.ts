@@ -146,6 +146,8 @@ export interface Shape2D {
 
 	move(dx: number, dy: number): Shape2D;
 
+	moveP2P(start: Point2D, end: Point2D): Shape2D;
+
 	scale(rate: number): Shape2D;
 
 	onWantMoveing(painter: Painter, start: Point2D, end: Point2D): Shape2D;
@@ -199,6 +201,10 @@ abstract class Abstract2dShape implements Shape2D {
 	abstract draw(): Abstract2dShape;
 	abstract drawDesign(): Abstract2dShape;
 	abstract clone(): Abstract2dShape;
+
+	moveP2P(start: Point2D, end: Point2D): Abstract2dShape {
+		return this.move(end.x - start.x, end.y - start.y);
+	}
 
 	// 画出切线
 	drawTangentLine(painter: Painter, location: Point2D, rays: Array<Ray>) {
@@ -321,8 +327,20 @@ class Line extends Abstract2dShape {
 	}
 
 	move(dx: number, dy: number): Line {
-		throw new Error('Method not implemented.');
+		this.start.x += dx;
+		this.start.y += dx;
+		this.end  .x += dx;
+		this.end  .y += dx;
+		return this;
 	}
+//	move(x, y, x1, y1) {
+//		let dx = x1 - x;
+//		let dy = y1 - y;
+//		this.x += dx;
+//		this.y += dy;
+//		this.x2 += dx;
+//		this.y2 += dy;
+//	}
 
 	scale(rate: number): Line {
 		throw new Error('Method not implemented.');
@@ -413,14 +431,6 @@ class Line extends Abstract2dShape {
 //			this.cvsCtx.lineTo(x2, y2);
 //		}
 //		this.cvsCtx.stroke();
-//	move(x, y, x1, y1) {
-//		let dx = x1 - x;
-//		let dy = y1 - y;
-//		this.x += dx;
-//		this.y += dy;
-//		this.x2 += dx;
-//		this.y2 += dy;
-//	}
 //
 //	scale(x, y, x2, y2) {
 //		let d1 = parseInt(distanceP2P(x, y, this.x, this.y));
