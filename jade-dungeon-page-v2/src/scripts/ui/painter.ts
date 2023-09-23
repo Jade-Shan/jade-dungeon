@@ -12,7 +12,7 @@ export interface Painter {
 	strokeLine(start: Point2D, end: Point2D, style?: DrawStyle): void;
 };
 
-export type DrawStyle = {strokeStyle?: string, fillStyle?: string};
+export type DrawStyle = {lineWidth?: number, strokeStyle?: string, fillStyle?: string};
 
 export class CanvasPainter implements Painter {
 	cvsCtx: CanvasRenderingContext2D;
@@ -22,11 +22,16 @@ export class CanvasPainter implements Painter {
 	}
 
 	applyStyle(style?: DrawStyle) {
-		if (style && style.fillStyle) {
-			this.cvsCtx.fillStyle = style.fillStyle;
-		}
-		if (style && style.strokeStyle) {
-			this.cvsCtx.strokeStyle = style.strokeStyle;
+		if (style) {
+			if (style.fillStyle) {
+				this.cvsCtx.fillStyle = style.fillStyle;
+			}
+			if (style.strokeStyle) {
+				this.cvsCtx.strokeStyle = style.strokeStyle;
+			}
+			if (style.lineWidth) {
+				this.cvsCtx.lineWidth = style.lineWidth;
+			}
 		}
 	}
 

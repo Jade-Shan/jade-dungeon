@@ -144,24 +144,24 @@ export interface Shape2D {
 	/* 计算外部点到每个顶点的射线 */
 	genVertexRays(location: Point2D, rayRange: number): Ray[];
 
-	move(dx: number, dy: number): void;
+	move(dx: number, dy: number): Shape2D;
 
-	scale(rate: number): void;
+	scale(rate: number): Shape2D;
 
 	onWantMoveing(painter: Painter, start: Point2D, end: Point2D): Shape2D;
 
-	onScaleing(start: Point2D, end: Point2D): void
+	onScaleing(start: Point2D, end: Point2D):Shape2D 
 
 	isHit(point: Point2D): boolean;
 
-	draw(): void;
+	draw(): Shape2D;
 
-	drawDesign(): void;
+	drawDesign(): Shape2D;
 
 	// 画出切线
 	drawTangentLine(painter: Painter, location: Point2D, rays: Array<Ray>): Array<Ray>;
 
-	onMoveing(painter: Painter, start: Point2D, end: Point2D): void;
+	onMoveing(painter: Painter, start: Point2D, end: Point2D): Shape2D;
 
 	filterObstacleRays(point: Point2D, rayRange?: number): Array<Ray>;
 
@@ -191,13 +191,13 @@ abstract class Abstract2dShape implements Shape2D {
 	abstract center(): Point2D;
 	abstract minDistance(location: Point2D): number;
 	abstract genVertexRays(location: Point2D, rayRange: number): Ray[];
-	abstract move(dx: number, dy: number): void;
-	abstract scale(rate: number): void;
-	abstract onWantMoveing(painter: Painter, start: Point2D, end: Point2D): Shape2D;
-	abstract onScaleing(start: Point2D, end: Point2D): void;
+	abstract move(dx: number, dy: number): Abstract2dShape;
+	abstract scale(rate: number): Abstract2dShape;
+	abstract onWantMoveing(painter: Painter, start: Point2D, end: Point2D): Abstract2dShape;
+	abstract onScaleing(start: Point2D, end: Point2D): Abstract2dShape;
 	abstract isHit(point: Point2D): boolean;
-	abstract draw(): void;
-	abstract drawDesign(): void;
+	abstract draw(): Abstract2dShape;
+	abstract drawDesign(): Abstract2dShape;
 	abstract clone(): Abstract2dShape;
 
 	// 画出切线
@@ -211,7 +211,7 @@ abstract class Abstract2dShape implements Shape2D {
 		return rays;
 	};
 
-	onMoveing(painter: Painter, start: Point2D, end: Point2D) {
+	onMoveing(painter: Painter, start: Point2D, end: Point2D): Abstract2dShape {
 		return this.onWantMoveing(painter, start, end);
 	}
 
@@ -320,15 +320,15 @@ class Line extends Abstract2dShape {
 			{ start: this.start, end: { x: 0, y: 0 }, angle: angl1, cAngle: cAngl1, range: range1 }]
 	}
 
-	move(dx: number, dy: number): void {
+	move(dx: number, dy: number): Line {
 		throw new Error('Method not implemented.');
 	}
 
-	scale(rate: number): void {
+	scale(rate: number): Line {
 		throw new Error('Method not implemented.');
 	}
 
-	onWantMoveing(painter: Painter, start: Point2D, end: Point2D): Shape2D {
+	onWantMoveing(painter: Painter, start: Point2D, end: Point2D): Line {
 		let dx = start.x - end.x;
 		let dy = start.y - end.y;
  		let p1 = { x: this.start.x + dx, y: this.start.y + dy };
@@ -351,7 +351,7 @@ class Line extends Abstract2dShape {
  		})
  		// this.draw();
  		//
- 		let dstToken = this.clone();
+ 		let dstToken: Line = this.clone();
  		dstToken.start.x = this.start.x + dx;
  		dstToken.start.y = this.start.y + dy;
 		dstToken.end  .x = this.end  .x + dx;
@@ -359,19 +359,20 @@ class Line extends Abstract2dShape {
  		return dstToken;
  	}
  
- 	onScaleing(start: Point2D, end: Point2D): void {
+ 	onScaleing(start: Point2D, end: Point2D): Line {
  		throw new Error('Method not implemented.');
  	}
  	isHit(point: Point2D): boolean {
  		throw new Error('Method not implemented.');
  	}
- 	draw(): void {
+ 	draw(): Line {
  		throw new Error('Method not implemented.');
  	}
- 	drawDesign(): void {
+ 	drawDesign(): Line {
  		throw new Error('Method not implemented.');
 
  	}
+
 	clone(): Line {
 		return new Line(this.id, this.start, this.end, this.color, this.visiable, this.blockView);
 	}
