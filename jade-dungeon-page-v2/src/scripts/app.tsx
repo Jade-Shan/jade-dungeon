@@ -6,6 +6,7 @@ import { HashRouter, Route, Routes } from "react-router-dom"
 import { Home } from './pages/home';
 import { About } from './pages/about';
 import { Dashboard } from './pages/dashboard';
+import Sandtable from './pages/sandtable';
 
 import '../styles/base.css';
 import '../styles/h1.less';
@@ -16,8 +17,9 @@ let App = () => {
 	return <HashRouter>
 		<Routes>
 			<Route path="/" element={<Home />} />
-			<Route path="/about" element={<About />} />
+			<Route path="/sandtable" element={<Sandtable />} />
 			<Route path="/dashboard" element={<Dashboard />} />
+			<Route path="/about" element={<About />} />
 		</Routes>
 	</HashRouter>
 }

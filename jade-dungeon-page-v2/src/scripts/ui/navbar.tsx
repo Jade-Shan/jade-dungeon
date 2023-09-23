@@ -15,10 +15,13 @@ export class Navbar extends React.Component<{ title: String }, {}> {
 							<NavLink className="nav-link" to="/">Home</NavLink> <br />
 						</li>
 						<li className="nav-item">
-							<NavLink className="nav-link" to="/about">About</NavLink> <br />
+							<NavLink className="nav-link" to="/sandtable">Sandtable</NavLink> <br />
 						</li>
 						<li className="nav-item">
 							<NavLink className="nav-link" to="/dashboard">Dashboard</NavLink> <br />
+						</li>
+						<li className="nav-item">
+							<NavLink className="nav-link" to="/about">About</NavLink> <br />
 						</li>
 					</ul>
 				</div>
