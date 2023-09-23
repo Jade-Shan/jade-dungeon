@@ -4,7 +4,7 @@ import { NavLink } from "react-router-dom";
 export class Navbar extends React.Component<{ title: String }, {}> {
 	render() {
 		return <>
-			<nav className="navbar navbar-expand-md bg-dark navbar-dark">
+			<nav className="navbar bg-dark navbar-dark">
 				<a className="navbar-brand" href="#">{this.props.title}</a>
 				<button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
 					<span className="navbar-toggler-icon"></span>

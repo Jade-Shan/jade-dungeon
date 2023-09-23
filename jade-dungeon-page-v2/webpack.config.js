@@ -67,7 +67,7 @@ module.exports = {
     devtool: "source-map",
     devServer: {  // auto compile and run http server
         host: "localhost",
-        open: true,
-        port: 8000
+        port: 8000,
+        open: true
     }
 }
