@@ -150,6 +150,8 @@ export interface Shape2D {
 
 	scale(rate: number): Shape2D;
 
+	scaleP2P(start: Point2D, end: Point2D): Shape2D;
+
 	onWantMoveing(painter: Painter, start: Point2D, end: Point2D): Shape2D;
 
 	onScaleing(start: Point2D, end: Point2D):Shape2D 
@@ -195,6 +197,7 @@ abstract class Abstract2dShape implements Shape2D {
 	abstract genVertexRays(location: Point2D, rayRange: number): Ray[];
 	abstract move(dx: number, dy: number): Abstract2dShape;
 	abstract scale(rate: number): Abstract2dShape;
+	abstract scaleP2P(start: Point2D, end: Point2D): Abstract2dShape;
 	abstract onWantMoveing(painter: Painter, start: Point2D, end: Point2D): Abstract2dShape;
 	abstract onScaleing(start: Point2D, end: Point2D): Abstract2dShape;
 	abstract isHit(point: Point2D): boolean;
@@ -333,17 +336,22 @@ class Line extends Abstract2dShape {
 		this.end  .y += dx;
 		return this;
 	}
-//	move(x, y, x1, y1) {
-//		let dx = x1 - x;
-//		let dy = y1 - y;
-//		this.x += dx;
-//		this.y += dy;
-//		this.x2 += dx;
-//		this.y2 += dy;
-//	}
+
+	scaleP2P(start: Point2D, end: Point2D): Line {
+		let d1 = distanceP2P(start.x, start.y, this.start.x, this.start.y);
+		let d2 = distanceP2P(start.x, start.y, this.end  .x, this.end  .y);
+		// console.log(`${start.x},${start.y} - ${this.start.x},${this.start.y} - ${this.end.x},${this.end.y} - ${d1} <> ${d2}`);
+		if (d1 < d2) { this.start.x = end.x; this.start.y = end.y; } 
+		else         { this.end  .x = end.x; this.end  .y = end.y; }
+		return this;
+	}
 
 	scale(rate: number): Line {
-		throw new Error('Method not implemented.');
+		let dx = this.end.x - this. start.x;
+		let dy = this.end.y - this. start.y;
+		this.start.x += dx * rate;
+		this.start.y += dy * rate;
+		return this;
 	}
 
 	onWantMoveing(painter: Painter, start: Point2D, end: Point2D): Line {
