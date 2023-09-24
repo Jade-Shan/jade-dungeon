@@ -8,6 +8,17 @@ export const PI_DOUBLE  : number = Math.PI * 2;
 
 export type Point2D = { x: number, y: number };
 export type Ray = { start: Point2D, end: Point2D, angle: number, cAngle: number, range: number };
+export type ImageInfo = { key: String, location: Point2D, width: number, height: number, src: string, image?: CanvasImageSource };
+
+let copyImageInfo = (imageInfo: ImageInfo): ImageInfo => {
+	return { key   : imageInfo.key, location: {
+			x : imageInfo && imageInfo.location && imageInfo.location.x ? imageInfo.location.x : 0, 
+			y : imageInfo && imageInfo.location && imageInfo.location.y ? imageInfo.location.y : 0}, 
+		width : imageInfo && imageInfo.width  ? imageInfo.width  : 1, 
+		height: imageInfo && imageInfo.height ? imageInfo.height : 1, 
+		src   : imageInfo && imageInfo.src    ? imageInfo.src    : "", 
+		image : imageInfo.image };
+};
 
 let distanceP2P = (x1: number, y1: number, x2: number, y2: number) => {
 	let g = x1 - x2;
@@ -142,7 +153,7 @@ export interface Shape2D {
 	minDistance(location: Point2D): number;
 
 	/* 计算外部点到每个顶点的射线 */
-	genVertexRays(location: Point2D, rayRange: number): Ray[];
+	genVertexRays(location: Point2D): Ray[];
 
 	move(dx: number, dy: number): Shape2D;
 
@@ -192,8 +203,7 @@ abstract class Abstract2dShape implements Shape2D {
 
 	abstract center(): Point2D;
 	abstract minDistance(location: Point2D): number;
-	abstract genVertexRays(location: Point2D, rayRange: number): Ray[];
-	abstract move(dx: number, dy: number): Abstract2dShape;
+	abstract genVertexRays(location: Point2D): Ray[];
 	abstract scale(start: Point2D, end: Point2D): Abstract2dShape;
 	abstract onWantMoveing(painter: Painter, start: Point2D, end: Point2D): Abstract2dShape;
 	abstract onScaleing(painter: Painter, start: Point2D, end: Point2D): Abstract2dShape;
@@ -201,6 +211,12 @@ abstract class Abstract2dShape implements Shape2D {
 	abstract draw(painter: Painter): Abstract2dShape;
 	abstract drawDesign(painter: Painter): Abstract2dShape;
 	abstract clone(): Abstract2dShape;
+
+	move(dx: number, dy: number): Abstract2dShape {
+		this.location.x += dx;
+		this.location.y += dx;
+		return this;
+	}
 
 	moveP2P(start: Point2D, end: Point2D): Abstract2dShape {
 		return this.move(end.x - start.x, end.y - start.y);
@@ -223,8 +239,8 @@ abstract class Abstract2dShape implements Shape2D {
 
 	/* 计算外部点到障碍物轮廓的两条切线 */
 	filterObstacleRays(point: Point2D, rayRange?: number): Array<Ray> {
-		rayRange = rayRange ? rayRange : 65535;
-		let rays: Array<Ray> = this.genVertexRays(point, rayRange);
+		rayRange = rayRange ? rayRange : Number.MAX_SAFE_INTEGER;
+		let rays: Array<Ray> = this.genVertexRays(point);
 		// 找到角度最大的点与最小的点
 		let minIdx = 0;
 		let maxIdx = 0;
@@ -246,7 +262,7 @@ abstract class Abstract2dShape implements Shape2D {
 
 	// 计算出外部点到这个图形的线的线段
 	genTangentLine(point: Point2D, rayRange: number): Array<Ray> {
-		rayRange = rayRange ? rayRange : 65535;
+		rayRange = rayRange ? rayRange : Number.MAX_SAFE_INTEGER;
 		let rays: Array<Ray> = this.filterObstacleRays(point, rayRange);
 		for (let i = 0; i < rays.length; i++) {
 			rays[i].end.x = point.x + Math.round(rayRange * Math.cos(rays[i].angle));
@@ -258,15 +274,19 @@ abstract class Abstract2dShape implements Shape2D {
 
 class Line extends Abstract2dShape {
 
-	start: Point2D
-	end: Point2D
-	vertex: Array<Point2D>;
+	start   : Point2D
+	end     : Point2D
+	vertexes: Array<Point2D>;
 
 	constructor(id: string, start: Point2D, end: Point2D, color: string, visiable: boolean, blockView: boolean) {
 		super(id, start, color, visiable, blockView);
-		this.start = start;
-		this.end = end;
-		this.vertex = [start, end];
+		this.start    = start;
+		this.end      = end;
+		this.vertexes = [start, end];
+	}
+
+	clone(): Line {
+		return new Line(this.id, this.start, this.end, this.color, this.visiable, this.blockView);
 	}
 
 	center(): Point2D {
@@ -287,7 +307,7 @@ class Line extends Abstract2dShape {
 	}
 
 	/* 外部点到每个端点的射线 */
-	genVertexRays(location: Point2D, rayRange: number): Ray[] {
+	genVertexRays(location: Point2D): Ray[] {
 		// 两个切线与外部点的距离与角度
 		let cx1 = this.start.x - location.x;
 		let cy1 = this.start.x - location.y;
@@ -324,14 +344,6 @@ class Line extends Abstract2dShape {
 			{ start: this.end  , end: { x: 0, y: 0 }, angle: angl2, cAngle: cAngl2, range: range2 }] : [
 			{ start: this.end  , end: { x: 0, y: 0 }, angle: angl2, cAngle: cAngl2, range: range2 },
 			{ start: this.start, end: { x: 0, y: 0 }, angle: angl1, cAngle: cAngl1, range: range1 }]
-	}
-
-	move(dx: number, dy: number): Line {
-		this.start.x += dx;
-		this.start.y += dx;
-		this.end  .x += dx;
-		this.end  .y += dx;
-		return this;
 	}
 
 	scale(start: Point2D, end: Point2D): Line {
@@ -374,7 +386,7 @@ class Line extends Abstract2dShape {
  		return dstToken;
  	}
  
-	onScaleing(painter: Painter, start: Point2D, end: Point2D): Abstract2dShape {
+	onScaleing(painter: Painter, start: Point2D, end: Point2D): Line {
 		let d1 = distanceP2P(start.x, start.y, this.start.x, this.start.y);
 		let d2 = distanceP2P(start.x, start.y, this.end  .x, this.end  .y);
 
@@ -424,97 +436,179 @@ class Line extends Abstract2dShape {
 		return this;
  	}
 
-	clone(): Line {
-		return new Line(this.id, this.start, this.end, this.color, this.visiable, this.blockView);
-	}
 }
 
-//class Canvas2dShape {
-//}
-//
-///* 线段 */
-//class Line extends Canvas2dShape {
-//
-//
-//
-//
-//
-//
-//}
+export class Rectangle extends Abstract2dShape {
+	
+	width    : number;
+	height   : number;
+	imgInfo  : ImageInfo;
+	vertexes : Array<Point2D>; // 矩形的四个顶点，分别是左上右上左下右下
+
+	constructor(
+		id: string, location: Point2D, width: number, height: number, 
+		color: string, imgInfo: ImageInfo, visiable: boolean, blockView: boolean
+	) {
+		super(id, location, color, visiable, blockView);
+		this.width    = width  < 10 ? 10 : width ;
+		this.height   = height < 10 ? 10 : height;
+		this.imgInfo  = copyImageInfo(imgInfo);
+		this.vertexes = [
+			location, 
+			{ x: location.x + width, y: location.y          },
+			{ x: location.x + width, y: location.y + height },
+			{ x: location.x        , y: location.y + height }];
+	}
+
+	clone(): Rectangle {
+		return new Rectangle(this.id, this.location, this.width, this.height,
+			this.color, this.imgInfo, this.visiable, this.blockView);
+	}
+
+	center(): Point2D {
+		return {
+			x: this.location.x + this.width  / 2,
+			y: this.location.y + this.height / 2 };
+	}
+
+	/* 外部点到四个角的距离 */
+	minDistance(location: Point2D): number {
+		let minIdx = 0;
+		let minRange = Number.MAX_SAFE_INTEGER;
+		for (let i = 0; i < this.vertexes.length; i++) {
+			let dx = this.vertexes[i].x - location.x;
+			let dy = this.vertexes[i].y - location.y;
+			let range = Math.round(Math.sqrt(dx * dx + dy * dy));
+			if (range < minRange) {
+				minIdx = i;
+				minRange = range;
+			}
+		}
+		return minRange;
+	}
+
+	/* 计算顶点到外部点的距离与角度 */
+	calVtxDstAngle(location: Point2D, vertex: Point2D, quad: number): Ray {
+		let dx = vertex.x - location.x;
+		let dy = vertex.y - location.y;
+		let angle = Math.atan2(dy, dx);
+		let cAngle = 0;
+		if (quad == 0b1001 || quad == 0b1101 || quad == 0b1011) {
+			cAngle = angle;
+		} else if (angle < 0) {
+			cAngle = Math.PI * 2 + angle;
+		} else {
+			cAngle = angle;
+		}
+		return { start: location, end: vertex, angle: angle, cAngle: cAngle, 
+			range: Math.sqrt(dx * dx + dy * dy)};
+	}
+
+	/* 外部点到每个顶点的射线 */
+	genVertexRays(location: Point2D): Ray[] {
+		// 以外部观察点为中心，统计图形的每条边经过哪些象限
+		let quad = 0b0000;
+		quad = quad | quadOfLine(this.vertexes[0].x - location.x, this.vertexes[0].y - location.y, this.vertexes[0].x - location.x, this.vertexes[0].y - location.y);
+		quad = quad | quadOfLine(this.vertexes[1].x - location.x, this.vertexes[1].y - location.y, this.vertexes[1].x - location.x, this.vertexes[1].y - location.y);
+		quad = quad | quadOfLine(this.vertexes[2].x - location.x, this.vertexes[2].y - location.y, this.vertexes[2].x - location.x, this.vertexes[2].y - location.y);
+		// console.log(`shape + 0b${quad.toString(2)}`);
+		return [
+			this.calVtxDstAngle(this.vertexes[0], location, quad),
+			this.calVtxDstAngle(this.vertexes[1], location, quad),
+			this.calVtxDstAngle(this.vertexes[2], location, quad),
+			this.calVtxDstAngle(this.vertexes[3], location, quad)];
+	}
+
+	scale(start: Point2D, end: Point2D): Rectangle {
+		let width  = this.width  + (end.x - start.x);
+		let height = this.height + (end.y- start.y);
+		this.width  = width  > 10 ? width  : 10;
+		this.height = height > 10 ? height : 10;
+		return this;
+	}
+
+	onWantMoveing(painter: Painter, start: Point2D, end: Point2D): Rectangle {
+		throw new Error('Method not implemented.');
+	}
+
+	onScaleing(painter: Painter, start: Point2D, end: Point2D): Rectangle {
+		let width  = this.width  + (end.x - start.x);
+		let height = this.height + (end.y - start.y);
+		width  = width  > 10 ? width : 10;
+		height = height > 10 ? height : 10;
+		painter.draw(() => {
+			painter.fillRect  (this.location, width, height, {lineWidth: 5, fillStyle: "rgba(0,   0, 255, 0.7)"});
+			painter.strokeRect(this.location, width, height, {lineWidth: 5, fillStyle: "rgba(0, 255,   0, 0.7)"});
+		});
+		return this;
+	}
+
+	isHit(location: Point2D): boolean {
+		if (location.x <  this.location.x || location.y < this.location.y) {
+			return false; 
+		} else if (location.x > (this.location.x + this.width )) {
+			return false; 
+		} else if (location.y > (this.location.y + this.height)) {
+			return false; 
+		} else {
+			return true;
+		}
+	}
+
+	drawDesign(painter: Painter): Rectangle {
+		return this.draw(painter);
+	}
+
+//	draw() {
+//		this.cvsCtx.save();
+//		this.cvsCtx.lineWidth = 0;
+//		this.cvsCtx.fillStyle = this.color;
+//		this.cvsCtx.fillRect(this.x, this.y, this.width, this.height);
+//		this.cvsCtx.beginPath();
+//		let x = this.x + 3;
+//		let y = this.y + 3;
+//		let width = this.width - 6;
+//		let height = this.height - 6;
+//		this.cvsCtx.moveTo(x, y);
+//		this.cvsCtx.lineTo(x + width, y);
+//		this.cvsCtx.lineTo(x + width, y + height);
+//		this.cvsCtx.lineTo(x, y + height);
+//		this.cvsCtx.lineTo(x, y);
+//		this.cvsCtx.clip();
+//		if (this.image && this.image.img) {
+//			this.cvsCtx.drawImage(this.image.img, this.image.sx, this.image.sy,
+//				this.image.width, this.image.height,
+//				this.x, this.y, this.width, this.height);
+//		}
+//		this.cvsCtx.restore();
+//	}
+	draw(painter: Painter): Rectangle {
+		let x = this.location.x + 3;
+		let y = this.location.y + 3;
+		let width = this.width - 6;
+		let height = this.height - 6;
+		painter.draw(()=>{
+			painter.fillRect(this.location, this.width, this.height, {lineWidth: 0, fillStyle: this.color});
+			painter.clipPoints([
+				{x: x        , y: y         },
+				{x: x + width, y: y         },
+				{x: x + width, y: y + height},
+				{x: x        , y: y + height},
+				{x: x        , y: y         }]);
+		});
+		return this;
+	}
+
+}
+
 //
 //class Rectangle extends Canvas2dShape {
 //
-//	constructor(canvasContext, id, x, y, width, height, color, image, visiable, blockView) {
-//		super(canvasContext, id, x, y, color, visiable, blockView);
-//		this.classType = this.classType + '.Rectangle';
-//		this.height = height > 10 ? height : 10;
-//		this.width = width > 10 ? width : 10;
-//		this.color = color;
-//		this.image = image;
-//		this.image.key = image.key;
-//		this.image.sx = image.sx ? image.sx : 0;
-//		this.image.sy = image.sy ? image.sy : 0;
-//		this.image.width = image.width ? image.width : this.width;
-//		this.image.height = image.height ? image.height : this.height;
-//		this.vtx = [[x, y], [x + width, y], [x + width, y + height], [x, y + height]];
-//	}
-//	centerX() { return this.x + this.width / 2; }
-//	centerY() { return this.y + this.height / 2; }
 //
 //
-//	clone() {
-//		return new Rectangle(this.cvsCtx, this.id, this.x, this.y, this.width, this.height,
-//			this.color, this.image, this.visiable, this.blockView);
-//	}
 //
-//	/* 外部点到当前图像内个关键点的最近距离 */
-//	minDistance(x, y) {
-//		let minIdx = 0;
-//		let minRange = Number.MAX_SAFE_INTEGER;
-//		for (let i = 0; i < this.vtx.length; i++) {
-//			let dx = this.vtx[i][0] - x;
-//			let dy = this.vtx[i][1] - y;
-//			let range = Math.round(Math.sqrt(dx * dx + dy * dy));
-//			if (range < minRange) {
-//				minIdx = i;
-//				minRange = range;
-//			}
-//		}
-//		return minRange;
-//	}
 //
 //	drawLineToCentre(x, y, angle) { }
-//
-//	/* 计算顶点到外部点的距离与角度 */
-//	calVtxDstAngle(x, y, outX, outY, quad) {
-//		let dx = x - outX;
-//		let dy = y - outY;
-//		let angle = Math.atan2(dy, dx);
-//		let cAngle = 0;
-//		if (quad == 0b1001 || quad == 0b1101 || quad == 0b1011) {
-//			cAngle = angle;
-//		} else if (angle < 0) {
-//			cAngle = Math.PI * 2 + angle;
-//		} else {
-//			cAngle = angle;
-//		}
-//		return new Ray(x, y, 0, 0, angle, cAngle, Math.sqrt(dx * dx + dy * dy));
-//	}
-//
-//	/* 外部点到每个顶点的射线 */
-//	genVertexRays(x, y) {
-//		// 以外部观察点为中心，统计图形的每条边经过哪些象限
-//		let quad = 0b0000;
-//		quad = quad | quadOfLine(this.vtx[0][0] - x, this.vtx[0][1] - y, this.vtx[1][0] - x, this.vtx[1][1] - y);
-//		quad = quad | quadOfLine(this.vtx[1][0] - x, this.vtx[1][1] - y, this.vtx[2][0] - x, this.vtx[2][1] - y);
-//		quad = quad | quadOfLine(this.vtx[2][0] - x, this.vtx[2][1] - y, this.vtx[3][0] - x, this.vtx[3][1] - y);
-//		// console.log(`shape + 0b${quad.toString(2)}`);
-//		return [
-//			this.calVtxDstAngle(this.vtx[0][0], this.vtx[0][1], x, y, quad),
-//			this.calVtxDstAngle(this.vtx[1][0], this.vtx[1][1], x, y, quad),
-//			this.calVtxDstAngle(this.vtx[2][0], this.vtx[2][1], x, y, quad),
-//			this.calVtxDstAngle(this.vtx[3][0], this.vtx[3][1], x, y, quad)];
-//	}
 //
 //	onWantMoveing(cvsCtx, x, y, x1, y1) {
 //		let dx = x1 - x;
@@ -542,68 +636,6 @@ class Line extends Abstract2dShape {
 //	}
 //
 //
-//	onScaleing(x, y, x1, y1) {
-//		let width = this.width + (x1 - x);
-//		let height = this.height + (y1 - y);
-//		width = width > 10 ? width : 10;
-//		height = height > 10 ? height : 10;
-//		this.cvsCtx.save();
-//		this.cvsCtx.lineWidth = 5;
-//		this.cvsCtx.fillStyle = "rgba(0, 0, 255, 0.7)";
-//		this.cvsCtx.fillRect(this.x, this.y, width, height);
-//		this.cvsCtx.strokeStyle = "rgba(0, 255, 0, 0.7)";
-//		this.cvsCtx.strokeRect(this.x, this.y, width, height);
-//		this.cvsCtx.restore();
-//	}
-//
-//	scale(x, y, x1, y1) {
-//		let width = this.width + (x1 - x);
-//		let height = this.height + (y1 - y);
-//		width = width > 10 ? width : 10;
-//		height = height > 10 ? height : 10;
-//		this.width = width;
-//		this.height = height;
-//	}
-//
-//	isHit(x, y) {
-//		if (x < this.x || y < this.y) {
-//			return false;
-//		} else if (x > (this.x + this.width)) {
-//			return false;
-//		} else if (y > (this.y + this.height)) {
-//			return false;
-//		} else {
-//			return true;
-//		}
-//	}
-//
-//	draw() {
-//		this.cvsCtx.save();
-//		this.cvsCtx.lineWidth = 0;
-//		this.cvsCtx.fillStyle = this.color;
-//		this.cvsCtx.fillRect(this.x, this.y, this.width, this.height);
-//		this.cvsCtx.beginPath();
-//		let x = this.x + 3;
-//		let y = this.y + 3;
-//		let width = this.width - 6;
-//		let height = this.height - 6;
-//		this.cvsCtx.moveTo(x, y);
-//		this.cvsCtx.lineTo(x + width, y);
-//		this.cvsCtx.lineTo(x + width, y + height);
-//		this.cvsCtx.lineTo(x, y + height);
-//		this.cvsCtx.lineTo(x, y);
-//		this.cvsCtx.clip();
-//		if (this.image && this.image.img) {
-//			this.cvsCtx.drawImage(this.image.img, this.image.sx, this.image.sy,
-//				this.image.width, this.image.height,
-//				this.x, this.y, this.width, this.height);
-//		}
-//		this.cvsCtx.restore();
-//	}
-//
-//	drawDesign() {
-//		this.draw();
-//	}
 //
 //}
 //

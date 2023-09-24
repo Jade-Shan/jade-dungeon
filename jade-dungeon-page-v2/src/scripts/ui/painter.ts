@@ -1,5 +1,5 @@
 
-import { Point2D } from "../utils/Geo2d";
+import { ImageInfo, Point2D } from "../utils/Geo2d";
 
 export interface Painter {
 
@@ -10,6 +10,14 @@ export interface Painter {
 	fillCircle(center: Point2D, radius: number, startAngle: number, endAngle: number, counterclockwise?: boolean, style?: DrawStyle): void;
 
 	strokeLine(start: Point2D, end: Point2D, style?: DrawStyle): void;
+
+	fillRect  (location: Point2D, width: number, height: number, style?: DrawStyle): void;
+
+	strokeRect(location: Point2D, width: number, height: number, style?: DrawStyle): void
+
+	clipPoints(locations: Array<Point2D>, style?: DrawStyle): void;
+
+	drawImage(imgInfo: ImageInfo): void;
 };
 
 export type DrawStyle = {lineWidth?: number, strokeStyle?: string, fillStyle?: string};
@@ -54,6 +62,34 @@ export class CanvasPainter implements Painter {
 		this.cvsCtx.moveTo(start.x, start.y);
 		this.cvsCtx.lineTo(end.x, end.y);
 		this.cvsCtx.stroke();
+	}
+
+	fillRect(location: Point2D, width: number, height: number, style?: DrawStyle) {
+		this.applyStyle(style);
+		this.cvsCtx.fillRect(location.x, location.y, width, height);
+	}
+
+	strokeRect(location: Point2D, width: number, height: number, style?: DrawStyle) {
+		this.applyStyle(style);
+		this.cvsCtx.strokeRect(location.x, location.y, width, height);
+	}
+
+	clipPoints(locations: Array<Point2D>, style?: DrawStyle) {
+		this.applyStyle(style);
+		if(locations && locations.length > 1) {
+			this.cvsCtx.beginPath();
+			this.cvsCtx.moveTo(locations[0].x, locations[0].y);
+			for (let i = 1; i < locations.length; i++) {
+				this.cvsCtx.lineTo(locations[i].x, locations[i].y);
+			}
+		}
+		this.cvsCtx.clip();
+	}
+
+	drawImage(imgInfo: ImageInfo) {
+		if (imgInfo && imgInfo.image) {
+			// this.cvsCtx.drawImage(image: CanvasImageSource, sx: number, sy: number, sw: number, sh: number, dx: number, dy: number, dw: number, dh: number): void;
+		}
 	}
 
 }
