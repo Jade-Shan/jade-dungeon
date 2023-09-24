@@ -17,7 +17,7 @@ export interface Painter {
 
 	clipPoints(locations: Array<Point2D>, style?: DrawStyle): void;
 
-	drawImage(imgInfo: ImageInfo): void;
+	drawImage(imgInfo: ImageInfo, location: Point2D, width: number, height: number): void;
 };
 
 export type DrawStyle = {lineWidth?: number, strokeStyle?: string, fillStyle?: string};
@@ -86,9 +86,11 @@ export class CanvasPainter implements Painter {
 		this.cvsCtx.clip();
 	}
 
-	drawImage(imgInfo: ImageInfo) {
+	drawImage(imgInfo: ImageInfo, location: Point2D, width: number, height: number) {
 		if (imgInfo && imgInfo.image) {
 			// this.cvsCtx.drawImage(image: CanvasImageSource, sx: number, sy: number, sw: number, sh: number, dx: number, dy: number, dw: number, dh: number): void;
+			this.cvsCtx.drawImage(imgInfo.image, imgInfo.location.x, imgInfo.location.y, 
+				imgInfo.width, imgInfo.height, location.x, location.y, width, height);
 		}
 	}
 

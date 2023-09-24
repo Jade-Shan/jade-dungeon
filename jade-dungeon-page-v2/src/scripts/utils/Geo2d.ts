@@ -528,7 +528,18 @@ export class Rectangle extends Abstract2dShape {
 	}
 
 	onWantMoveing(painter: Painter, start: Point2D, end: Point2D): Rectangle {
-		throw new Error('Method not implemented.');
+		let dx = end.x - start.x;
+		let dy = end.y - start.y;
+		let newCenter = { x: this.center().x + dx, y: this.center().y + dy };
+		painter.draw(() => {
+			painter.strokeLine(this.center(), newCenter, { lineWidth: 3, strokeStyle: "rgba(255, 0, 0, 0.7)" });
+			painter.fillRect  (this.location, this.width, this.height, { lineWidth: 5, fillStyle: "rgba(0,   0, 255, 0.7)" });
+			painter.strokeRect(this.location, this.width, this.height, { lineWidth: 5, fillStyle: "rgba(0, 255,   0, 0.7)" });
+		});
+		let dstToken = this.clone();
+		dstToken.location.x = dx + this.location.x;
+		dstToken.location.y = dy + this.location.y;
+		return dstToken;
 	}
 
 	onScaleing(painter: Painter, start: Point2D, end: Point2D): Rectangle {
@@ -559,29 +570,6 @@ export class Rectangle extends Abstract2dShape {
 		return this.draw(painter);
 	}
 
-//	draw() {
-//		this.cvsCtx.save();
-//		this.cvsCtx.lineWidth = 0;
-//		this.cvsCtx.fillStyle = this.color;
-//		this.cvsCtx.fillRect(this.x, this.y, this.width, this.height);
-//		this.cvsCtx.beginPath();
-//		let x = this.x + 3;
-//		let y = this.y + 3;
-//		let width = this.width - 6;
-//		let height = this.height - 6;
-//		this.cvsCtx.moveTo(x, y);
-//		this.cvsCtx.lineTo(x + width, y);
-//		this.cvsCtx.lineTo(x + width, y + height);
-//		this.cvsCtx.lineTo(x, y + height);
-//		this.cvsCtx.lineTo(x, y);
-//		this.cvsCtx.clip();
-//		if (this.image && this.image.img) {
-//			this.cvsCtx.drawImage(this.image.img, this.image.sx, this.image.sy,
-//				this.image.width, this.image.height,
-//				this.x, this.y, this.width, this.height);
-//		}
-//		this.cvsCtx.restore();
-//	}
 	draw(painter: Painter): Rectangle {
 		let x = this.location.x + 3;
 		let y = this.location.y + 3;
@@ -595,50 +583,12 @@ export class Rectangle extends Abstract2dShape {
 				{x: x + width, y: y + height},
 				{x: x        , y: y + height},
 				{x: x        , y: y         }]);
+			painter.drawImage(this.imgInfo, this.location, this.width, this.height);
 		});
 		return this;
 	}
 
 }
-
-//
-//class Rectangle extends Canvas2dShape {
-//
-//
-//
-//
-//
-//	drawLineToCentre(x, y, angle) { }
-//
-//	onWantMoveing(cvsCtx, x, y, x1, y1) {
-//		let dx = x1 - x;
-//		let dy = y1 - y;
-//		cvsCtx.save();
-//		// 画起点与终点之间的连线
-//		cvsCtx.strokeStyle = 'rgba(255, 0, 0, 0.7)';
-//		cvsCtx.lineWidth = 3;
-//		cvsCtx.beginPath();
-//		cvsCtx.moveTo(this.centerX(), this.centerY());
-//		cvsCtx.lineTo(this.x + dx + this.width / 2, this.y + dy + this.height / 2);
-//		cvsCtx.stroke();
-//		//
-//		cvsCtx.lineWidth = 5;
-//		cvsCtx.fillStyle = "rgba(0, 0, 255, 0.7)";
-//		cvsCtx.fillRect(this.x + dx, this.y + dy, this.width, this.height);
-//		cvsCtx.strokeStyle = "rgba(0, 255, 0, 0.7)";
-//		cvsCtx.strokeRect(this.x + dx, this.y + dy, this.width, this.height);
-//		cvsCtx.restore();
-//		//
-//		let dstToken = this.clone();
-//		dstToken.x = dx + this.x;
-//		dstToken.y = dy + this.y;
-//		return dstToken;
-//	}
-//
-//
-//
-//}
-//
 //class Circle extends Canvas2dShape {
 //
 //	constructor(canvasContext, id, x, y, radius, color, image, visiable, blockView) {
