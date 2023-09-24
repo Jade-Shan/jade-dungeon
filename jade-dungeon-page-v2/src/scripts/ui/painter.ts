@@ -9,6 +9,8 @@ export interface Painter {
 
 	fillCircle(center: Point2D, radius: number, startAngle: number, endAngle: number, counterclockwise?: boolean, style?: DrawStyle): void;
 
+	strokeCircle(center: Point2D, radius: number, startAngle: number, endAngle: number, counterclockwise?: boolean, style?: DrawStyle): void;
+
 	strokeLine(start: Point2D, end: Point2D, style?: DrawStyle): void;
 
 	fillRect  (location: Point2D, width: number, height: number, style?: DrawStyle): void;
@@ -54,6 +56,20 @@ export class CanvasPainter implements Painter {
 		this.cvsCtx.beginPath();
 		this.cvsCtx.arc(center.x, center.y, radius, startAngle, endAngle, counterclockwise);
 		this.cvsCtx.fill();
+	}
+
+	strokeCircle(center: Point2D, radius: number, startAngle: number, endAngle: number, counterclockwise?: boolean, style?: DrawStyle) {
+		this.applyStyle(style);
+		this.cvsCtx.beginPath();
+		this.cvsCtx.arc(center.x, center.y, radius, startAngle, endAngle, counterclockwise);
+		this.cvsCtx.stroke();
+	}
+
+	clipCircle(center: Point2D, radius: number, startAngle: number, endAngle: number, counterclockwise?: boolean, style?: DrawStyle) {
+		this.applyStyle(style);
+		this.cvsCtx.beginPath();
+		this.cvsCtx.arc(center.x, center.y, radius, startAngle, endAngle, counterclockwise);
+		this.cvsCtx.clip();
 	}
 
 	strokeLine(start: Point2D, end: Point2D, style?: DrawStyle) {
