@@ -1,5 +1,5 @@
 
-import { ImageInfo, Point2D } from "../utils/Geo2d";
+import { ImageInfo, Point2D } from "../utils/geo2d";
 
 export interface Painter {
 
