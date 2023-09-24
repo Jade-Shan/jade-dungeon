@@ -148,19 +148,17 @@ export interface Shape2D {
 
 	moveP2P(start: Point2D, end: Point2D): Shape2D;
 
-	scale(rate: number): Shape2D;
-
-	scaleP2P(start: Point2D, end: Point2D): Shape2D;
+	scale(start: Point2D, end: Point2D): Shape2D;
 
 	onWantMoveing(painter: Painter, start: Point2D, end: Point2D): Shape2D;
 
-	onScaleing(start: Point2D, end: Point2D):Shape2D 
+	onScaleing(painter: Painter, start: Point2D, end: Point2D):Shape2D 
 
-	isHit(point: Point2D): boolean;
+	isHit(location: Point2D): boolean;
 
-	draw(): Shape2D;
+	draw(painter: Painter): Shape2D;
 
-	drawDesign(): Shape2D;
+	drawDesign(painter: Painter): Shape2D;
 
 	// 画出切线
 	drawTangentLine(painter: Painter, location: Point2D, rays: Array<Ray>): Array<Ray>;
@@ -178,17 +176,17 @@ export interface Shape2D {
 
 abstract class Abstract2dShape implements Shape2D {
 
-	id: string;
-	location: Point2D;
-	color: string;
-	visiable: boolean;
+	id       : string;
+	location : Point2D;
+	color    : string;
+	visiable : boolean;
 	blockView: boolean;
 
 	constructor(id: string, location: Point2D, color: string, visiable: boolean, blockView: boolean) {
-		this.id = id;
-		this.location = location;
-		this.color = color;
-		this.visiable = visiable;
+		this.id        = id;
+		this.location  = location;
+		this.color     = color;
+		this.visiable  = visiable;
 		this.blockView = blockView;
 	}
 
@@ -196,13 +194,12 @@ abstract class Abstract2dShape implements Shape2D {
 	abstract minDistance(location: Point2D): number;
 	abstract genVertexRays(location: Point2D, rayRange: number): Ray[];
 	abstract move(dx: number, dy: number): Abstract2dShape;
-	abstract scale(rate: number): Abstract2dShape;
-	abstract scaleP2P(start: Point2D, end: Point2D): Abstract2dShape;
+	abstract scale(start: Point2D, end: Point2D): Abstract2dShape;
 	abstract onWantMoveing(painter: Painter, start: Point2D, end: Point2D): Abstract2dShape;
-	abstract onScaleing(start: Point2D, end: Point2D): Abstract2dShape;
-	abstract isHit(point: Point2D): boolean;
-	abstract draw(): Abstract2dShape;
-	abstract drawDesign(): Abstract2dShape;
+	abstract onScaleing(painter: Painter, start: Point2D, end: Point2D): Abstract2dShape;
+	abstract isHit(location: Point2D): boolean;
+	abstract draw(painter: Painter): Abstract2dShape;
+	abstract drawDesign(painter: Painter): Abstract2dShape;
 	abstract clone(): Abstract2dShape;
 
 	moveP2P(start: Point2D, end: Point2D): Abstract2dShape {
@@ -238,8 +235,8 @@ abstract class Abstract2dShape implements Shape2D {
 		// 从角度最小的顶点顺时针遍历到角度最大的顶点
 		// 就是所有面向外部点的顶点
 		let results: Array<Ray> = [];
-		let loopStart = minIdx > maxIdx ? minIdx : rays.length + minIdx;
-		let loopEnd = maxIdx > -1 ? maxIdx - 1 : rays.length - 1;
+		let loopStart = minIdx > maxIdx ? minIdx     : rays.length + minIdx;
+		let loopEnd   = maxIdx >     -1 ? maxIdx - 1 : rays.length - 1;
 		for (let i = loopStart; i > loopEnd; i--) {
 			let idx = i < rays.length ? i : i - rays.length;
 			results.push(rays[idx]);
@@ -282,8 +279,8 @@ class Line extends Abstract2dShape {
 	minDistance(location: Point2D): number {
 		let dx1 = this.start.x - location.x;
 		let dy1 = this.start.y - location.y;
-		let dx2 = this.end.x - location.x;
-		let dy2 = this.end.y - location.y;
+		let dx2 = this.end  .x - location.x;
+		let dy2 = this.end  .y - location.y;
 		let range1 = Math.round(Math.sqrt(dx1 * dx1 + dy1 * dy1));
 		let range2 = Math.round(Math.sqrt(dx2 * dx2 + dy2 * dy2));
 		return range1 < range2 ? range1 : range2;
@@ -294,8 +291,8 @@ class Line extends Abstract2dShape {
 		// 两个切线与外部点的距离与角度
 		let cx1 = this.start.x - location.x;
 		let cy1 = this.start.x - location.y;
-		let cx2 = this.end.y - location.x;
-		let cy2 = this.end.y - location.y;
+		let cx2 = this.end  .y - location.x;
+		let cy2 = this.end  .y - location.y;
 		let range1 = Math.round(Math.sqrt(cx1 * cx1 + cy1 * cy1));
 		let range2 = Math.round(Math.sqrt(cx2 * cx2 + cy2 * cy2));
 
@@ -337,20 +334,12 @@ class Line extends Abstract2dShape {
 		return this;
 	}
 
-	scaleP2P(start: Point2D, end: Point2D): Line {
+	scale(start: Point2D, end: Point2D): Line {
 		let d1 = distanceP2P(start.x, start.y, this.start.x, this.start.y);
 		let d2 = distanceP2P(start.x, start.y, this.end  .x, this.end  .y);
 		// console.log(`${start.x},${start.y} - ${this.start.x},${this.start.y} - ${this.end.x},${this.end.y} - ${d1} <> ${d2}`);
 		if (d1 < d2) { this.start.x = end.x; this.start.y = end.y; } 
 		else         { this.end  .x = end.x; this.end  .y = end.y; }
-		return this;
-	}
-
-	scale(rate: number): Line {
-		let dx = this.end.x - this. start.x;
-		let dy = this.end.y - this. start.y;
-		this.start.x += dx * rate;
-		this.start.y += dy * rate;
 		return this;
 	}
 
@@ -385,18 +374,54 @@ class Line extends Abstract2dShape {
  		return dstToken;
  	}
  
- 	onScaleing(start: Point2D, end: Point2D): Line {
- 		throw new Error('Method not implemented.');
- 	}
- 	isHit(point: Point2D): boolean {
- 		throw new Error('Method not implemented.');
- 	}
- 	draw(): Line {
- 		throw new Error('Method not implemented.');
- 	}
- 	drawDesign(): Line {
- 		throw new Error('Method not implemented.');
+	onScaleing(painter: Painter, start: Point2D, end: Point2D): Abstract2dShape {
+		let d1 = distanceP2P(start.x, start.y, this.start.x, this.start.y);
+		let d2 = distanceP2P(start.x, start.y, this.end  .x, this.end  .y);
 
+		painter.draw(() => {
+			if (d1 < d2) {
+				painter.strokeLine(end, this.end, { lineWidth: 8, strokeStyle: 'rgba(0, 0, 255, 0.7)' });
+			} else {
+				painter.strokeLine(this.end, end, { lineWidth: 8, strokeStyle: 'rgba(0, 0, 255, 0.7)' });
+			}
+		})
+ 		// this.draw();
+		painter.draw(() => {
+			if (d1 < d2) {
+				painter.strokeLine(end, this.end, { lineWidth: 8, strokeStyle: 'rgba(0, 255, 0, 0.7)' });
+			} else {
+				painter.strokeLine(this.end, end, { lineWidth: 8, strokeStyle: 'rgba(0, 255, 0, 0.7)' });
+			}
+		})
+ 		// this.draw();
+		return this;
+ 	}
+
+	isHit(point: Point2D): boolean {
+		console.log(`${this.id} - ${this.start.x},${this.start.y} - ${this.end.x},${this.end.y} : ${point.x},${point.y}`);
+
+		if (this.start.x < this.end.x && (point.x < (this.start.x - 5) || point.x > (this.end  .x + 5))) { return false; } else 
+		if (this.start.x > this.end.x && (point.x < (this.end  .x - 5) || point.x > (this.start.x + 5))) { return false; } else 
+		if (this.start.y < this.end.y && (point.y < (this.start.y - 5) || point.y > (this.end  .y + 5))) { return false; } else 
+		if (this.start.y > this.end.y && (point.y < (this.end  .y - 5) || point.y > (this.start.y + 5))) { return false; }
+
+		let dist = pointToLineDistence(this.start.x, this.start.y, this.end.x, this.end.y, point.x, point.y);
+		console.log(`distence is ${dist}`);
+		return dist < 10;
+	}
+
+ 	draw(painter: Painter): Line {
+		painter.draw(() => {
+			painter.strokeLine(this.start, this.end, { lineWidth: 3, strokeStyle: '#00FF00' });
+		})
+		return this;
+ 	}
+
+ 	drawDesign(painter: Painter): Line {
+		painter.draw(() => {
+			painter.strokeLine(this.start, this.end, { lineWidth: 8, strokeStyle: '#0000FF' });
+		})
+		return this;
  	}
 
 	clone(): Line {
@@ -412,88 +437,8 @@ class Line extends Abstract2dShape {
 //
 //
 //
-//	onScaleing(x, y, x2, y2) {
-//		let d1 = parseInt(distanceP2P(x, y, this.x, this.y));
-//		let d2 = parseInt(distanceP2P(x, y, this.x2, this.y2));
-//		this.cvsCtx.save();
-//		this.cvsCtx.strokeStyle = 'rgba(0, 0, 255, 0.7)';
-//		this.cvsCtx.lineWidth = 8;
-//		this.cvsCtx.beginPath();
-//		if (d1 < d2) {
-//			this.cvsCtx.moveTo(x2, y2);
-//			this.cvsCtx.lineTo(this.x2, this.y2);
-//		} else {
-//			this.cvsCtx.moveTo(this.x, this.y);
-//			this.cvsCtx.lineTo(x2, y2);
-//		}
-//		this.cvsCtx.stroke();
-//		this.draw();
-//		this.cvsCtx.strokeStyle = 'rgba(0, 255, 0, 0.7)';
-//		this.cvsCtx.lineWidth = 3;
-//		this.cvsCtx.beginPath();
-//		if (d1 < d2) {
-//			this.cvsCtx.moveTo(x2, y2);
-//			this.cvsCtx.lineTo(this.x2, this.y2);
-//		} else {
-//			this.cvsCtx.moveTo(this.x, this.y);
-//			this.cvsCtx.lineTo(x2, y2);
-//		}
-//		this.cvsCtx.stroke();
 //
-//	scale(x, y, x2, y2) {
-//		let d1 = parseInt(distanceP2P(x, y, this.x, this.y));
-//		let d2 = parseInt(distanceP2P(x, y, this.x2, this.y2));
-//		console.log(`${x},${y} - ${this.x},${this.y} - ${this.x2},${this.y2} - ${d1} <> ${d2}`);
-//		if (d1 < d2) {
-//			this.x = x2; this.y = y2;
-//		} else {
-//			this.x2 = x2; this.y2 = y2;
-//		}
-//	}
 //
-//		this.draw();
-//		this.cvsCtx.restore();
-//	}
-//
-//	isHit(x, y) {
-//		// console.log(`${this.id} - ${this.x},${this.y} - ${this.x2},${this.y2} : ${x},${y}`);
-//		if (this.x < this.x2 && (x < (this.x - 5) || x > (this.x2 + 5))) {
-//			return false;
-//		} else if (this.x > this.x2 && (x < (this.x2 - 5) || x > (this.x + 5))) {
-//			return false;
-//		} else if (this.y < this.y2 && (y < (this.y - 5) || y > (this.y2 + 5))) {
-//			return false;
-//		} else if (this.y > this.y2 && (y < (this.y2 - 5) || y > (this.y + 5))) {
-//			return false;
-//		} else {
-//			let dist = pointToLineDistence(this.x, this.y, this.x2, this.y2, x, y);
-//			console.log(`distence is ${dist}`);
-//			return dist < 10;
-//		}
-//	}
-//
-//	draw() {
-//		this.cvsCtx.save();
-//		this.cvsCtx.strokeStyle = "#00FF00";
-//		this.cvsCtx.lineWidth = 3;
-//		this.cvsCtx.beginPath();
-//		this.cvsCtx.moveTo(this.x, this.y);
-//		this.cvsCtx.lineTo(this.x2, this.y2);
-//		this.cvsCtx.stroke();
-//		this.cvsCtx.restore();
-//	}
-//
-//	drawDesign() {
-//		this.cvsCtx.save();
-//		this.cvsCtx.strokeStyle = "#0000FF";
-//		this.cvsCtx.lineWidth = 8;
-//		this.cvsCtx.beginPath();
-//		this.cvsCtx.moveTo(this.x, this.y);
-//		this.cvsCtx.lineTo(this.x2, this.y2);
-//		this.cvsCtx.stroke();
-//		this.cvsCtx.restore();
-//		this.draw();
-//	}
 //
 //}
 //
@@ -609,13 +554,6 @@ class Line extends Abstract2dShape {
 //		this.cvsCtx.strokeStyle = "rgba(0, 255, 0, 0.7)";
 //		this.cvsCtx.strokeRect(this.x, this.y, width, height);
 //		this.cvsCtx.restore();
-//	}
-//
-//	move(x, y, x1, y1) {
-//		let dx = x1 - x;
-//		let dy = y1 - y;
-//		this.x += dx;
-//		this.y += dy;
 //	}
 //
 //	scale(x, y, x1, y1) {
@@ -831,12 +769,6 @@ class Line extends Abstract2dShape {
 //		this.cvsCtx.restore();
 //	}
 //
-//	move(x, y, x1, y1) {
-//		let dx = x1 - x;
-//		let dy = y1 - y;
-//		this.x += dx;
-//		this.y += dy;
-//	}
 //
 //	scale(x, y, x1, y1) {
 //		let dx = x1 - x;
