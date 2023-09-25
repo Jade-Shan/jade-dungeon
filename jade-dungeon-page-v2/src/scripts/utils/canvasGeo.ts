@@ -46,7 +46,7 @@ interface Canvas2dShape {
 	// }
 }
 
-class CanvasLine extends Line implements Canvas2dShape {
+export class CanvasLine extends Line implements Canvas2dShape {
 
 	constructor(id: string, start: Point2D, end: Point2D, color: string, visiable: boolean, blockView: boolean) {
 		super(id, start, end, color, visiable, blockView);
@@ -85,12 +85,6 @@ class CanvasLine extends Line implements Canvas2dShape {
 
 	drawWantMove(cvsCtx: CanvasRenderingContext2D, start: Point2D, end: Point2D): CanvasLine {
 		let dist = this.moveP2P(start, end);
-		// let dx = start.x - end.x;
-		// let dy = start.y - end.y;
- 		// let p1 = { x: this.start.x + dx, y: this.start.y + dy };
-		// let p2 = { x: this.end  .x + dx, y: this.end  .y + dy };
- 		// let centerX = Math.abs(p1.x - p2.x) / 2 + (p1.x > p2.x ? p2.x : p1.x);
- 		// let centerY = Math.abs(p1.y - p2.y) / 2 + (p1.y > p2.y ? p2.y : p1.y);
 
 		cvsCtx.save();
 
@@ -226,7 +220,7 @@ export class RectangleCanvas extends Rectangle implements Canvas2dShape {
 
 }
 
-class CircleCanvas extends Circle implements Canvas2dShape {
+export class CircleCanvas extends Circle implements Canvas2dShape {
 
 	constructor(
 		id: string, location: Point2D, radius: number,  
