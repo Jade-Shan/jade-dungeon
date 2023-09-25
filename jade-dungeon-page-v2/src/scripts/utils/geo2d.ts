@@ -40,8 +40,8 @@ let pointToLine = (ax: number, ay: number, bx: number, by: number, x: number, y:
 	if (ax == bx            ) { return { x: ax, y:  y }; } else 
 	if (ay == by            ) { return { x:  x, y: ay }; }
 
-	let a = x - ax;
-	let b = y - ay;
+	let a = x  - ax;
+	let b = y  - ay;
 	let c = bx - ax;
 	let d = by - ay;
 
@@ -191,11 +191,11 @@ abstract class Abstract2dShape implements Shape2D {
 	abstract center(): Point2D;
 	abstract minDistance(location: Point2D): number;
 	abstract genVertexRays(location: Point2D): Ray[];
-	abstract scale(start: Point2D, end: Point2D): Abstract2dShape;
 	abstract isHit(location: Point2D): boolean;
 	abstract clone(): Abstract2dShape;
-	abstract moveP2P(start: Point2D, end: Point2D): Abstract2dShape;
+	abstract scale(start: Point2D, end: Point2D): Abstract2dShape;
 	abstract move(dx: number, dy: number): Abstract2dShape;
+	abstract moveP2P(start: Point2D, end: Point2D): Abstract2dShape;
 
 	/* 计算外部点到障碍物轮廓的两条切线 */
 	filterObstacleRays(point: Point2D, rayRange?: number): Array<Ray> {
@@ -306,15 +306,6 @@ export class Line extends Abstract2dShape {
 			{ start: this.start, end: { x: 0, y: 0 }, angle: angl1, cAngle: cAngl1, range: range1 }]
 	}
 
-	scale(start: Point2D, end: Point2D): Line {
-		let d1 = distanceP2P(start.x, start.y, this.start.x, this.start.y);
-		let d2 = distanceP2P(start.x, start.y, this.end  .x, this.end  .y);
-		// console.log(`${start.x},${start.y} - ${this.start.x},${this.start.y} - ${this.end.x},${this.end.y} - ${d1} <> ${d2}`);
-		if (d1 < d2) { this.start.x = end.x; this.start.y = end.y; } 
-		else         { this.end  .x = end.x; this.end  .y = end.y; }
-		return this;
-	}
-
 	isHit(point: Point2D): boolean {
 		console.log(`${this.id} - ${this.start.x},${this.start.y} - ${this.end.x},${this.end.y} : ${point.x},${point.y}`);
 
@@ -337,9 +328,16 @@ export class Line extends Abstract2dShape {
 	moveP2P(start: Point2D, end: Point2D): Line {
 		let dx = start.x - end.x;
 		let dy = start.y - end.y;
- 		// let centerX = Math.abs(p1.x - p2.x) / 2 + (p1.x > p2.x ? p2.x : p1.x);
- 		// let centerY = Math.abs(p1.y - p2.y) / 2 + (p1.y > p2.y ? p2.y : p1.y);
 		return this.move(dx, dy);
+	}
+
+	scale(start: Point2D, end: Point2D): Line {
+		let d1 = distanceP2P(start.x, start.y, this.start.x, this.start.y);
+		let d2 = distanceP2P(start.x, start.y, this.end  .x, this.end  .y);
+		// console.log(`${start.x},${start.y} - ${this.start.x},${this.start.y} - ${this.end.x},${this.end.y} - ${d1} <> ${d2}`);
+		let newStart = d1 < d2 ? { x: end.x, y: end.y } : { x: this.start.x, y: this.start.y };
+		let newEnd   = d1 < d2 ? { x: this.end.x, y: this.end.y } : { x: end.x, y: end.y };
+		return new Line(this.id, newStart, newEnd, this.color, this.visiable, this.blockView);
 	}
 }
 
@@ -424,14 +422,6 @@ export class Rectangle extends Abstract2dShape {
 			this.calVtxDstAngle(this.vertexes[3], location, quad)];
 	}
 
-	scale(start: Point2D, end: Point2D): Rectangle {
-		let width  = this.width  + (end.x - start.x);
-		let height = this.height + (end.y- start.y);
-		this.width  = width  > 10 ? width  : 10;
-		this.height = height > 10 ? height : 10;
-		return this;
-	}
-
 	move(dx: number, dy: number): Rectangle {
 		let location = { 
 			x: this.location.x + dx, 
@@ -444,27 +434,17 @@ export class Rectangle extends Abstract2dShape {
 	moveP2P(start: Point2D, end: Point2D): Rectangle {
 		let dx = end.x - start.x;
 		let dy = end.y - start.y;
-	// 	let newCenter = { x: this.center().x + dx, y: this.center().y + dy };
-	// 	painter.draw(() => {
-	// 		painter.strokeLine(this.center(), newCenter, { lineWidth: 3, strokeStyle: "rgba(255, 0, 0, 0.7)" });
-	// 		painter.fillRect  (this.location, this.width, this.height, { lineWidth: 5, fillStyle  : "rgba(0,   0, 255, 0.7)" });
-	// 		painter.strokeRect(this.location, this.width, this.height, { lineWidth: 5, strokeStyle: "rgba(0, 255,   0, 0.7)" });
-	// 	});
 		return this.move(dx, dy);
 	}
 
-
-	// onScaleing(painter: Painter, start: Point2D, end: Point2D): Rectangle {
-	// 	let width  = this.width  + (end.x - start.x);
-	// 	let height = this.height + (end.y - start.y);
-	// 	width  = width  > 10 ? width : 10;
-	// 	height = height > 10 ? height : 10;
-	// 	painter.draw(() => {
-	// 		painter.fillRect  (this.location, width, height, {lineWidth: 5, fillStyle  : "rgba(0,   0, 255, 0.7)"});
-	// 		painter.strokeRect(this.location, width, height, {lineWidth: 5, strokeStyle: "rgba(0, 255,   0, 0.7)"});
-	// 	});
-	// 	return this;
-	// }
+	scale(start: Point2D, end: Point2D): Rectangle {
+		let width   = this.width  + (end.x - start.x);
+		let height  = this.height + (end.y - start.y);
+		this.width  = width  > 10 ? width  : 10;
+		this.height = height > 10 ? height : 10;
+		return new Rectangle(this.id, this.location, width, height,
+			this.color, this.imgInfo, this.visiable, this.blockView);
+	}
 
 	isHit(location: Point2D): boolean {
 		if (location.x <  this.location.x || location.y < this.location.y) {
@@ -567,25 +547,6 @@ export class Circle extends Abstract2dShape {
 			{ start: { x: pos1.x, y: pos1.y }, end: { x: 0, y: 0 }, angle: angl1, cAngle: cAngl1, range: range1 }];
 	}
 
-	scale(start: Point2D, end: Point2D): Circle {
-		let dx = end.x - start.x;
-		let dy = end.y - start.y;
-		let nr = Math.sqrt(dx * dx + dy * dy);
-		let dx2 = end.x - this.location.x;
-		let dy2 = end.y - this.location.y;
-		let r2 = Math.sqrt(dx2 * dx2 + dy2 * dy2);
-		if (r2 < this.radius) {
-			nr = this.radius - nr;
-		} else {
-			nr = this.radius + nr;
-		}
-		if (nr < 10) {
-			nr = 10;
-		}
-		this.radius = nr;
-		return this;
-	}
-
 	isHit(location: Point2D): boolean {
 		let g = location.x - this.location.x;
 		let j = location.y - this.location.y;
@@ -595,33 +556,29 @@ export class Circle extends Abstract2dShape {
 	}
 
 	move(dx: number, dy: number): Circle {
-		return new Circle(this.id, 
-			{x: this.location.x + dx, y: this.location.y + dy}, 
-			this.radius,  
-			this.color, this.imgInfo, this.visiable, this.blockView);
+		return new Circle(this.id, { x: this.location.x + dx, y: this.location.y + dy }, 
+			this.radius,  this.color, this.imgInfo, this.visiable, this.blockView);
 	}
 
 	moveP2P(start: Point2D, end: Point2D): Circle{
 		let dx = end.x - start.x;
 		let dy = end.y - start.y;
-//		cvsCtx.save();
-//		// 画起点与终点之间的连线
-//		cvsCtx.strokeStyle = 'rgba(255, 0, 0, 0.7)';
-//		cvsCtx.lineWidth = 3;
-//		cvsCtx.beginPath();
-//		cvsCtx.moveTo(this.x, this.y);
-//		cvsCtx.lineTo(this.x + dx, this.y + dy);
-//		cvsCtx.stroke();
-//		//
-//		cvsCtx.lineWidth = 5;
-//		cvsCtx.beginPath();
-//		cvsCtx.arc(this.x + dx, this.y + dy, this.radius, 0, PI_DOUBLE, true);
-//		cvsCtx.fillStyle = "rgba(0, 0, 255, 0.7)";
-//		cvsCtx.fill();
-//		cvsCtx.strokeStyle = "rgba(0, 255, 0, 0.7)";
-//		cvsCtx.stroke();
-//		cvsCtx.restore();
 		return this.move(dx, dy);
+	}
+
+	scale(start: Point2D, end: Point2D): Circle {
+		let dx1 = end.x - start.x;
+		let dy1 = end.y - start.y;
+		let dx2 = end.x - this.location.x;
+		let dy2 = end.y - this.location.y;
+
+		let r1 = Math.sqrt(dx1 * dx1 + dy1 * dy1);
+		let r2 = Math.sqrt(dx2 * dx2 + dy2 * dy2);
+
+		let newRadius = r2 < this.radius ?  this.radius - r1 : this.radius + r1;
+		newRadius = newRadius < 10 ? 10 : newRadius;
+		return new Circle(this.id, { x: this.location.x, y: this.location.y }, 
+			newRadius,  this.color, this.imgInfo, this.visiable, this.blockView);
 	}
 
 }
@@ -652,34 +609,6 @@ export class Circle extends Abstract2dShape {
 //		this.cvsCtx.beginPath();
 //		this.cvsCtx.moveTo(x, y);
 //		this.cvsCtx.lineTo(this.x, this.y);
-//		this.cvsCtx.stroke();
-//		this.cvsCtx.restore();
-//	}
-//
-//
-//
-//	onScaleing(x, y, x1, y1) {
-//		let dx = x1 - x;
-//		let dy = y1 - y;
-//		let nr = parseInt(Math.sqrt(dx * dx + dy * dy));
-//		let dx2 = x1 - this.x;
-//		let dy2 = y1 - this.y;
-//		let r2 = parseInt(Math.sqrt(dx2 * dx2 + dy2 * dy2));
-//		if (r2 < this.radius) {
-//			nr = this.radius - nr;
-//		} else {
-//			nr = this.radius + nr;
-//		}
-//		if (nr < 10) {
-//			nr = 10;
-//		}
-//		this.cvsCtx.save();
-//		this.cvsCtx.lineWidth = 5;
-//		this.cvsCtx.beginPath();
-//		this.cvsCtx.arc(this.x, this.y, nr, 0, PI_DOUBLE, true);
-//		this.cvsCtx.fillStyle = "rgba(0, 0, 255, 0.7)";
-//		this.cvsCtx.fill();
-//		this.cvsCtx.strokeStyle = "rgba(0, 255, 0, 0.7)";
 //		this.cvsCtx.stroke();
 //		this.cvsCtx.restore();
 //	}
