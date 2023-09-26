@@ -205,7 +205,7 @@ export interface Shape2D {
 
 	isHit(location: Point2D): boolean;
 
-	filterObstacleRays(point: Point2D, rayRange?: number): Array<Ray>;
+	filterObstacleRays(point: Point2D): Array<Ray>;
 
 	// 计算出外部点到这个图形的线的线段
 	genTangentLine(point: Point2D, rayRange: number): Array<Ray>;
@@ -238,8 +238,7 @@ abstract class Abstract2dShape implements Shape2D {
 	abstract moveP2P(start: Point2D, end: Point2D): Abstract2dShape;
 
 	/* 计算外部点到障碍物轮廓的两条切线 */
-	filterObstacleRays(point: Point2D, rayRange?: number): Array<Ray> {
-		rayRange = rayRange ? rayRange : Number.MAX_SAFE_INTEGER;
+	filterObstacleRays(point: Point2D): Array<Ray> {
 		let rays: Array<Ray> = this.genVertexRays(point);
 		// 找到角度最大的点与最小的点
 		let minIdx = 0;
@@ -263,7 +262,7 @@ abstract class Abstract2dShape implements Shape2D {
 	// 计算出外部点到这个图形的线的线段
 	genTangentLine(point: Point2D, rayRange: number): Array<Ray> {
 		rayRange = rayRange ? rayRange : Number.MAX_SAFE_INTEGER;
-		let rays: Array<Ray> = this.filterObstacleRays(point, rayRange);
+		let rays: Array<Ray> = this.filterObstacleRays(point);
 		for (let i = 0; i < rays.length; i++) {
 			rays[i].end.x = point.x + Math.round(rayRange * Math.cos(rays[i].angle));
 			rays[i].end.y = point.y + Math.round(rayRange * Math.sin(rays[i].angle));
