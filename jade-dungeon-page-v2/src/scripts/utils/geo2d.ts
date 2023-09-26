@@ -140,45 +140,40 @@ let quadOfLine = (x1: number, y1: number, x2: number, y2: number) => {
 	return quad;
 };
 
-let genLocationToVertexRays = (location: Point2D, vertex1: Point2D, vertex2: Point2D): Array<Ray> => {
-		// 两个切线与外部点的距离与角度
-		let c1 = { x: vertex1.x - location.x, y: vertex1.y - location.y};
-		let c2 = { x: vertex2.x - location.x, y: vertex2.y - location.y};
-		let range1 = Math.round(Math.sqrt(c1.x * c1.x + c1.y * c1.y));
-		let range2 = Math.round(Math.sqrt(c2.x * c2.x + c2.y * c2.y));
 
-		// 以外部观察点为中心，统计图形的每条边经过哪些象限
-		let quad = quadOfLine(c1.x, c1.y, c2.x, c2.y);
-		// console.log(`shape + 0b${quad.toString(2)}`);
-
-		// 计算切线的起止角度
-		let angl1 = Math.atan2(c1.y, c1.x);
-		let angl2 = Math.atan2(c2.y, c2.x);
-		let cAngl1 = 0;
-		if (quad == 0b1001 || quad == 0b1101 || quad == 0b1011) {
-			cAngl1 = angl1;
-		} else if (angl1 < 0) {
-			cAngl1 = PI_DOUBLE + angl1;
-		} else {
-			cAngl1 = angl1;
-		}
-		let cAngl2 = 0;
-		if (quad == 0b1001 || quad == 0b1101 || quad == 0b1011) {
-			cAngl2 = angl2;
-		} else if (angl2 < 0) {
-			cAngl2 = PI_DOUBLE + angl2;
-		} else {
-			cAngl2 = angl2;
-		}
-
-		return cAngl1 < cAngl2 ? [
-			{ start: { x: vertex1.x, y: vertex1.y }, end: { x: 0, y: 0 }, angle: angl1, cAngle: cAngl1, range: range1 },
-			{ start: { x: vertex2.x, y: vertex2.y }, end: { x: 0, y: 0 }, angle: angl2, cAngle: cAngl2, range: range2 }] : [
-			{ start: { x: vertex2.x, y: vertex2.y }, end: { x: 0, y: 0 }, angle: angl2, cAngle: cAngl2, range: range2 },
-			{ start: { x: vertex1.x, y: vertex1.y }, end: { x: 0, y: 0 }, angle: angl1, cAngle: cAngl1, range: range1 }]
+/* 计算顶点到外部点的距离与角度 */
+let calVtxDstAngle = (location: Point2D, vertex: Point2D, quad: number): Ray => {
+	let dx = vertex.x - location.x;
+	let dy = vertex.y - location.y;
+	let range = Math.round(Math.sqrt(dx * dx + dy * dy));
+	let angle = Math.atan2(dy, dx);
+	let cAngle = 0;
+	if (quad == 0b1001 || quad == 0b1101 || quad == 0b1011) {
+		cAngle = angle;
+	} else if (angle < 0) {
+		cAngle = Math.PI * 2 + angle;
+	} else {
+		cAngle = angle;
+	}
+	return { start: location, end: vertex, angle: angle, cAngle: cAngle, range: range };
 };
 
-
+// 创建某一点到二维几何形状的每个顶点的连线
+let genLocationToVertexRays = (location: Point2D, vertexes : Point2D []): Array<Ray> => {
+	let rays: Array<Ray> = [];
+	if (vertexes && vertexes.length > 1) {
+		let quad = 0b0000;
+		for (let i = 0; i < vertexes.length - 1; i++) {
+			quad = quad | quadOfLine(
+				vertexes[i    ].x - location.x, vertexes[i    ].y - location.y, 
+				vertexes[i + 1].x - location.x, vertexes[i + 1].y - location.y);
+		}
+		for (let i = 0; i < vertexes.length; i++) {
+			rays.push(calVtxDstAngle(vertexes[i], location, quad));
+		}
+	}
+	return rays;
+};
 
 export interface Shape2D {
 	id: string;
@@ -307,9 +302,7 @@ export class Line extends Abstract2dShape {
 
 	/* 外部点到每个端点的射线 */
 	genVertexRays(location: Point2D): Ray[] {
-		let pos1 = { x: this.start.x, y: this.start.y};
-		let pos2 = { x: this.end  .x, y: this.end  .y};
-		return genLocationToVertexRays(location, this.start, this.end);
+		return genLocationToVertexRays(location, this.vertexes);
 	}
 
 	isHit(point: Point2D): boolean {
@@ -396,36 +389,9 @@ export class Rectangle extends Abstract2dShape {
 		return minRange;
 	}
 
-	/* 计算顶点到外部点的距离与角度 */
-	calVtxDstAngle(location: Point2D, vertex: Point2D, quad: number): Ray {
-		let dx = vertex.x - location.x;
-		let dy = vertex.y - location.y;
-		let range = Math.round(Math.sqrt(dx * dx + dy * dy));
-		let angle = Math.atan2(dy, dx);
-		let cAngle = 0;
-		if (quad == 0b1001 || quad == 0b1101 || quad == 0b1011) {
-			cAngle = angle;
-		} else if (angle < 0) {
-			cAngle = Math.PI * 2 + angle;
-		} else {
-			cAngle = angle;
-		}
-		return { start: location, end: vertex, angle: angle, cAngle: cAngle, range: range};
-	}
-
 	/* 外部点到每个顶点的射线 */
 	genVertexRays(location: Point2D): Ray[] {
-		// 以外部观察点为中心，统计图形的每条边经过哪些象限
-		let quad = 0b0000;
-		quad = quad | quadOfLine(this.vertexes[0].x - location.x, this.vertexes[0].y - location.y, this.vertexes[0].x - location.x, this.vertexes[0].y - location.y);
-		quad = quad | quadOfLine(this.vertexes[1].x - location.x, this.vertexes[1].y - location.y, this.vertexes[1].x - location.x, this.vertexes[1].y - location.y);
-		quad = quad | quadOfLine(this.vertexes[2].x - location.x, this.vertexes[2].y - location.y, this.vertexes[2].x - location.x, this.vertexes[2].y - location.y);
-		// console.log(`shape + 0b${quad.toString(2)}`);
-		return [
-			this.calVtxDstAngle(this.vertexes[0], location, quad),
-			this.calVtxDstAngle(this.vertexes[1], location, quad),
-			this.calVtxDstAngle(this.vertexes[2], location, quad),
-			this.calVtxDstAngle(this.vertexes[3], location, quad)];
+		return genLocationToVertexRays(location, this.vertexes);
 	}
 
 	move(dx: number, dy: number): Rectangle {
@@ -518,7 +484,7 @@ export class Circle extends Abstract2dShape {
 		let dy2 = Math.round(this.radius * Math.sin(angle2));
 		let verTex1 = { x: this.location.x + dx1, y: this.location.y + dy1 };
 		let verTex2 = { x: this.location.x + dx2, y: this.location.y + dy2 };
-		return genLocationToVertexRays(location, verTex1, verTex2);
+		return genLocationToVertexRays(location, [verTex1, verTex2]);
 	}
 
 	isHit(location: Point2D): boolean {
