@@ -140,6 +140,44 @@ let quadOfLine = (x1: number, y1: number, x2: number, y2: number) => {
 	return quad;
 };
 
+let genLocationToVertexRays = (location: Point2D, vertex1: Point2D, vertex2: Point2D): Array<Ray> => {
+		// 两个切线与外部点的距离与角度
+		let c1 = { x: vertex1.x - location.x, y: vertex1.y - location.y};
+		let c2 = { x: vertex2.x - location.x, y: vertex2.y - location.y};
+		let range1 = Math.round(Math.sqrt(c1.x * c1.x + c1.y * c1.y));
+		let range2 = Math.round(Math.sqrt(c2.x * c2.x + c2.y * c2.y));
+
+		// 以外部观察点为中心，统计图形的每条边经过哪些象限
+		let quad = quadOfLine(c1.x, c1.y, c2.x, c2.y);
+		// console.log(`shape + 0b${quad.toString(2)}`);
+
+		// 计算切线的起止角度
+		let angl1 = Math.atan2(c1.y, c1.x);
+		let angl2 = Math.atan2(c2.y, c2.x);
+		let cAngl1 = 0;
+		if (quad == 0b1001 || quad == 0b1101 || quad == 0b1011) {
+			cAngl1 = angl1;
+		} else if (angl1 < 0) {
+			cAngl1 = PI_DOUBLE + angl1;
+		} else {
+			cAngl1 = angl1;
+		}
+		let cAngl2 = 0;
+		if (quad == 0b1001 || quad == 0b1101 || quad == 0b1011) {
+			cAngl2 = angl2;
+		} else if (angl2 < 0) {
+			cAngl2 = PI_DOUBLE + angl2;
+		} else {
+			cAngl2 = angl2;
+		}
+
+		return cAngl1 < cAngl2 ? [
+			{ start: { x: vertex1.x, y: vertex1.y }, end: { x: 0, y: 0 }, angle: angl1, cAngle: cAngl1, range: range1 },
+			{ start: { x: vertex2.x, y: vertex2.y }, end: { x: 0, y: 0 }, angle: angl2, cAngle: cAngl2, range: range2 }] : [
+			{ start: { x: vertex2.x, y: vertex2.y }, end: { x: 0, y: 0 }, angle: angl2, cAngle: cAngl2, range: range2 },
+			{ start: { x: vertex1.x, y: vertex1.y }, end: { x: 0, y: 0 }, angle: angl1, cAngle: cAngl1, range: range1 }]
+};
+
 export interface Shape2D {
 	id: string;
 	location: Point2D;
@@ -268,42 +306,9 @@ export class Line extends Abstract2dShape {
 
 	/* 外部点到每个端点的射线 */
 	genVertexRays(location: Point2D): Ray[] {
-		// 两个切线与外部点的距离与角度
-		let cx1 = this.start.x - location.x;
-		let cy1 = this.start.x - location.y;
-		let cx2 = this.end  .y - location.x;
-		let cy2 = this.end  .y - location.y;
-		let range1 = Math.round(Math.sqrt(cx1 * cx1 + cy1 * cy1));
-		let range2 = Math.round(Math.sqrt(cx2 * cx2 + cy2 * cy2));
-
-		// 以外部观察点为中心，统计图形的每条边经过哪些象限
-		let quad = quadOfLine(cx1, cy1, cx2, cy2);
-		// console.log(`shape + 0b${quad.toString(2)}`);
-		// 计算切线的起止角度
-		let angl1 = Math.atan2(cy1, cx1);
-		let angl2 = Math.atan2(cy2, cx2);
-		let cAngl1 = 0;
-		if (quad == 0b1001 || quad == 0b1101 || quad == 0b1011) {
-			cAngl1 = angl1;
-		} else if (angl1 < 0) {
-			cAngl1 = PI_DOUBLE + angl1;
-		} else {
-			cAngl1 = angl1;
-		}
-		let cAngl2 = 0;
-		if (quad == 0b1001 || quad == 0b1101 || quad == 0b1011) {
-			cAngl2 = angl2;
-		} else if (angl2 < 0) {
-			cAngl2 = PI_DOUBLE + angl2;
-		} else {
-			cAngl2 = angl2;
-		}
-
-		return cAngl1 < cAngl2 ? [
-			{ start: this.start, end: { x: 0, y: 0 }, angle: angl1, cAngle: cAngl1, range: range1 },
-			{ start: this.end  , end: { x: 0, y: 0 }, angle: angl2, cAngle: cAngl2, range: range2 }] : [
-			{ start: this.end  , end: { x: 0, y: 0 }, angle: angl2, cAngle: cAngl2, range: range2 },
-			{ start: this.start, end: { x: 0, y: 0 }, angle: angl1, cAngle: cAngl1, range: range1 }]
+		let pos1 = { x: this.start.x, y: this.start.y};
+		let pos2 = { x: this.end  .x, y: this.end  .y};
+		return genLocationToVertexRays(location, this.start, this.end);
 	}
 
 	isHit(point: Point2D): boolean {
@@ -510,41 +515,9 @@ export class Circle extends Abstract2dShape {
 		let dy1 = Math.round(this.radius * Math.sin(angle1));
 		let dx2 = Math.round(this.radius * Math.cos(angle2));
 		let dy2 = Math.round(this.radius * Math.sin(angle2));
-		let pos1 = {x: this.location.x + dx1, y: this.location.y + dy1};
-		let pos2 = {x: this.location.x + dx2, y: this.location.y + dy2};
-		// 两个切线与外部点的距离与角度
-		let c1 = {x: pos1.x - location.x, y: pos1.y - location.y};
-		let c2 = {x: pos2.x - location.x, y: pos2.y - location.y};
-		let range1 = Math.round(Math.sqrt(c1.x * c1.x + c1.y * c1.y));
-		let range2 = Math.round(Math.sqrt(c2.x * c2.x + c2.y * c2.y));
-		// 以外部观察点为中心，统计图形的每条边经过哪些象限
-		let quad = quadOfLine(c1.x, c1.y, c2.x, c2.y);
-		// console.log(`shape + 0b${quad.toString(2)}`);
-		// 计算切线的起止角度
-		let angl1 = Math.atan2(c1.y, c1.x);
-		let angl2 = Math.atan2(c2.y, c2.x);
-		let cAngl1 = 0;
-		if (quad == 0b1001 || quad == 0b1101 || quad == 0b1011) {
-			cAngl1 = angl1;
-		} else if (angl1 < 0) {
-			cAngl1 = PI_DOUBLE + angl1;
-		} else {
-			cAngl1 = angl1;
-		}
-		let cAngl2 = 0;
-		if (quad == 0b1001 || quad == 0b1101 || quad == 0b1011) {
-			cAngl2 = angl2;
-		} else if (angl2 < 0) {
-			cAngl2 = PI_DOUBLE + angl2;
-		} else {
-			cAngl2 = angl2;
-		}
-
-		return cAngl1 < cAngl2 ? [
-			{ start: { x: pos1.x, y: pos1.y }, end: { x: 0, y: 0 }, angle: angl1, cAngle: cAngl1, range: range1 },
-			{ start: { x: pos2.x, y: pos2.y }, end: { x: 0, y: 0 }, angle: angl2, cAngle: cAngl2, range: range2 }] : [
-			{ start: { x: pos2.x, y: pos2.y }, end: { x: 0, y: 0 }, angle: angl2, cAngle: cAngl2, range: range2 },
-			{ start: { x: pos1.x, y: pos1.y }, end: { x: 0, y: 0 }, angle: angl1, cAngle: cAngl1, range: range1 }];
+		let verTex1 = { x: this.location.x + dx1, y: this.location.y + dy1 };
+		let verTex2 = { x: this.location.x + dx2, y: this.location.y + dy2 };
+		return genLocationToVertexRays(location, verTex1, verTex2);
 	}
 
 	isHit(location: Point2D): boolean {
