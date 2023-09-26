@@ -178,6 +178,8 @@ let genLocationToVertexRays = (location: Point2D, vertex1: Point2D, vertex2: Poi
 			{ start: { x: vertex1.x, y: vertex1.y }, end: { x: 0, y: 0 }, angle: angl1, cAngle: cAngl1, range: range1 }]
 };
 
+
+
 export interface Shape2D {
 	id: string;
 	location: Point2D;
@@ -399,6 +401,7 @@ export class Rectangle extends Abstract2dShape {
 	calVtxDstAngle(location: Point2D, vertex: Point2D, quad: number): Ray {
 		let dx = vertex.x - location.x;
 		let dy = vertex.y - location.y;
+		let range = Math.round(Math.sqrt(dx * dx + dy * dy));
 		let angle = Math.atan2(dy, dx);
 		let cAngle = 0;
 		if (quad == 0b1001 || quad == 0b1101 || quad == 0b1011) {
@@ -408,8 +411,7 @@ export class Rectangle extends Abstract2dShape {
 		} else {
 			cAngle = angle;
 		}
-		return { start: location, end: vertex, angle: angle, cAngle: cAngle, 
-			range: Math.sqrt(dx * dx + dy * dy)};
+		return { start: location, end: vertex, angle: angle, cAngle: cAngle, range: range};
 	}
 
 	/* 外部点到每个顶点的射线 */
