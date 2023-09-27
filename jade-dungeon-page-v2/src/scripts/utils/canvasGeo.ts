@@ -22,9 +22,7 @@ interface Canvas2dShape {
 
 	drawWantMove(cvsCtx: CanvasRenderingContext2D, start: Point2D, end: Point2D): Canvas2dShape;
 
-	// onMoveing(cvsCtx: CanvasRenderingContext2D, start: Point2D, end: Point2D): Canvas2dShape;
-
-	// onScaleing   (cvsCtx: CanvasRenderingContext2D, start: Point2D, end: Point2D): Canvas2dShape;
+	drawWantScale(cvsCtx: CanvasRenderingContext2D, start: Point2D, end: Point2D): Canvas2dShape;
 
 	// // 画出切线
 	// drawTangentLine(cvsCtx: CanvasRenderingContext2D, location: Point2D, rays: Array<Ray>): Array<Ray>;
@@ -112,37 +110,27 @@ export class CanvasLine extends Line implements Canvas2dShape {
 		return this.byModel(dist);
 	}
 
-	onScaleing(cvsCtx: CanvasRenderingContext2D, start: Point2D, end: Point2D): Canvas2dShape {
-		let d1 = distanceP2P(start.x, start.y, this.start.x, this.start.y);
-		let d2 = distanceP2P(start.x, start.y, this.end  .x, this.end  .y);
-
-		let p1 = d1 < d2 ?      end : this.end;
-		let p2 = d1 < d2 ? this.end :      end;
+	drawWantScale(cvsCtx: CanvasRenderingContext2D, start: Point2D, end: Point2D): CanvasLine {
+		let newLine = this.scale(start, end);
 
 		cvsCtx.save();
 
  		// 画移动后的线，外层的粗线
-		let style = d1 < d2 ?
-			{ lineWidth: 8, strokeStyle: 'rgba(0, 0, 255, 0.7)' } :
-			{ lineWidth: 8, strokeStyle: 'rgba(0, 0, 255, 0.7)' };
-		applyStyle(cvsCtx, style);
+		applyStyle(cvsCtx, { lineWidth: 8, strokeStyle: 'rgba(0, 0, 255, 0.7)' });
 		cvsCtx.beginPath();
-		cvsCtx.moveTo(p1.x, p1.y);
-		cvsCtx.lineTo(p2.x, p2.y);
+		cvsCtx.moveTo(newLine.start.x, newLine.start.y);
+		cvsCtx.lineTo(newLine.end  .x, newLine.end  .y);
 		cvsCtx.stroke();
  		// this.draw();
  		// 画移动后的线，内层的细线
-		style = d1 < d2 ?
-			{ lineWidth: 3, strokeStyle: 'rgba(0, 0, 255, 0.7)' } :
-			{ lineWidth: 3, strokeStyle: 'rgba(0, 0, 255, 0.7)' };
-		applyStyle(cvsCtx, style);
+		applyStyle(cvsCtx, { lineWidth: 3, strokeStyle: 'rgba(0, 255, 0, 0.7)' });
 		cvsCtx.beginPath();
-		cvsCtx.moveTo(p1.x, p1.y);
-		cvsCtx.lineTo(p2.x, p2.y);
+		cvsCtx.moveTo(newLine.start.x, newLine.start.y);
+		cvsCtx.lineTo(newLine.end  .x, newLine.end  .y);
 		cvsCtx.stroke();
 
 		cvsCtx.restore();
-		return new CanvasLine(this.id, p1, p2, this.color, this.visiable, this.blockView);
+		return new CanvasLine(this.id, newLine.start, newLine.end, this.color, this.visiable, this.blockView);
 	}
 
 }
@@ -218,6 +206,10 @@ export class CanvasRectangle extends Rectangle implements Canvas2dShape {
 		return this.byModel(dist);
 	}
 
+	drawWantScale(cvsCtx: CanvasRenderingContext2D, start: Point2D, end: Point2D): CanvasRectangle {
+		return null;
+	}
+
 }
 
 export class CanvasCircle extends Circle implements Canvas2dShape {
@@ -291,6 +283,10 @@ export class CanvasCircle extends Circle implements Canvas2dShape {
 		cvsCtx.restore();
 
 		return this.byModel(dist);
+	}
+
+	drawWantScale(cvsCtx: CanvasRenderingContext2D, start: Point2D, end: Point2D): CanvasCircle {
+		return null;
 	}
 
 }

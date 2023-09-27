@@ -5,13 +5,15 @@ import { Navbar } from "../ui/navbar";
 import {CanvasLine, CanvasRectangle, CanvasCircle} from "../utils/canvasGeo"
 
 let testCanvans = (cvsCtx: CanvasRenderingContext2D): void =>  {
-	let line01 = new CanvasLine("line-001", { x: 110, y: 110 }, { x: 170, y: 220 },
+	let line01 = new CanvasLine("line-001", { x: 100, y: 200 }, { x: 300, y: 400 },
 		"#0000FF", true, true);
-	line01.draw(cvsCtx);
+		line01.draw(cvsCtx);
+		line01.drawWantScale(cvsCtx, { x: 310, y: 410 }, { x: 550, y: 250 });
+	// line01.draw(cvsCtx);
 	// line01.drawDesign(cvsCtx);
-	line01.drawWantMove(cvsCtx, { x: 110, y: 120 }, { x: 110, y: 220 });
-	line01.drawWantMove(cvsCtx, { x: 110, y: 120 }, { x:  90, y: 120 });
-	line01.drawWantMove(cvsCtx, { x: 110, y: 120 }, { x: 110, y:  90 });
+	// line01.drawWantMove(cvsCtx, { x: 110, y: 120 }, { x: 110, y: 220 });
+	// line01.drawWantMove(cvsCtx, { x: 110, y: 120 }, { x:  90, y: 120 });
+	// line01.drawWantMove(cvsCtx, { x: 110, y: 120 }, { x: 110, y:  90 });
 }
 
 let Sandtable = () => {

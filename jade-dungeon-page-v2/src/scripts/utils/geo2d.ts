@@ -331,11 +331,12 @@ export class Line extends Abstract2dShape {
 	}
 
 	scale(start: Point2D, end: Point2D): Line {
+		// 鼠标拖动的起点离线段的哪一个端点更近
 		let d1 = distanceP2P(start.x, start.y, this.start.x, this.start.y);
 		let d2 = distanceP2P(start.x, start.y, this.end  .x, this.end  .y);
 		// console.log(`${start.x},${start.y} - ${this.start.x},${this.start.y} - ${this.end.x},${this.end.y} - ${d1} <> ${d2}`);
-		let newStart = d1 < d2 ? { x: end.x, y: end.y } : { x: this.start.x, y: this.start.y };
-		let newEnd   = d1 < d2 ? { x: this.end.x, y: this.end.y } : { x: end.x, y: end.y };
+		let newStart = d1 < d2 ? { x:      end.x, y:      end.y } : { x: this.start.x, y: this.start.y };
+		let newEnd   = d1 < d2 ? { x: this.end.x, y: this.end.y } : { x:        end.x, y:        end.y };
 		return new Line(this.id, newStart, newEnd, this.color, this.visiable, this.blockView);
 	}
 }
