@@ -159,7 +159,7 @@ let calVtxDstAngle = (location: Point2D, vertex: Point2D, quad: number): Ray => 
 };
 
 // 创建某一点到二维几何形状的每个顶点的连线
-let genLocationToVertexRays = (location: Point2D, ...vertexes: Point2D[]): Array<Ray> => {
+let calculateVertexRays = (location: Point2D, ...vertexes: Point2D[]): Array<Ray> => {
 	let rays: Array<Ray> = [];
 	if (vertexes && vertexes.length > 1) {
 		let quad = 0b0000;
@@ -285,8 +285,8 @@ export class Line extends Abstract2dShape {
 
 	center(): Point2D {
 		return {
-			x: Math.abs(this.start.x - this.end.x) / 2 + (this.start.x > this.end.x ? this.end.x : this.start.x),
-			y: Math.abs(this.start.y - this.end.y) / 2 + (this.start.y > this.end.y ? this.end.y : this.start.y)
+			x:  this.start.x + (this.end.x - this.start.x) / 2,
+			y:  this.start.y + (this.end.y - this.start.y) / 2
 		}
 	}
 
@@ -302,7 +302,7 @@ export class Line extends Abstract2dShape {
 
 	/* 外部点到每个端点的射线 */
 	genVertexRays(location: Point2D): Ray[] {
-		return genLocationToVertexRays(location, ...this.vertexes);
+		return calculateVertexRays(location, ...this.vertexes);
 	}
 
 	isHit(point: Point2D): boolean {
@@ -325,8 +325,8 @@ export class Line extends Abstract2dShape {
 	}
 
 	moveP2P(start: Point2D, end: Point2D): Line {
-		let dx = start.x - end.x;
-		let dy = start.y - end.y;
+		let dx = end.x - start.x;
+		let dy = end.y - start.y;
 		return this.move(dx, dy);
 	}
 
@@ -391,7 +391,7 @@ export class Rectangle extends Abstract2dShape {
 
 	/* 外部点到每个顶点的射线 */
 	genVertexRays(location: Point2D): Ray[] {
-		return genLocationToVertexRays(location, ...this.vertexes);
+		return calculateVertexRays(location, ...this.vertexes);
 	}
 
 	move(dx: number, dy: number): Rectangle {
@@ -484,7 +484,7 @@ export class Circle extends Abstract2dShape {
 		let dy2 = Math.round(this.radius * Math.sin(angle2));
 		let verTex1 = { x: this.location.x + dx1, y: this.location.y + dy1 };
 		let verTex2 = { x: this.location.x + dx2, y: this.location.y + dy2 };
-		return genLocationToVertexRays(location, verTex1, verTex2);
+		return calculateVertexRays(location, verTex1, verTex2);
 	}
 
 	isHit(location: Point2D): boolean {

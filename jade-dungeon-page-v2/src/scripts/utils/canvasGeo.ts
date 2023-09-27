@@ -62,7 +62,7 @@ export class CanvasLine extends Line implements Canvas2dShape {
 
 	draw(cvsCtx: CanvasRenderingContext2D): CanvasLine {
 		cvsCtx.save();
-		applyStyle(cvsCtx, { lineWidth: 3, strokeStyle: '#00FF00' });
+		applyStyle(cvsCtx, { lineWidth: 3, strokeStyle: this.color });
 		cvsCtx.beginPath();
 		cvsCtx.moveTo(this.start.x, this.start.y);
 		cvsCtx.lineTo(this.end  .x, this.end  .y);
@@ -91,7 +91,7 @@ export class CanvasLine extends Line implements Canvas2dShape {
  		// 画起点与终点之间的连线
 		applyStyle(cvsCtx, { lineWidth: 3, strokeStyle: 'rgba(255, 0, 0, 0.7)' });
 		cvsCtx.beginPath();
-		cvsCtx.moveTo(start.x, start.y);
+		cvsCtx.moveTo(this.center().x, this.center().y);
 		cvsCtx.lineTo(dist.center().x, dist.center().y);
 		cvsCtx.stroke();
  		// 画移动后的线，外层的粗线
@@ -101,7 +101,7 @@ export class CanvasLine extends Line implements Canvas2dShape {
 		cvsCtx.lineTo(dist.end  .x, dist.end  .y);
 		cvsCtx.stroke();
  		// 画移动后的线，内层的细线
-		applyStyle(cvsCtx, { lineWidth: 3, strokeStyle: 'rgba(0, 0, 255, 0.7)' });
+		applyStyle(cvsCtx, { lineWidth: 3, strokeStyle: 'rgba(0, 255, 0, 0.7)' });
 		cvsCtx.beginPath();
 		cvsCtx.moveTo(dist.start.x, dist.start.y);
 		cvsCtx.lineTo(dist.end  .x, dist.end  .y);
@@ -147,7 +147,7 @@ export class CanvasLine extends Line implements Canvas2dShape {
 
 }
 
-export class RectangleCanvas extends Rectangle implements Canvas2dShape {
+export class CanvasRectangle extends Rectangle implements Canvas2dShape {
 	constructor(
 		id: string, location: Point2D, width: number, height: number, 
 		color: string, imgInfo: ImageInfo, visiable: boolean, blockView: boolean
@@ -155,17 +155,17 @@ export class RectangleCanvas extends Rectangle implements Canvas2dShape {
 		super(id, location, width, height, color, imgInfo, visiable, blockView);
 	}
 
-	byModel(rectangle: Rectangle): RectangleCanvas {
-		return new RectangleCanvas(this.id, this.location, this.width, this.height, 
+	byModel(rectangle: Rectangle): CanvasRectangle {
+		return new CanvasRectangle(this.id, this.location, this.width, this.height, 
 			this.color, this.imgInfo, this.visiable, this.blockView);
 	}
 
-	clone(): RectangleCanvas {
-		return new RectangleCanvas(this.id, this.location, this.width, this.height, 
+	clone(): CanvasRectangle {
+		return new CanvasRectangle(this.id, this.location, this.width, this.height, 
 			this.color, this.imgInfo, this.visiable, this.blockView);
 	}
 
-	draw(cvsCtx: CanvasRenderingContext2D): RectangleCanvas {
+	draw(cvsCtx: CanvasRenderingContext2D): CanvasRectangle {
 		let x      = this.location.x + 3;
 		let y      = this.location.y + 3;
 
@@ -195,11 +195,11 @@ export class RectangleCanvas extends Rectangle implements Canvas2dShape {
 		return this;
 	}
 
-	drawDesign(cvsCtx: CanvasRenderingContext2D): RectangleCanvas {
+	drawDesign(cvsCtx: CanvasRenderingContext2D): CanvasRectangle {
 		return this.draw(cvsCtx);
 	}
 
-	drawWantMove(cvsCtx: CanvasRenderingContext2D, start: Point2D, end: Point2D): RectangleCanvas {
+	drawWantMove(cvsCtx: CanvasRenderingContext2D, start: Point2D, end: Point2D): CanvasRectangle {
 		let dist = this.moveP2P(start, end);
 		cvsCtx.save();
 		// 画起点与终点之间的连线
@@ -220,7 +220,7 @@ export class RectangleCanvas extends Rectangle implements Canvas2dShape {
 
 }
 
-export class CircleCanvas extends Circle implements Canvas2dShape {
+export class CanvasCircle extends Circle implements Canvas2dShape {
 
 	constructor(
 		id: string, location: Point2D, radius: number,  
@@ -229,17 +229,17 @@ export class CircleCanvas extends Circle implements Canvas2dShape {
 		super(id, location, radius, color, imgInfo, visiable, blockView);
 	}
 
-	byModel(circle: Circle): CircleCanvas  {
-		return new CircleCanvas(this.id, this.location, this.radius, 
+	byModel(circle: Circle): CanvasCircle  {
+		return new CanvasCircle(this.id, this.location, this.radius, 
 			this.color, this.imgInfo, this.visiable, this.blockView);
 	}
 
-	clone(): CircleCanvas  {
-		return new CircleCanvas(this.id, this.location, this.radius, 
+	clone(): CanvasCircle  {
+		return new CanvasCircle(this.id, this.location, this.radius, 
 			this.color, this.imgInfo, this.visiable, this.blockView);
 	}
 
-	draw(cvsCtx: CanvasRenderingContext2D): CircleCanvas {
+	draw(cvsCtx: CanvasRenderingContext2D): CanvasCircle {
 		cvsCtx.save();
 		applyStyle(cvsCtx, { lineWidth: 0, strokeStyle: this.color });
 		cvsCtx.beginPath();
@@ -266,11 +266,11 @@ export class CircleCanvas extends Circle implements Canvas2dShape {
 		return this;
 	}
 
-	drawDesign(cvsCtx: CanvasRenderingContext2D): CircleCanvas {
+	drawDesign(cvsCtx: CanvasRenderingContext2D): CanvasCircle {
 		return this.draw(cvsCtx);
 	}
 
-	drawWantMove(cvsCtx: CanvasRenderingContext2D, start: Point2D, end: Point2D): CircleCanvas {
+	drawWantMove(cvsCtx: CanvasRenderingContext2D, start: Point2D, end: Point2D): CanvasCircle {
 		let dist = this.moveP2P(start, end);
 
 		cvsCtx.save();
