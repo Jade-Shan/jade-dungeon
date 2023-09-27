@@ -159,7 +159,7 @@ let calVtxDstAngle = (location: Point2D, vertex: Point2D, quad: number): Ray => 
 };
 
 // 创建某一点到二维几何形状的每个顶点的连线
-let genLocationToVertexRays = (location: Point2D, vertexes : Point2D []): Array<Ray> => {
+let genLocationToVertexRays = (location: Point2D, ...vertexes: Point2D[]): Array<Ray> => {
 	let rays: Array<Ray> = [];
 	if (vertexes && vertexes.length > 1) {
 		let quad = 0b0000;
@@ -302,7 +302,7 @@ export class Line extends Abstract2dShape {
 
 	/* 外部点到每个端点的射线 */
 	genVertexRays(location: Point2D): Ray[] {
-		return genLocationToVertexRays(location, this.vertexes);
+		return genLocationToVertexRays(location, ...this.vertexes);
 	}
 
 	isHit(point: Point2D): boolean {
@@ -391,7 +391,7 @@ export class Rectangle extends Abstract2dShape {
 
 	/* 外部点到每个顶点的射线 */
 	genVertexRays(location: Point2D): Ray[] {
-		return genLocationToVertexRays(location, this.vertexes);
+		return genLocationToVertexRays(location, ...this.vertexes);
 	}
 
 	move(dx: number, dy: number): Rectangle {
@@ -484,7 +484,7 @@ export class Circle extends Abstract2dShape {
 		let dy2 = Math.round(this.radius * Math.sin(angle2));
 		let verTex1 = { x: this.location.x + dx1, y: this.location.y + dy1 };
 		let verTex2 = { x: this.location.x + dx2, y: this.location.y + dy2 };
-		return genLocationToVertexRays(location, [verTex1, verTex2]);
+		return genLocationToVertexRays(location, verTex1, verTex2);
 	}
 
 	isHit(location: Point2D): boolean {
