@@ -151,7 +151,7 @@ let calVtxDstAngle = (location: Point2D, vertex: Point2D, quad: number): Ray => 
 	if (quad == 0b1001 || quad == 0b1101 || quad == 0b1011) {
 		cAngle = angle;
 	} else if (angle < 0) {
-		cAngle = Math.PI * 2 + angle;
+		cAngle = PI_DOUBLE + angle;
 	} else {
 		cAngle = angle;
 	}
