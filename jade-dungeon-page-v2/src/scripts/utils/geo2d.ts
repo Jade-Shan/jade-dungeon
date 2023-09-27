@@ -335,6 +335,7 @@ export class Line extends Abstract2dShape {
 		let d1 = distanceP2P(start.x, start.y, this.start.x, this.start.y);
 		let d2 = distanceP2P(start.x, start.y, this.end  .x, this.end  .y);
 		// console.log(`${start.x},${start.y} - ${this.start.x},${this.start.y} - ${this.end.x},${this.end.y} - ${d1} <> ${d2}`);
+		// 离哪个端点更近，就移动哪个端点的位置
 		let newStart = d1 < d2 ? { x:      end.x, y:      end.y } : { x: this.start.x, y: this.start.y };
 		let newEnd   = d1 < d2 ? { x: this.end.x, y: this.end.y } : { x:        end.x, y:        end.y };
 		return new Line(this.id, newStart, newEnd, this.color, this.visiable, this.blockView);
