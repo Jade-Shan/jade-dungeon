@@ -5,11 +5,63 @@ export type DrawStyle = {lineWidth?: number, strokeStyle?: string, fillStyle?: s
 
 let applyStyle = (cvsCtx: CanvasRenderingContext2D, style?: DrawStyle) => {
 	if (style) {
-		if (style.fillStyle) { cvsCtx.fillStyle = style.fillStyle; }
+		if (style.fillStyle  ) { cvsCtx.fillStyle   = style.fillStyle  ; }
 		if (style.strokeStyle) { cvsCtx.strokeStyle = style.strokeStyle; }
-		if (style.lineWidth) { cvsCtx.lineWidth = style.lineWidth; }
+		if (style.lineWidth  ) { cvsCtx.lineWidth   = style.lineWidth  ; }
 	}
 }
+
+let defaultImgData = 'data:image/jpeg;base64,' +
+	'/9j/4AAQSkZJRgABAQEASABIAAD/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc' +
+	'4UG1RV19iZ2hnPk1xeXBkeFxlZ2P/2wBDARESEhgVGC8aGi9jQjhCY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2' +
+	'NjY2NjY2NjY2NjY2NjY2NjY2NjY2P/wgARCAAyADIDAREAAhEBAxEB/8QAGQAAAgMBAAAAAAAAAAAAAAAAAAQCAwUB/' +
+	'8QAFAEBAAAAAAAAAAAAAAAAAAAAAP/aAAwDAQACEAMQAAAB3CoiXnTp0iZJYIEjcLSIuXFIuaJ0gJmeMjY0BEQECRpD' +
+	'YHCozRkaLQAAAAA//8QAIBAAAgICAgIDAAAAAAAAAAAAAgMAARESBBATIBQhMP/aAAgBAQABBQKGwAi3AyZmfR1IAkD' +
+	'HCZkKjqLvI9MELlQ6BsXxAGVWOrlrzd/J20bAbt6ctRtAuIeF02lrr67YOw+F1ylFUEcfl//EABQRAQAAAAAAAAAAAA' +
+	'AAAAAAAFD/2gAIAQMBAT8BR//EABQRAQAAAAAAAAAAAAAAAAAAAFD/2gAIAQIBAT8BR//EACQQAAEDBAEDBQAAAAAAA' +
+	'AAAAAEAAhEDEiAiECEwMUFRYYGR/9oACAEBAAY/Als6FqcpqeSpZ4UvdaFNKvchzvwWOxvLoPp8LV4V9RwuHtiAwrVo' +
+	'/VFX6x6GFtVMKJ7f/8QAIBABAAICAgIDAQAAAAAAAAAAAQARITEQUSBhMEFxgf/aAAgBAQABPyGC4osc9SptOF85yP8' +
+	'ASELu9k31VCyrxGy4jnfIIAfXcAGNQyg+onen6RgCjhULGfDIZt33e4VBGkgsKp8AeFORdwu77HHl1DswgUeCsWO4ur' +
+	'8SAGQ+Mf/aAAwDAQACAAMAAAAQkkkgEEEEgAgEEggEAkEEEAAAn//EABQRAQAAAAAAAAAAAAAAAAAAAFD/2gAIAQMBA' +
+	'T8QR//EABQRAQAAAAAAAAAAAAAAAAAAAFD/2gAIAQIBAT8QR//EACEQAQACAgICAgMAAAAAAAAAAAEAESFBEDFRYSCh' +
+	'gZHR/9oACAEBAAE/EOiWr1a5jXtWKigBL1b3C3SMLcvLT9o/kF1zF1M2HJKCGADILfUUMUZrzwwkAuFtAQABgh1KF27' +
+	'PcBERbSP3AAUHFCFoRshUeovIE8dfhE5nBas2LuI2cBxLiWTKBWkBOoiFCP3KJmwGUyDua4I8TSNM9uhtMRg2r2yick' +
+	'18N8f/2Q==';
+let loadImage = async (image: HTMLImageElement, url: string) => {
+	// console.log(url);
+	if (url.indexOf('http') == 0) {
+		let encodeSrc = encodeURIComponent(url);
+		url = 'http://localhost:8088/api/sandtable/parseImage?src=' + encodeSrc;
+	}
+	let pm = new Promise((resolve: (rp: {image: HTMLImageElement, url: string}) => any, reject: (jp: {image: HTMLImageElement, url: string}) => any) => {
+		image.src = url;
+		image.crossOrigin='Anonymous';
+		// image.crossorigin='anonymous';
+		// image.crossOrigin = "anonymous";
+		// image.setAttribute('crossOrigin', 'anonymous');
+		// image.setAttribute('crossorigin', 'anonymous');
+		image.onload  = () => { resolve({image: image, url: url}); };
+		image.onabort = () => { reject ({image: image, url: url}); };
+		image.onerror = () => { reject ({image: image, url: url}); };
+	});
+	return await pm.then(rp => rp.image).catch(async jp => {
+		console.log(`load image err: ${url}`);
+		image.src = defaultImgData;
+		image.crossOrigin='Anonymous';
+		let errPm = new Promise((resolve: (rp: {image: HTMLImageElement, url: string}) => any, reject: (jp: {image: HTMLImageElement, url: string}) => any) => {
+	//		// image.crossorigin='anonymous';
+	//		// image.crossOrigin = "anonymous";
+	//		// image.setAttribute('crossOrigin', 'anonymous');
+	//		// image.setAttribute('crossorigin', 'anonymous');
+			image.onload = () => { resolve({ image: image, url: url }); };
+			image.onabort = () => { reject({ image: image, url: url }); };
+			image.onerror = () => { reject({ image: image, url: url }); };
+		});
+		return await errPm.then(rp => rp.image).catch(jp => { return null; }
+		);
+	});
+};
+
 
 
 interface Canvas2dShape {
