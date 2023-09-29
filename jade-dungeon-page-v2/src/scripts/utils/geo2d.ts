@@ -20,6 +20,7 @@ let copyImageInfo = (imageInfo: ImageInfo): ImageInfo => {
 		image : imageInfo.image };
 };
 
+/* 计算两点的距离 */
 export let distanceP2P = (start: Point2D, end: Point2D) => {
 	let d1 = start.x - end.x;
 	let d2 = start.y - end.y;
@@ -34,7 +35,7 @@ let pointOfLineSide = (
 	return (ay - by) * x + (bx - ax) * y + ax * ay - bx * ay;
 }
 
-/* 判断点x,y是在线段ax,ay->bx,by的垂直交点 */
+/* 判断点location在线段start->end的垂直交点 */
 let pointToLine = (start: Point2D, end: Point2D, location: Point2D) => {
 	if (start.x == end.x && start.y == end.y) { return { x:    start.x, y:      end.y }; } else 
 	if (start.x == end.x                    ) { return { x:    start.x, y: location.y }; } else 
@@ -55,6 +56,7 @@ let pointToLine = (start: Point2D, end: Point2D, location: Point2D) => {
 	return { x: start.x + param * c, y: start.y + param * d }; 
 };
 
+/* 判断点location到线段start->end的距离 */
 let pointToLineDistence = (start: Point2D, end: Point2D, location: Point2D) => {
 	let p = pointToLine(start, end, location);
 	return distanceP2P(location, p);
@@ -62,7 +64,7 @@ let pointToLineDistence = (start: Point2D, end: Point2D, location: Point2D) => {
 
 /* 检查两条线段a-b与c-d是否相交，交点的坐标*/
 let segmentsIntr = (a: Point2D, b: Point2D, c: Point2D, d: Point2D) => {
-	let isCross = false;
+	let isCross = true;
 	let x = 0;
 	let y = 0;
 
@@ -85,11 +87,14 @@ let segmentsIntr = (a: Point2D, b: Point2D, c: Point2D, d: Point2D) => {
 	}
 
 	//计算交点坐标 
-	isCross = true;
-	let t = area_cda / (area_abd - area_abc);
-	let dx = Math.round(t * (b.x - a.x));
-	let dy = Math.round(t * (b.y - a.y));
-	return { isCross: isCross, x: a.x + dx, y: a.y + dy };
+	if (isCross) {
+		let t = area_cda / (area_abd - area_abc);
+		let dx = Math.round(t * (b.x - a.x));
+		let dy = Math.round(t * (b.y - a.y));
+		return { isCross: true, x: a.x + dx, y: a.y + dy };
+	} else {
+		return { isCross: false, x: a.x, y: a.y };
+	}
 };
 
 /* 判断一点在第几象限 */
