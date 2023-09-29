@@ -145,13 +145,13 @@ export class CanvasLine extends Line implements Canvas2dShape {
 		cvsCtx.lineTo(dist.center().x, dist.center().y);
 		cvsCtx.stroke();
  		// 画移动后的线，外层的粗线
-		applyStyle(cvsCtx, { lineWidth: 8, strokeStyle: 'rgba(0, 0, 255, 0.7)' });
+		applyStyle(cvsCtx, { lineWidth: 8, strokeStyle: 'rgba(0, 255, 0, 0.7)' });
 		cvsCtx.beginPath();
 		cvsCtx.moveTo(dist.start.x, dist.start.y);
 		cvsCtx.lineTo(dist.end  .x, dist.end  .y);
 		cvsCtx.stroke();
  		// 画移动后的线，内层的细线
-		applyStyle(cvsCtx, { lineWidth: 3, strokeStyle: 'rgba(0, 255, 0, 0.7)' });
+		applyStyle(cvsCtx, { lineWidth: 3, strokeStyle: 'rgba(0, 0, 255, 0.7)' });
 		cvsCtx.beginPath();
 		cvsCtx.moveTo(dist.start.x, dist.start.y);
 		cvsCtx.lineTo(dist.end  .x, dist.end  .y);
@@ -168,14 +168,14 @@ export class CanvasLine extends Line implements Canvas2dShape {
 		cvsCtx.save();
 
  		// 画移动后的线，外层的粗线
-		applyStyle(cvsCtx, { lineWidth: 8, strokeStyle: 'rgba(0, 0, 255, 0.7)' });
+		applyStyle(cvsCtx, { lineWidth: 8, strokeStyle: 'rgba(0, 255, 0, 0.7)' });
 		cvsCtx.beginPath();
 		cvsCtx.moveTo(newLine.start.x, newLine.start.y);
 		cvsCtx.lineTo(newLine.end  .x, newLine.end  .y);
 		cvsCtx.stroke();
  		// this.draw();
  		// 画移动后的线，内层的细线
-		applyStyle(cvsCtx, { lineWidth: 3, strokeStyle: 'rgba(0, 255, 0, 0.7)' });
+		applyStyle(cvsCtx, { lineWidth: 3, strokeStyle: 'rgba(0, 0, 255, 0.7)' });
 		cvsCtx.beginPath();
 		cvsCtx.moveTo(newLine.start.x, newLine.start.y);
 		cvsCtx.lineTo(newLine.end  .x, newLine.end  .y);
@@ -251,7 +251,7 @@ export class CanvasRectangle extends Rectangle implements Canvas2dShape {
 		// 半明透明地标示出移动后的位置
 		applyStyle(cvsCtx, { lineWidth: 5, fillStyle: "rgba(0, 0, 255, 0.7)" });
 		cvsCtx.fillRect(dist.location.x, dist.location.y, this.width, this.height);
-		applyStyle(cvsCtx, { fillStyle: "rgba(0, 255, 0, 0.7)"});
+		applyStyle(cvsCtx, { strokeStyle: "rgba(0, 255, 0, 0.7)"});
 		cvsCtx.strokeRect(dist.location.x, dist.location.y, this.width, this.height);
 		cvsCtx.restore();
 
@@ -259,7 +259,15 @@ export class CanvasRectangle extends Rectangle implements Canvas2dShape {
 	}
 
 	drawWantScale(cvsCtx: CanvasRenderingContext2D, start: Point2D, end: Point2D): CanvasRectangle {
-		return null;
+		let dist = this.scale(start, end);
+		cvsCtx.save();
+		// 半明透明地标示出移动后的位置
+		applyStyle(cvsCtx, { lineWidth: 5, fillStyle: "rgba(0, 0, 255, 0.7)" });
+		cvsCtx.fillRect(dist.location.x, dist.location.y, this.width, this.height);
+		applyStyle(cvsCtx, { strokeStyle: "rgba(0, 255, 0, 0.7)"});
+		cvsCtx.strokeRect(dist.location.x, dist.location.y, this.width, this.height);
+		cvsCtx.restore();
+		return this.byModel(dist);
 	}
 
 }
@@ -338,7 +346,20 @@ export class CanvasCircle extends Circle implements Canvas2dShape {
 	}
 
 	drawWantScale(cvsCtx: CanvasRenderingContext2D, start: Point2D, end: Point2D): CanvasCircle {
-		return null;
+		let dist = this.scale(start, end);
+
+		cvsCtx.save();
+		//
+		applyStyle(cvsCtx, {lineWidth : 5});
+		cvsCtx.beginPath();
+		cvsCtx.arc(dist.location.x, dist.location.y, dist.radius, 0, PI_DOUBLE, true);
+		applyStyle(cvsCtx, { fillStyle: "rgba(0, 0, 255, 0.7)" });
+		cvsCtx.fill();
+		applyStyle(cvsCtx, { strokeStyle: "rgba(0, 255, 0, 0.7)" });
+		cvsCtx.stroke();
+		cvsCtx.restore();
+
+		return this.byModel(dist);
 	}
 
 }
