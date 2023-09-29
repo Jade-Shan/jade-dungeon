@@ -20,10 +20,10 @@ let copyImageInfo = (imageInfo: ImageInfo): ImageInfo => {
 		image : imageInfo.image };
 };
 
-export let distanceP2P = (x1: number, y1: number, x2: number, y2: number) => {
-	let g = x1 - x2;
-	let j = y1 - y2;
-	return Math.sqrt(g * g + j * j);
+export let distanceP2P = (start: Point2D, end: Point2D) => {
+	let d1 = start.x - end.x;
+	let d2 = start.y - end.y;
+	return Math.sqrt(d1 * d1 + d2 * d2);
 };
 
 /* 判断点px,py是在线段ax,ay->bx,by左边还是右边的 */
@@ -35,31 +35,29 @@ let pointOfLineSide = (
 }
 
 /* 判断点x,y是在线段ax,ay->bx,by的垂直交点 */
-let pointToLine = (ax: number, ay: number, bx: number, by: number, x: number, y: number) => {
-	if (ax == bx && ay == by) { return { x: ax, y: by }; } else 
-	if (ax == bx            ) { return { x: ax, y:  y }; } else 
-	if (ay == by            ) { return { x:  x, y: ay }; }
+let pointToLine = (start: Point2D, end: Point2D, location: Point2D) => {
+	if (start.x == end.x && start.y == end.y) { return { x:    start.x, y:      end.y }; } else 
+	if (start.x == end.x                    ) { return { x:    start.x, y: location.y }; } else 
+	if (start.y == end.y                    ) { return { x: location.x, y:    start.y }; }
 
-	let a = x  - ax;
-	let b = y  - ay;
-	let c = bx - ax;
-	let d = by - ay;
+	let a = location.x  - start.x;
+	let b = location.y  - start.y;
+	let c = end.x       - start.x;
+	let d = end.y       - start.y;
 
 	let dot   = a * c + b * d;
 	let lenSq = c * c + d * d;
 	let param = dot / lenSq;
 
-	if (param < 0) { return { x: ax, y: ay }; } else 
-	if (param > 1) { return { x: bx, y: by }; } 
+	if (param < 0) { return { x: start.x, y: start.y }; } else 
+	if (param > 1) { return { x: end  .x, y: end  .y }; } 
 
-	return { x: ax + param * c, y: ay + param * d }; 
+	return { x: start.x + param * c, y: start.y + param * d }; 
 };
 
-let pointToLineDistence = (
-	ax: number, ay: number, bx: number, by: number, x: number, y: number
-) => {
-	let p = pointToLine(ax, ay, bx, by, x, y);
-	return distanceP2P(x, y, p.x, p.y);
+let pointToLineDistence = (start: Point2D, end: Point2D, location: Point2D) => {
+	let p = pointToLine(start, end, location);
+	return distanceP2P(location, p);
 };
 
 /* 检查两条线段a-b与c-d是否相交，交点的坐标*/
@@ -316,7 +314,7 @@ export class Line extends Abstract2dShape {
 		if (this.start.y < this.end.y && (point.y < (this.start.y - 5) || point.y > (this.end  .y + 5))) { return false; } else 
 		if (this.start.y > this.end.y && (point.y < (this.end  .y - 5) || point.y > (this.start.y + 5))) { return false; }
 
-		let dist = pointToLineDistence(this.start.x, this.start.y, this.end.x, this.end.y, point.x, point.y);
+		let dist = pointToLineDistence(this.start, this.end, point);
 		console.log(`distence is ${dist}`);
 		return dist < 10;
 	}
@@ -335,8 +333,8 @@ export class Line extends Abstract2dShape {
 
 	scale(start: Point2D, end: Point2D): Line {
 		// 鼠标拖动的起点离线段的哪一个端点更近
-		let d1 = distanceP2P(start.x, start.y, this.start.x, this.start.y);
-		let d2 = distanceP2P(start.x, start.y, this.end  .x, this.end  .y);
+		let d1 = distanceP2P(start, this.start);
+		let d2 = distanceP2P(start, this.end  );
 		// console.log(`${start.x},${start.y} - ${this.start.x},${this.start.y} - ${this.end.x},${this.end.y} - ${d1} <> ${d2}`);
 		// 离哪个端点更近，就移动哪个端点的位置
 		let newStart = d1 < d2 ? { x:      end.x, y:      end.y } : { x: this.start.x, y: this.start.y };
