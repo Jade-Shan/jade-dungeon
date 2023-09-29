@@ -186,11 +186,11 @@ export interface Shape2D {
 
 	clone(): Shape2D;
 
-	/* 外部点到当前图像内个关键点的最近距离 */
+	/* 外部点到图像各个顶点距离中最近的距离 */
 	minDistance(location: Point2D): number;
 
 	/* 计算外部点到每个顶点的射线 */
-	genVertexRays(location: Point2D): Ray[];
+	genVertexRays(location: Point2D): Array<Ray>;
 
 	move(dx: number, dy: number): Shape2D;
 
@@ -200,7 +200,7 @@ export interface Shape2D {
 
 	isHit(location: Point2D): boolean;
 
-	filterObstacleRays(point: Point2D): Array<Ray>;
+	filterObstacleRays(location: Point2D): Array<Ray>;
 
 	// 计算出外部点到这个图形的线的线段
 	genTangentLine(point: Point2D, rayRange: number): Array<Ray>;
@@ -224,7 +224,6 @@ abstract class Abstract2dShape implements Shape2D {
 	}
 
 	abstract center(): Point2D;
-	abstract minDistance(location: Point2D): number;
 	abstract genVertexRays(location: Point2D): Ray[];
 	abstract isHit(location: Point2D): boolean;
 	abstract clone(): Abstract2dShape;
@@ -232,9 +231,23 @@ abstract class Abstract2dShape implements Shape2D {
 	abstract move(dx: number, dy: number): Abstract2dShape;
 	abstract moveP2P(start: Point2D, end: Point2D): Abstract2dShape;
 
+	/* 外部点到四个角的距离 */
+	minDistance(location: Point2D): number {
+		let minIdx = 0;
+		let minRange = Number.MAX_SAFE_INTEGER;
+		let rays = this.genVertexRays(location);
+		for (let i = 0; i < rays.length; i++) {
+			if (rays[i].range < minRange) {
+				minIdx = i;
+				minRange = rays[i].range;
+			}
+		}
+		return minRange;
+	}
+
 	/* 计算外部点到障碍物轮廓的两条切线 */
-	filterObstacleRays(point: Point2D): Array<Ray> {
-		let rays: Array<Ray> = this.genVertexRays(point);
+	filterObstacleRays(location: Point2D): Array<Ray> {
+		let rays: Array<Ray> = this.genVertexRays(location);
 		// 找到角度最大的点与最小的点
 		let minIdx = 0;
 		let maxIdx = 0;
@@ -255,12 +268,12 @@ abstract class Abstract2dShape implements Shape2D {
 	}
 
 	// 计算出外部点到这个图形的线的线段
-	genTangentLine(point: Point2D, rayRange: number): Array<Ray> {
+	genTangentLine(location: Point2D, rayRange: number): Array<Ray> {
 		rayRange = rayRange ? rayRange : Number.MAX_SAFE_INTEGER;
-		let rays: Array<Ray> = this.filterObstacleRays(point);
+		let rays: Array<Ray> = this.filterObstacleRays(location);
 		for (let i = 0; i < rays.length; i++) {
-			rays[i].end.x = point.x + Math.round(rayRange * Math.cos(rays[i].angle));
-			rays[i].end.y = point.y + Math.round(rayRange * Math.sin(rays[i].angle));
+			rays[i].end.x = location.x + Math.round(rayRange * Math.cos(rays[i].angle));
+			rays[i].end.y = location.y + Math.round(rayRange * Math.sin(rays[i].angle));
 		}
 		return rays;
 	};
@@ -288,16 +301,6 @@ export class Line extends Abstract2dShape {
 			x:  this.start.x + (this.end.x - this.start.x) / 2,
 			y:  this.start.y + (this.end.y - this.start.y) / 2
 		}
-	}
-
-	minDistance(location: Point2D): number {
-		let dx1 = this.start.x - location.x;
-		let dy1 = this.start.y - location.y;
-		let dx2 = this.end  .x - location.x;
-		let dy2 = this.end  .y - location.y;
-		let range1 = Math.round(Math.sqrt(dx1 * dx1 + dy1 * dy1));
-		let range2 = Math.round(Math.sqrt(dx2 * dx2 + dy2 * dy2));
-		return range1 < range2 ? range1 : range2;
 	}
 
 	/* 外部点到每个端点的射线 */
@@ -375,22 +378,6 @@ export class Rectangle extends Abstract2dShape {
 			y: this.location.y + this.height / 2 };
 	}
 
-	/* 外部点到四个角的距离 */
-	minDistance(location: Point2D): number {
-		let minIdx = 0;
-		let minRange = Number.MAX_SAFE_INTEGER;
-		for (let i = 0; i < this.vertexes.length; i++) {
-			let dx = this.vertexes[i].x - location.x;
-			let dy = this.vertexes[i].y - location.y;
-			let range = Math.round(Math.sqrt(dx * dx + dy * dy));
-			if (range < minRange) {
-				minIdx = i;
-				minRange = range;
-			}
-		}
-		return minRange;
-	}
-
 	/* 外部点到每个顶点的射线 */
 	genVertexRays(location: Point2D): Ray[] {
 		return calculateVertexRays(location, ...this.vertexes);
@@ -463,15 +450,7 @@ export class Circle extends Abstract2dShape {
 		return this.location;
 	}
 
-	minDistance(location: Point2D): number {
-		let dx = this.location.x - location.x;
-		let dy = this.location.y - location.y;
-		let range = Math.round(Math.sqrt(dx * dx + dy * dy));
-		return range - this.radius;
-	}
-
-	/* 外部点到每个顶点的射线 */
-	genVertexRays(location: Point2D): Ray[] {
+	genVertex(location: Point2D): Array<Point2D> {
 		// 外部点到圆心的连线的角度
 		let dx = this.location.x - location.x;
 		let dy = this.location.y - location.y;
@@ -484,9 +463,15 @@ export class Circle extends Abstract2dShape {
 		let dy1 = Math.round(this.radius * Math.sin(angle1));
 		let dx2 = Math.round(this.radius * Math.cos(angle2));
 		let dy2 = Math.round(this.radius * Math.sin(angle2));
-		let verTex1 = { x: this.location.x + dx1, y: this.location.y + dy1 };
-		let verTex2 = { x: this.location.x + dx2, y: this.location.y + dy2 };
-		return calculateVertexRays(location, verTex1, verTex2);
+		return [
+			{ x: this.location.x + dx1, y: this.location.y + dy1 },
+			{ x: this.location.x + dx2, y: this.location.y + dy2 }];
+	}
+
+	/* 外部点到每个顶点的射线 */
+	genVertexRays(location: Point2D): Ray[] {
+		let vertexes = this.genVertex(location);
+		return calculateVertexRays(location, ...vertexes);
 	}
 
 	isHit(location: Point2D): boolean {

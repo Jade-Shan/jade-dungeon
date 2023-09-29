@@ -11,7 +11,23 @@ let applyStyle = (cvsCtx: CanvasRenderingContext2D, style?: DrawStyle) => {
 	}
 }
 
-let defaultImgData = 'data:image/jpeg;base64,' +
+let drawLines = (cvsCtx: CanvasRenderingContext2D, rays: Array<Ray>) => {
+	cvsCtx.save();
+	applyStyle(cvsCtx, { lineWidth: 2, strokeStyle: 'rgba(255, 0, 0, 0.7)' });
+	if (rays) {
+		rays.forEach(r => {
+			cvsCtx.beginPath();
+			cvsCtx.moveTo(r.start.x, r.start.y);
+			cvsCtx.lineTo(r.end.x, r.end.y);
+			cvsCtx.stroke();
+		});
+	}
+	cvsCtx.restore();
+}
+
+
+
+export let defaultImgData = 'data:image/jpeg;base64,' +
 	'/9j/4AAQSkZJRgABAQEASABIAAD/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc' +
 	'4UG1RV19iZ2hnPk1xeXBkeFxlZ2P/2wBDARESEhgVGC8aGi9jQjhCY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2' +
 	'NjY2NjY2NjY2NjY2NjY2NjY2NjY2P/wgARCAAyADIDAREAAhEBAxEB/8QAGQAAAgMBAAAAAAAAAAAAAAAAAAQCAwUB/' +
@@ -27,6 +43,7 @@ let defaultImgData = 'data:image/jpeg;base64,' +
 	'gZHR/9oACAEBAAE/EOiWr1a5jXtWKigBL1b3C3SMLcvLT9o/kF1zF1M2HJKCGADILfUUMUZrzwwkAuFtAQABgh1KF27' +
 	'PcBERbSP3AAUHFCFoRshUeovIE8dfhE5nBas2LuI2cBxLiWTKBWkBOoiFCP3KJmwGUyDua4I8TSNM9uhtMRg2r2yick' +
 	'18N8f/2Q==';
+
 export let loadImage = async (image: HTMLImageElement, url: string) => {
 	// console.log(url);
 	if (url.indexOf('http') == 0) {
@@ -62,8 +79,6 @@ export let loadImage = async (image: HTMLImageElement, url: string) => {
 	});
 };
 
-
-
 interface Canvas2dShape {
 
 	clone(): Canvas2dShape;
@@ -75,6 +90,10 @@ interface Canvas2dShape {
 	drawWantMove(cvsCtx: CanvasRenderingContext2D, start: Point2D, end: Point2D): Canvas2dShape;
 
 	drawWantScale(cvsCtx: CanvasRenderingContext2D, start: Point2D, end: Point2D): Canvas2dShape;
+
+	drawVertexRays(cvsCtx: CanvasRenderingContext2D, location: Point2D): Array<Ray>;
+
+	drawObstacleRays(cvsCtx: CanvasRenderingContext2D, location: Point2D): Array<Ray>;
 
 	// // 画出切线
 	// drawTangentLine(cvsCtx: CanvasRenderingContext2D, location: Point2D, rays: Array<Ray>): Array<Ray>;
@@ -91,9 +110,6 @@ interface Canvas2dShape {
 	// 	return rays;
 	// };
 
-	// onMoveing(painter: Painter, start: Point2D, end: Point2D): Abstract2dShape {
-	// 	return this.onWantMoveing(painter, start, end);
-	// }
 }
 
 export class CanvasLine extends Line implements Canvas2dShape {
@@ -185,6 +201,18 @@ export class CanvasLine extends Line implements Canvas2dShape {
 		return new CanvasLine(this.id, newLine.start, newLine.end, this.color, this.visiable, this.blockView);
 	}
 
+	drawVertexRays(cvsCtx: CanvasRenderingContext2D, location: Point2D): Array<Ray> {
+		let rays = this.genVertexRays(location);
+		drawLines(cvsCtx, rays);
+		return rays
+	}
+
+	drawObstacleRays(cvsCtx: CanvasRenderingContext2D, location: Point2D): Array<Ray> {
+		let rays = this.filterObstacleRays(location);
+		drawLines(cvsCtx, rays);
+		return rays
+	}
+
 }
 
 export class CanvasRectangle extends Rectangle implements Canvas2dShape {
@@ -268,6 +296,18 @@ export class CanvasRectangle extends Rectangle implements Canvas2dShape {
 		cvsCtx.strokeRect(dist.location.x, dist.location.y, this.width, this.height);
 		cvsCtx.restore();
 		return this.byModel(dist);
+	}
+
+	drawVertexRays(cvsCtx: CanvasRenderingContext2D, location: Point2D): Array<Ray> {
+		let rays = this.genVertexRays(location);
+		drawLines(cvsCtx, rays);
+		return rays
+	}
+
+	drawObstacleRays(cvsCtx: CanvasRenderingContext2D, location: Point2D): Array<Ray> {
+		let rays = this.filterObstacleRays(location);
+		drawLines(cvsCtx, rays);
+		return rays
 	}
 
 }
@@ -360,6 +400,18 @@ export class CanvasCircle extends Circle implements Canvas2dShape {
 		cvsCtx.restore();
 
 		return this.byModel(dist);
+	}
+
+	drawVertexRays(cvsCtx: CanvasRenderingContext2D, location: Point2D): Array<Ray> {
+		let rays = this.genVertexRays(location);
+		drawLines(cvsCtx, rays);
+		return rays
+	}
+
+	drawObstacleRays(cvsCtx: CanvasRenderingContext2D, location: Point2D): Array<Ray> {
+		let rays = this.filterObstacleRays(location);
+		drawLines(cvsCtx, rays);
+		return rays
 	}
 
 }
