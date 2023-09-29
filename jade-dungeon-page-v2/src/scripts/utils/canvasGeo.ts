@@ -27,7 +27,7 @@ let defaultImgData = 'data:image/jpeg;base64,' +
 	'gZHR/9oACAEBAAE/EOiWr1a5jXtWKigBL1b3C3SMLcvLT9o/kF1zF1M2HJKCGADILfUUMUZrzwwkAuFtAQABgh1KF27' +
 	'PcBERbSP3AAUHFCFoRshUeovIE8dfhE5nBas2LuI2cBxLiWTKBWkBOoiFCP3KJmwGUyDua4I8TSNM9uhtMRg2r2yick' +
 	'18N8f/2Q==';
-let loadImage = async (image: HTMLImageElement, url: string) => {
+export let loadImage = async (image: HTMLImageElement, url: string) => {
 	// console.log(url);
 	if (url.indexOf('http') == 0) {
 		let encodeSrc = encodeURIComponent(url);
@@ -250,9 +250,9 @@ export class CanvasRectangle extends Rectangle implements Canvas2dShape {
 		cvsCtx.stroke();
 		// 半明透明地标示出移动后的位置
 		applyStyle(cvsCtx, { lineWidth: 5, fillStyle: "rgba(0, 0, 255, 0.7)" });
-		cvsCtx.fillRect(dist.center().x, dist.center().y, this.width, this.height);
+		cvsCtx.fillRect(dist.location.x, dist.location.y, this.width, this.height);
 		applyStyle(cvsCtx, { fillStyle: "rgba(0, 255, 0, 0.7)"});
-		cvsCtx.strokeRect(dist.center().x, dist.center().y, this.width, this.height);
+		cvsCtx.strokeRect(dist.location.x, dist.location.y, this.width, this.height);
 		cvsCtx.restore();
 
 		return this.byModel(dist);

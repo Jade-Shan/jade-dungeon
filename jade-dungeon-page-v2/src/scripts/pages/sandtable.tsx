@@ -1,8 +1,9 @@
 import * as React from "react";
 
 import { Navbar } from "../ui/navbar";
+import { ImageInfo } from "../utils/geo2d"
 
-import {CanvasLine, CanvasRectangle, CanvasCircle} from "../utils/canvasGeo"
+import {loadImage, CanvasLine, CanvasRectangle, CanvasCircle} from "../utils/canvasGeo"
 
 let defaultImgData = 'data:image/jpeg;base64,' +
 	'/9j/4AAQSkZJRgABAQEASABIAAD/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc' +
@@ -21,7 +22,7 @@ let defaultImgData = 'data:image/jpeg;base64,' +
 	'PcBERbSP3AAUHFCFoRshUeovIE8dfhE5nBas2LuI2cBxLiWTKBWkBOoiFCP3KJmwGUyDua4I8TSNM9uhtMRg2r2yick' +
 	'18N8f/2Q==';
 
-let testCanvans = (cvsCtx: CanvasRenderingContext2D): void =>  {
+let testCanvans = async (cvsCtx: CanvasRenderingContext2D): Promise<void> =>  {
 	//let line01 = new CanvasLine("line-001", { x: 100, y: 200 }, { x: 300, y: 400 },
 	//	"#0000FF", true, true);
 	//	line01.draw(cvsCtx);
@@ -32,8 +33,18 @@ let testCanvans = (cvsCtx: CanvasRenderingContext2D): void =>  {
 	// line01.drawWantMove(cvsCtx, { x: 110, y: 120 }, { x:  90, y: 120 });
 	// line01.drawWantMove(cvsCtx, { x: 110, y: 120 }, { x: 110, y:  90 });
 	//
-	let tang01 = new CanvasRectangle("tang-001", { x: 100, y: 200 }, 80, 90,
-		"#0000FF", null, true, true);
+	let me:HTMLImageElement = new Image();
+	let img = await loadImage(me, defaultImgData);
+	let imgInfo: ImageInfo = { key: "img001", location: {x: 0, y: 0}, width: 50, height: 50, src: defaultImgData, image: img};
+
+	let tang01 = new CanvasRectangle("tang-001", { x: 200, y: 200 }, 80, 90,
+		"#0000FF", imgInfo, true, true);
+	tang01.draw(cvsCtx);
+	// tang01.drawDesign(cvsCtx);
+	tang01.drawWantMove(cvsCtx, { x: 210, y: 220 }, { x:  30, y: 220 });
+	tang01.drawWantMove(cvsCtx, { x: 210, y: 220 }, { x: 330, y: 220 });
+	tang01.drawWantMove(cvsCtx, { x: 210, y: 220 }, { x: 210, y: 120 });
+	tang01.drawWantMove(cvsCtx, { x: 210, y: 220 }, { x: 210, y: 320 });
 }
 
 let Sandtable = () => {
@@ -51,6 +62,7 @@ let Sandtable = () => {
 					not support canvas
 				</canvas>
 			</div>
+			<img id="tmpImg"></img>
 		</>;
 
 };
