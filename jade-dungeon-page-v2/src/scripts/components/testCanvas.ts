@@ -1,16 +1,16 @@
 
 import { ImageInfo } from "../utils/geo2d"
 
-import { defaultImgData } from "../utils/defaultImages";
+import { defaultImgData, defaultIconData } from "../utils/defaultImages";
 
 import { loadImage, CanvasLine, CanvasRectangle, CanvasCircle } from "../utils/canvasGeo"
 
 export let testCanvas = async (cvsCtx: CanvasRenderingContext2D): Promise<void> => {
 	let me: HTMLImageElement = new Image();
-	let img: CanvasImageSource = await loadImage(me, defaultImgData);
+	let img: CanvasImageSource = await loadImage(me, defaultIconData);
 	// let img: CanvasImageSource = await loadImage(me, "../../../static/images/map.jpeg");
 	// let img: CanvasImageSource = await loadImage(me, "http://www.jade-dungeon.net/images/sandtable/map.png");
-	let imgInfo: ImageInfo = { key: "img001", location: {x: 0, y: 0}, width: 50, height: 50, src: defaultImgData, image: img};
+	let imgInfo: ImageInfo = { key: "img001", location: {x: 100, y: 150}, width: 50, height: 50, src: defaultImgData, image: img};
 
 	let line01 = new CanvasLine("line-001", { x: 100, y: 200 }, { x: 300, y: 400 },
 		"#0000FF", true, true);
