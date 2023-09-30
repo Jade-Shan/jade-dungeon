@@ -13,7 +13,7 @@ let testCanvans = async (cvsCtx: CanvasRenderingContext2D): Promise<void> =>  {
 	let line01 = new CanvasLine("line-001", { x: 100, y: 200 }, { x: 300, y: 400 },
 		"#0000FF", true, true);
 	line01.draw(cvsCtx);
-	// 	line01.drawWantScale(cvsCtx, { x: 310, y: 410 }, { x: 550, y: 250 });
+	// line01.drawWantScale(cvsCtx, { x: 310, y: 410 }, { x: 550, y: 250 });
 	// line01.draw(cvsCtx);
 	// line01.drawWantMove(cvsCtx, { x: 110, y: 120 }, { x: 110, y: 220 });
 	// line01.drawWantMove(cvsCtx, { x: 110, y: 120 }, { x:  90, y: 120 });
@@ -32,7 +32,7 @@ let testCanvans = async (cvsCtx: CanvasRenderingContext2D): Promise<void> =>  {
 	// tang01.drawVertexRays(cvsCtx, {x: 500, y: 70});
 	tang01.drawObstacleRays(cvsCtx, {x: 500, y: 380});
 
-	let circ = new CanvasCircle("circ-001", { x: 600, y: 500 }, 50, "#0000FF", imgInfo, true, true);
+	let circ = new CanvasCircle("circ-001", { x: 600, y: 500 }, 60, "#0000FF", imgInfo, true, true);
 	circ.draw(cvsCtx);
 	// circ.drawWantMove(cvsCtx, { x: 610, y: 520 }, { x: 480, y: 520 });
 	// circ.drawWantMove(cvsCtx, { x: 610, y: 520 }, { x: 730, y: 520 });
@@ -42,6 +42,9 @@ let testCanvans = async (cvsCtx: CanvasRenderingContext2D): Promise<void> =>  {
 	// circ.drawVertexRays(cvsCtx, {x: 500, y: 380});
 	circ.drawObstacleRays(cvsCtx, {x: 500, y: 380});
 
+	// let circ = new CanvasCircle("circ-001", { x: 130, y: 130 }, 100, "#0000FF", imgInfo, true, true);
+	// circ.draw(cvsCtx);
+	// circ.drawObstacleRays(cvsCtx, {x: 30, y: 30});
 }
 
 let Sandtable = () => {

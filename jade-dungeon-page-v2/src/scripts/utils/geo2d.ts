@@ -453,15 +453,16 @@ export class Circle extends Abstract2dShape {
 		return this.location;
 	}
 
-	genVertex(location: Point2D): Array<Point2D> {
+	// 垂直于连线的直线在圆上的交点
+	genDasLian(location: Point2D): Array<Point2D> {
 		// 外部点到圆心的连线的角度
 		let dx = this.location.x - location.x;
 		let dy = this.location.y - location.y;
 		let angle = Math.atan2(dy, dx);
-		// 两个切线交点到圆心的角度
+		// 垂直于连线的过圆心直线的角度
 		let angle1 = angle - PI_HALF;
 		let angle2 = angle + PI_HALF;
-		// 两个切线交点的坐标
+		// 垂直于连线的过圆心直线交于圆
 		let dx1 = Math.round(this.radius * Math.cos(angle1));
 		let dy1 = Math.round(this.radius * Math.sin(angle1));
 		let dx2 = Math.round(this.radius * Math.cos(angle2));
@@ -469,6 +470,51 @@ export class Circle extends Abstract2dShape {
 		return [
 			{ x: this.location.x + dx1, y: this.location.y + dy1 },
 			{ x: this.location.x + dx2, y: this.location.y + dy2 }];
+	}
+
+	genVertex(location: Point2D): Array<Point2D> {
+		let p1 = {x: 0, y: 0};
+		let p2 = {x: 0, y: 0};
+
+		// 外部点到圆心的距离
+		let dx = location.x - this.location.x;
+		let dy = location.y - this.location.y;
+		let distance = Math.sqrt(dx * dx + dy * dy);
+
+		// 点在圆内无效
+		if (distance < this.radius || distance == this.radius) {
+			return [p1, p2];
+		}
+
+		// 点到切点的距离
+		let length = Math.sqrt(distance * distance - this.radius * this.radius);
+
+		let u = {x: 0, y: 0};
+		// 点到圆心的单位向量
+		u.x = (this.location.x - location.x) / distance;
+		u.y = (this.location.y - location.y) / distance;
+		// u.x = dx / distance;
+		// u.y = dy / distance;
+		// 切线与圆心的夹角
+		let angle = Math.asin(this.radius / distance);
+		console.log(' Math.cos( angle) ' + Math.cos( angle));
+		console.log(' Math.sin( angle) ' + Math.sin( angle));
+		console.log(' Math.cos(-angle) ' + Math.cos(-angle));
+		console.log(' Math.sin(-angle) ' + Math.sin(-angle));
+
+		// 向两个方向旋转单位向量
+		p1.x = u.x * Math.cos( angle) - u.y * Math.sin( angle);
+		p1.y = u.x * Math.sin( angle) + u.y * Math.cos( angle);
+		p2.x = u.x * Math.cos(-angle) - u.y * Math.sin(-angle);
+		p2.y = u.x * Math.sin(-angle) + u.y * Math.cos(-angle);
+		console.log(`p1: (${p1.x.toFixed(6)},${p1.y.toFixed(6)}),   p2: (${p2.x.toFixed(6)},${p2.y.toFixed(6)})`);
+		// 得到新坐标
+		p1.x = p1.x * length + location.x;
+		p1.y = p1.y * length + location.y;
+		p2.x = p2.x * length + location.x;
+		p2.y = p2.y * length + location.y;
+		console.log(`p1: (${p1.x.toFixed(6)},${p1.y.toFixed(6)}),   p2: (${p2.x.toFixed(6)},${p2.y.toFixed(6)})`);
+		return [p1, p2];
 	}
 
 	/* 外部点到每个顶点的射线 */
