@@ -1,7 +1,9 @@
 
 import { ImageInfo } from "../utils/geo2d"
 
-import { defaultImgData, loadImage, CanvasLine, CanvasRectangle, CanvasCircle } from "../utils/canvasGeo"
+import { defaultImgData } from "../utils/defaultImages";
+
+import { loadImage, CanvasLine, CanvasRectangle, CanvasCircle } from "../utils/canvasGeo"
 
 export let testCanvas = async (cvsCtx: CanvasRenderingContext2D): Promise<void> => {
 	let me: HTMLImageElement = new Image();
