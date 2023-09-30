@@ -17,11 +17,15 @@ let Sandtable = () => {
 	return <>
 		<Navbar title="Sand Table" />
 		<div id="sandtable-body" className="container-fluid" >
-			<canvas ref={cvsRef} id="tutorial" width="800" height="600">
+			<canvas ref={cvsRef} id="tutorial" width="1600" height="800">
 				not support canvas
 			</canvas>
 		</div>
-		<img id="tmpImg"></img>
+		<div className="float-window">
+			<div className="title-bar">
+				<h3>title-bar</h3>
+			</div>
+		</div>
 	</>;
 
 };
