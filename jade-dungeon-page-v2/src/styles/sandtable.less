@@ -3,28 +3,38 @@ div#sandtable-body {
 }
 
 div.float-window {
-	width: 300px;
-	height: 160px;
+	opacity: 0.5;
 	border: 1px solid #803530;
 	box-shadow: inset 0 0 10px rgba(0, 0, 0, .2), 10px 0 5px rgba(0, 0, 0, .4);
 	background-image: url(http://www.jade-dungeon.net:8081/jadeutils.v2/themes/hobbit/images/toc-bg.jpg);
-	top: 100px;
-	right: 10px;
 	position: fixed;
-	z-index: 100;
+	/* z-index: 100; */
 }
 
-div.float-window>.title-bar {
+div.float-window:hover { opacity: 0.9; }
+
+div.float-window .title-bar {
+	overflow: hidden;
 	width: 100%;
-	height: 45px;
+	height: 35px;
 	padding: 5px 10px;
 	color: #000;
 	background: #8B4513;
 	border: 1px solid #803530;
 	box-shadow: inset 0 0 10px rgba(0, 0, 0, .2);
 	text-align: center;
+	/*
 	font-size: 1.3em;
-	line-height: 1.5em;
 	font-weight: 200;
+	*/
+	line-height: 1.5em;
 	letter-spacing: .01em;
 }
+div.float-window .title-bar>.title-icon { float: left ;  }
+div.float-window .title-bar>.title-ctrl { float: right;  }
+
+
+/* 
+*/
+div#dice-window    { top: 60px; right: 10px; }
+div#message-window { top: 60px; left : 10px; }
