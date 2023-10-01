@@ -1,5 +1,6 @@
 import * as React from "react";
-import {Resizable} from "re-resizable"
+import { Resizable } from "re-resizable"
+import Draggable from 'react-draggable';
 
 import { Navbar } from "../ui/navbar";
 import { testCanvas } from "../components/testCanvas"
@@ -39,6 +40,7 @@ let Sandtable = () => {
 				not support canvas
 			</canvas>
 		</div>
+		<Draggable >
 		<div id="message-window" ref={msgWin} className="float-window" 
 			style={{zIndex:msgWinZIdx}}
 			onClick={e => topWindow("msgWin")}>
@@ -49,6 +51,8 @@ let Sandtable = () => {
 				</div>
 			</Resizable>
 		</div>
+		</Draggable>
+		<Draggable handle=".title-bar" >
 		<div id="dice-window" ref={dicWin} className="float-window" 
 			style={{zIndex:dicWinZIdx}}
 			onClick={e => topWindow("dicWin")}>
@@ -59,6 +63,7 @@ let Sandtable = () => {
 				</div>
 			</Resizable>
 		</div>
+		</Draggable>
 	</>;
 
 };
