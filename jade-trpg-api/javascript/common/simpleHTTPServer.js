@@ -16,6 +16,8 @@ exports.HTTP_POST = HTTP_POST;
 exports.init = (globalCfg, application, handlers) => {
 	/* cookies */
 	application.use(cookieParser());
+	application.use(express.json());
+	application.use(express.urlencoded({extended: false}));
 	/* 上传文件 */
 	if (globalCfg.path && globalCfg.path.uploadTmpFile) {
 		application.use(multer({dest: globalCfg.path.uploadTmpFile}).array('uploadFiles'));
