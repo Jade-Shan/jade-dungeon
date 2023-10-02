@@ -2,3 +2,4 @@ node_modules/*
 deploy-rls.sh
 patch.tar.gz
 backup-rls.sh
+package-lock.json
