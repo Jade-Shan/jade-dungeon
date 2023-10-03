@@ -5,11 +5,15 @@ import { defaultImgData, defaultMapData, defaultIconData } from "../utils/defaul
 
 import { loadImage, CanvasLine, CanvasRectangle, CanvasCircle } from "../utils/canvasGeo"
 
+import { requestMapDatas } from '../components/sandtable';
+
 export let testCanvas = async (cvsCtx: CanvasRenderingContext2D): Promise<void> => {
 	let ma: HTMLImageElement = new Image();
 	let mb: HTMLImageElement = new Image();
 	let icons: CanvasImageSource = await loadImage(ma, defaultIconData);
 	let map  : CanvasImageSource = await loadImage(mb, defaultMapData);
+
+	requestMapDatas('campaign01','place01','scene01');
 
 	cvsCtx.drawImage(map, 0, 0);
 
