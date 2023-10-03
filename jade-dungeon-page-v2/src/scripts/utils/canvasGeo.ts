@@ -1,4 +1,4 @@
-import { distanceP2P, Point2D, Ray, Line, Rectangle, Circle, ImageInfo } from './geo2d';
+import { distanceP2P, Point2D, Ray, Line, Rectangle, Circle, ImageInfo, Shape2D } from './geo2d';
 import { PI_DOUBLE, PI_ONE_HALF, PI_HALF } from './geo2d';
 
 import {defaultImgData} from "../utils/defaultImages";
@@ -28,7 +28,7 @@ let drawLines = (cvsCtx: CanvasRenderingContext2D, rays: Array<Ray>) => {
 }
 
 
-export let loadImage = async (image: HTMLImageElement, url: string): Promise<CanvasImageSource> => {
+export let loadImage = async (image: HTMLImageElement, url: string): Promise<HTMLImageElement> => {
 	// console.log(url);
 	if (url.indexOf('http') == 0) {
 		let encodeSrc = encodeURIComponent(url);
@@ -64,7 +64,7 @@ export let loadImage = async (image: HTMLImageElement, url: string): Promise<Can
 	});
 };
 
-interface Canvas2dShape {
+export interface Canvas2dShape extends Shape2D {
 
 	clone(): Canvas2dShape;
 

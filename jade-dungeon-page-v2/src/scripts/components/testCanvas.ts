@@ -1,25 +1,19 @@
 
 import { ImageInfo } from "../utils/geo2d"
 
-import { defaultImgData, defaultMapData, defaultIconData } from "../utils/defaultImages";
+import { loadDefaultIcons, loadDefaultMap } from "../utils/defaultImages";
 
-import { loadImage, CanvasLine, CanvasRectangle, CanvasCircle } from "../utils/canvasGeo"
+import { CanvasLine, CanvasRectangle, CanvasCircle } from "../utils/canvasGeo"
 
-import { requestMapDatas } from '../components/sandtable';
+export let initSandtable = async (cvsCtx: CanvasRenderingContext2D): Promise<void> => {
+	let icons: ImageInfo = await loadDefaultIcons();
+	let map  : ImageInfo = await loadDefaultMap();
 
-export let testCanvas = async (cvsCtx: CanvasRenderingContext2D): Promise<void> => {
-	let ma: HTMLImageElement = new Image();
-	let mb: HTMLImageElement = new Image();
-	let icons: CanvasImageSource = await loadImage(ma, defaultIconData);
-	let map  : CanvasImageSource = await loadImage(mb, defaultMapData);
-
-	requestMapDatas('campaign01','place01','scene01');
-
-	cvsCtx.drawImage(map, 0, 0);
+	cvsCtx.drawImage(map.image, 0, 0);
 
 	// let img: CanvasImageSource = await loadImage(me, "../../../static/images/map.jpeg");
 	// let img: CanvasImageSource = await loadImage(me, "http://www.jade-dungeon.net/images/sandtable/map.png");
-	let imgInfo: ImageInfo = { key: "img001", location: {x: 100, y: 150}, width: 50, height: 50, src: defaultImgData, image: icons};
+	// let imgInfo: ImageInfo = { id: "img001", location: {x: 100, y: 150}, width: 50, height: 50, src: icons.src, image: icons};
 
 	let line01 = new CanvasLine("line-001", { x: 100, y: 200 }, { x: 300, y: 400 }, "#0000FF", true, true);
 	line01.draw(cvsCtx);
@@ -32,7 +26,7 @@ export let testCanvas = async (cvsCtx: CanvasRenderingContext2D): Promise<void> 
 	// line01.drawVertexRays(cvsCtx, {x: 110, y: 250});
 	line01.drawObstacleRays(cvsCtx, { x: 500, y: 380 });
 
-	let tang01 = new CanvasRectangle("tang-001", { x: 600, y: 100 }, 80, 90, "#0000FF", imgInfo, true, true);
+	let tang01 = new CanvasRectangle("tang-001", { x: 600, y: 100 }, 80, 90, "#0000FF", icons, true, true);
 	tang01.draw(cvsCtx);
 	// tang01.drawWantMove(cvsCtx, { x: 210, y: 220 }, { x:  80, y: 220 });
 	// tang01.drawWantMove(cvsCtx, { x: 210, y: 220 }, { x: 330, y: 220 });
@@ -42,7 +36,7 @@ export let testCanvas = async (cvsCtx: CanvasRenderingContext2D): Promise<void> 
 	// tang01.drawVertexRays(cvsCtx, {x: 500, y: 70});
 	tang01.drawObstacleRays(cvsCtx, { x: 500, y: 380 });
 
-	let circ = new CanvasCircle("circ-001", { x: 600, y: 500 }, 60, "#0000FF", imgInfo, true, true);
+	let circ = new CanvasCircle("circ-001", { x: 600, y: 500 }, 60, "#0000FF", icons, true, true);
 	circ.draw(cvsCtx);
 	// circ.drawWantMove(cvsCtx, { x: 610, y: 520 }, { x: 480, y: 520 });
 	// circ.drawWantMove(cvsCtx, { x: 610, y: 520 }, { x: 730, y: 520 });

@@ -8,10 +8,10 @@ export const PI_DOUBLE  : number = Math.PI * 2;
 
 export type Point2D = { x: number, y: number };
 export type Ray = { start: Point2D, end: Point2D, angle: number, cAngle: number, range: number };
-export type ImageInfo = { key: String, location: Point2D, width: number, height: number, src: string, image?: CanvasImageSource };
+export type ImageInfo = { id: string, location: Point2D, width: number, height: number, src: string, image?: CanvasImageSource };
 
 let copyImageInfo = (imageInfo: ImageInfo): ImageInfo => {
-	return { key   : imageInfo.key, location: {
+	return { id: imageInfo.id, location: {
 			x : imageInfo && imageInfo.location && imageInfo.location.x ? imageInfo.location.x : 0, 
 			y : imageInfo && imageInfo.location && imageInfo.location.y ? imageInfo.location.y : 0}, 
 		width : imageInfo && imageInfo.width  ? imageInfo.width  : 1, 

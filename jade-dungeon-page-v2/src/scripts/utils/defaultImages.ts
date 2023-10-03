@@ -1,3 +1,6 @@
+import { loadImage } from "../utils/canvasGeo"
+import { ImageInfo } from './geo2d';
+
 export const defaultImgData = 'data:image/jpeg;base64,' +
 	'/9j/4AAQSkZJRgABAQEASABIAAD/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc' +
 	'4UG1RV19iZ2hnPk1xeXBkeFxlZ2P/2wBDARESEhgVGC8aGi9jQjhCY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2' +
@@ -15,7 +18,7 @@ export const defaultImgData = 'data:image/jpeg;base64,' +
 	'PcBERbSP3AAUHFCFoRshUeovIE8dfhE5nBas2LuI2cBxLiWTKBWkBOoiFCP3KJmwGUyDua4I8TSNM9uhtMRg2r2yick' +
 	'18N8f/2Q==';
 
-export const defaultIconData = 'data:image/jpeg;base64,' +
+const defaultIconData = 'data:image/jpeg;base64,' +
 	'/9j/4AAQSkZJRgABAQEASABIAAD//gATQ3JlYXRlZCB3aXRoIEdJTVD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/2wBD' +
 	'AQMEBAUEBQkFBQkUDQsNFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBT/wgARCADIAJYDAREAAhEBAxEB/8QAHAAAAgIDAQEAAAAAAAAAAAAABgcEBQIDCAEA' +
 	'/8QAGwEAAgMBAQEAAAAAAAAAAAAAAwQAAgUBBgf/2gAMAwEAAhADEAAAAdyzcLObN7dr+l32FIuCiez1erZj17shPJI/KNzQGd9n0gTy8iVLe89k4dy/Ui451Zl8ps70Mi6u48U3oPCKHhniuvWYm7NH' +
@@ -206,7 +209,7 @@ export const defaultIconData = 'data:image/jpeg;base64,' +
 	'T6QFxMF9bEFbxq+8Dddp3/DlL+8g/wB4wmsJfDPHfoPGG5r24ecYcbO/6M6jO/oQmftpbvKZWYVc9xMrKlDWwkmWO4LdMAM7fE+8JurN8QDm48+MvNBJSglZQb23eczrJ58AZ3y2q/nPJZOy/Zc9Ugl+' +
 	'FwPz7F8vWd0uSPfWICpVV6Hn5wH+W5/PjOq/LJO0624Uz1h9bnrudv8AuHpKQM0fDrjAgX+x39f7iRoGsdb59YekRvzGVvVfzhRbGtpw4dDOF6z/2Q==';
 
-export const defaultMapData = 'data:image/jpeg;base64,' +
+const defaultMapData = 'data:image/jpeg;base64,' +
 	'/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDABsSFBcUERsXFhceHBsgKEIrKCUlKFE6PTBCYFVlZF9VXVtqeJmBanGQc1tdhbWGkJ6jq62rZ4C8ybqmx5moq6T/2wBDARweHigjKE4rK06kbl1upKSkpKSk' +
 	'pKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKT/wgARCAMgBkADAREAAhEBAxEB/8QAGgABAAMBAQEAAAAAAAAAAAAAAAECAwQFBv/EABYBAQEBAAAAAAAAAAAAAAAAAAAB' +
 	'Av/aAAwDAQACEAMQAAABkyILFixAJABBUqQASXLAgyALGhBUsQUNCCC4MypczOIHcd4AIKlyxoDzjzQdJqaAsVLAAFSpUAFi5IKFADQsQUNDMFypJYgzBoUJLEmRANSQAAAUKElyxBBYAAqUIABcuAZl' +
@@ -962,3 +965,21 @@ export const defaultMapData = 'data:image/jpeg;base64,' +
 	'RCrkuZEyUNDqdMUtQImTsaSJp2O4WMiXYSSssYUK57BZTCGmr4NCPPoMXvwJCxspGTdFA66iEJTPdGNdqDbeuLQ5Eqk1wuQ8IsYkosMaUTi1RjS8GNKGt2GQIdxtK+EDla4wVd8kUtJGqlsJdkjTWL2Z' +
 	'nUmMZahtNRpQIl0NUJJWz2SrNQ8ZHhxuJDLC/wBDy/GCyMPYdyQyKImb4MatiNpghJRKmNRqVUSRYf/Z';
 
+
+export const loadDefaultImage = async (): Promise<ImageInfo> => {
+	let img: HTMLImageElement = await loadImage(new Image(), defaultImgData);
+	let imgInfo: ImageInfo = { id: "icons-001", location: {x: 0, y: 0}, width: 50, height: 50, src: defaultImgData, image: img};
+	return imgInfo;
+};
+
+export const loadDefaultIcons = async (): Promise<ImageInfo> => {
+	let icons: HTMLImageElement = await loadImage(new Image(), defaultIconData);
+	let imgInfo: ImageInfo = { id: "icons-001", location: {x: 100, y: 150}, width: 50, height: 50, src: defaultImgData, image: icons};
+	return imgInfo;
+};
+
+export const loadDefaultMap = async (): Promise<ImageInfo> => {
+	let map: HTMLImageElement = await loadImage(new Image(), defaultMapData);
+	let imgInfo: ImageInfo = { id: "icons-001", location: {x: 0, y: 0}, width: 1600, height: 800, src: defaultImgData, image: map};
+	return imgInfo;
+};

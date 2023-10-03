@@ -3,7 +3,10 @@ import { Resizable } from "re-resizable"
 import Draggable from 'react-draggable';
 
 import { Navbar } from "../ui/navbar";
-import { testCanvas } from "../components/testCanvas"
+import { initSandtable} from "../components/testCanvas"
+/* 
+import {initSandtable} from "../components/sandtable-view";
+*/
 
 import '../../styles/sandtable.less';
 
@@ -30,7 +33,7 @@ let Sandtable = () => {
 	setTimeout(() => {
 		let cvs = cvsRef.current;
 		let cvsCtx: CanvasRenderingContext2D = cvs.getContext('2d');
-		testCanvas(cvsCtx);
+		initSandtable(cvsCtx);
 	}, 5000);
 
 	return <>
