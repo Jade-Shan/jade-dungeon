@@ -1,9 +1,20 @@
-import { distanceP2P, Point2D, Ray, Line, Rectangle, Circle, ImageInfo, Shape2D } from './geo2d';
+import { distanceP2P, Point2D, Ray, Line, Rectangle, Circle, Shape2D } from './geo2d';
 import { PI_DOUBLE, PI_ONE_HALF, PI_HALF } from './geo2d';
 
 import {defaultImgData} from "../utils/defaultImages";
 
 export type DrawStyle = {lineWidth?: number, strokeStyle?: string, fillStyle?: string};
+export type ImageInfo = { id: string, location: Point2D, width: number, height: number, src: string, image?: CanvasImageSource };
+
+let copyImageInfo = (imageInfo: ImageInfo): ImageInfo => {
+	return { id: imageInfo.id, location: {
+			x : imageInfo && imageInfo.location && imageInfo.location.x ? imageInfo.location.x : 0, 
+			y : imageInfo && imageInfo.location && imageInfo.location.y ? imageInfo.location.y : 0}, 
+		width : imageInfo && imageInfo.width  ? imageInfo.width  : 1, 
+		height: imageInfo && imageInfo.height ? imageInfo.height : 1, 
+		src   : imageInfo && imageInfo.src    ? imageInfo.src    : "", 
+		image : imageInfo.image };
+};
 
 let applyStyle = (cvsCtx: CanvasRenderingContext2D, style?: DrawStyle) => {
 	if (style) {
@@ -201,11 +212,13 @@ export class CanvasLine extends Line implements Canvas2dShape {
 }
 
 export class CanvasRectangle extends Rectangle implements Canvas2dShape {
+	imgInfo  : ImageInfo;
 	constructor(
 		id: string, location: Point2D, width: number, height: number, 
 		color: string, imgInfo: ImageInfo, visiable: boolean, blockView: boolean
 	) {
-		super(id, location, width, height, color, imgInfo, visiable, blockView);
+		super(id, location, width, height, color, visiable, blockView);
+		this.imgInfo  = copyImageInfo(imgInfo);
 	}
 
 	byModel(rectangle: Rectangle): CanvasRectangle {
@@ -298,12 +311,14 @@ export class CanvasRectangle extends Rectangle implements Canvas2dShape {
 }
 
 export class CanvasCircle extends Circle implements Canvas2dShape {
+	imgInfo: ImageInfo;
 
 	constructor(
 		id: string, location: Point2D, radius: number,  
 		color: string, imgInfo: ImageInfo, visiable: boolean, blockView: boolean
 	) {
-		super(id, location, radius, color, imgInfo, visiable, blockView);
+		super(id, location, radius, color, visiable, blockView);
+		this.imgInfo  = copyImageInfo(imgInfo);
 	}
 
 	byModel(circle: Circle): CanvasCircle  {

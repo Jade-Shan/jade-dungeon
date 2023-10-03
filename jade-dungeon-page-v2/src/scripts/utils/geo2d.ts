@@ -1,24 +1,11 @@
 /* jshint esversion: 8 */
 
-// import { Painter } from '../ui/painter';
-
 export const PI_HALF    : number = Math.PI / 2;
 export const PI_ONE_HALF: number = Math.PI + PI_HALF;
 export const PI_DOUBLE  : number = Math.PI * 2;
 
 export type Point2D = { x: number, y: number };
 export type Ray = { start: Point2D, end: Point2D, angle: number, cAngle: number, range: number };
-export type ImageInfo = { id: string, location: Point2D, width: number, height: number, src: string, image?: CanvasImageSource };
-
-let copyImageInfo = (imageInfo: ImageInfo): ImageInfo => {
-	return { id: imageInfo.id, location: {
-			x : imageInfo && imageInfo.location && imageInfo.location.x ? imageInfo.location.x : 0, 
-			y : imageInfo && imageInfo.location && imageInfo.location.y ? imageInfo.location.y : 0}, 
-		width : imageInfo && imageInfo.width  ? imageInfo.width  : 1, 
-		height: imageInfo && imageInfo.height ? imageInfo.height : 1, 
-		src   : imageInfo && imageInfo.src    ? imageInfo.src    : "", 
-		image : imageInfo.image };
-};
 
 /* 计算两点的距离 */
 export let distanceP2P = (start: Point2D, end: Point2D) => {
@@ -352,17 +339,15 @@ export class Rectangle extends Abstract2dShape {
 	
 	width    : number;
 	height   : number;
-	imgInfo  : ImageInfo;
 	vertexes : Array<Point2D>; // 矩形的四个顶点，分别是左上右上左下右下
 
 	constructor(
 		id: string, location: Point2D, width: number, height: number, 
-		color: string, imgInfo: ImageInfo, visiable: boolean, blockView: boolean
+		color: string, visiable: boolean, blockView: boolean
 	) {
 		super(id, location, color, visiable, blockView);
 		this.width    = width  < 10 ? 10 : width ;
 		this.height   = height < 10 ? 10 : height;
-		this.imgInfo  = copyImageInfo(imgInfo);
 		this.vertexes = [
 			location, 
 			{ x: location.x + width, y: location.y          },
@@ -372,7 +357,7 @@ export class Rectangle extends Abstract2dShape {
 
 	clone(): Rectangle {
 		return new Rectangle(this.id, this.location, this.width, this.height,
-			this.color, this.imgInfo, this.visiable, this.blockView);
+			this.color, this.visiable, this.blockView);
 	}
 
 	center(): Point2D {
@@ -392,7 +377,7 @@ export class Rectangle extends Abstract2dShape {
 			y: this.location.y + dy };
 
 		return new Rectangle(this.id, location, this.width, this.height,
-			this.color, this.imgInfo, this.visiable, this.blockView);
+			this.color, this.visiable, this.blockView);
 	}
 
 	moveP2P(start: Point2D, end: Point2D): Rectangle {
@@ -407,7 +392,7 @@ export class Rectangle extends Abstract2dShape {
 		this.width  = width  > 10 ? width  : 10;
 		this.height = height > 10 ? height : 10;
 		return new Rectangle(this.id, this.location, width, height,
-			this.color, this.imgInfo, this.visiable, this.blockView);
+			this.color, this.visiable, this.blockView);
 	}
 
 	isHit(location: Point2D): boolean {
@@ -427,15 +412,13 @@ export class Rectangle extends Abstract2dShape {
 export class Circle extends Abstract2dShape {
 
 	radius : number;
-	imgInfo: ImageInfo;
 
 	constructor(
 		id: string, location: Point2D, radius: number,  
-		color: string, imgInfo: ImageInfo, visiable: boolean, blockView: boolean
+		color: string, visiable: boolean, blockView: boolean
 	) {
 		super(id, location, color, visiable, blockView);
 		this.radius = radius;
-		this.imgInfo  = copyImageInfo(imgInfo);
 //		this.image = image;
 //		this.image.key = image.key;
 //		this.image.sx = image.sx ? image.sx : 0;
@@ -446,7 +429,7 @@ export class Circle extends Abstract2dShape {
 
 	clone(): Circle {
 		return new Circle(this.id, this.location, this.radius,  
-			this.color, this.imgInfo, this.visiable, this.blockView);
+			this.color, this.visiable, this.blockView);
 	}
 
 	center(): Point2D {
@@ -533,7 +516,7 @@ export class Circle extends Abstract2dShape {
 
 	move(dx: number, dy: number): Circle {
 		return new Circle(this.id, { x: this.location.x + dx, y: this.location.y + dy }, 
-			this.radius,  this.color, this.imgInfo, this.visiable, this.blockView);
+			this.radius,  this.color, this.visiable, this.blockView);
 	}
 
 	moveP2P(start: Point2D, end: Point2D): Circle{
@@ -554,7 +537,7 @@ export class Circle extends Abstract2dShape {
 		let newRadius = r2 < this.radius ?  this.radius - r1 : this.radius + r1;
 		newRadius = newRadius < 10 ? 10 : newRadius;
 		return new Circle(this.id, { x: this.location.x, y: this.location.y }, 
-			newRadius,  this.color, this.imgInfo, this.visiable, this.blockView);
+			newRadius,  this.color, this.visiable, this.blockView);
 	}
 
 }

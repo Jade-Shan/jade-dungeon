@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ImageInfo } from "../utils/geo2d"
+import { ImageInfo } from "../utils/canvasGeo"
 import {CURR_ENV} from './constans';
 
 import { Canvas2dShape, CanvasLine, CanvasRectangle, CanvasCircle, loadImage } from '../utils/canvasGeo';
