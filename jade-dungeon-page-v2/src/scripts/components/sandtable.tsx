@@ -12,7 +12,9 @@ type Creater = {
 	img?: {imgKey: string, sx: number, sy: number, width: number, height: number},
 	color: string, visible: boolean, blockView: boolean
 };
+
 type ImageResource = {id: string, type: string, url: string};
+
 type ScenceResp = {
 	status    : string,
 	username  : string,
@@ -27,13 +29,31 @@ type ScenceResp = {
 	} 
 };
 
-let json2ImageInfo = async (imgMap: Map<string, ImageInfo>, imgResources: Array<ImageResource>) => {
+type Scence = { 
+	campaignId: string, placeId: string, sceneId: string,
+	width: number, height: number, shadowColor: string, viewRange: number,
+	images      : Array<ImageInfo>,
+	creaters    : Array<Canvas2dShape>, 
+	teams       : Array<Canvas2dShape>, 
+	walls       : Array<Canvas2dShape>, 
+	doors       : Array<Canvas2dShape>, 
+	furnitures  : Array<Canvas2dShape>, 
+	imageMap    : Map<string, ImageInfo>,
+	createrMap  : Map<string, Canvas2dShape>, 
+	teamMap     : Map<string, Canvas2dShape>, 
+	wallMap     : Map<string, Canvas2dShape>, 
+	doorMap     : Map<string, Canvas2dShape>, 
+	furnitureMap: Map<string, Canvas2dShape>, 
+};
+
+let json2ImageInfo = async (imgMap: Map<string, ImageInfo>, images: Array<ImageInfo>, imgResources: Array<ImageResource>) => {
 	for (let i = 0; i < imgResources.length; i++) {
 		let imgRes: ImageResource = imgResources[i];
 		let img: HTMLImageElement = await loadImage(new Image(), imgRes.url);
 		let imgInfo: ImageInfo = { id: imgRes.id, location: { x: 0, y: 0 },
 			width: img.width, height: img.height, src: imgRes.url, image: img };
 		imgMap.set(imgInfo.id, imgInfo);
+		images.push(imgInfo);
 	}
 };
 
@@ -88,9 +108,23 @@ let requestMapDatas = async (campaignId: string, placeId: string, sceneId: strin
 };
 
 export let initMapDatas = async (campaignId: string, placeId: string, sceneId: string) => {
-	await requestMapDatas(campaignId, placeId, sceneId).then((response) => response.json()).then((data) => {
+	let scene: Scence = {
+		campaignId: campaignId, placeId: placeId, sceneId: sceneId,
+		width: 0, height: 0, shadowColor: "rgba(0,0,0, 0.7)", viewRange: 500,
+		creaters: [], teams: [], walls: [], doors: [], furnitures: [], images: [],
+		imageMap: new Map(), createrMap: new Map(), teamMap     : new Map(),
+		wallMap : new Map(), doorMap   : new Map(), furnitureMap: new Map()
+	};
+
+	await requestMapDatas(campaignId, placeId, sceneId).then((response) => response.json()).then(async (data) => {
 		console.log(data);
-		let scence: ScenceResp = data;
+		let dataResp: ScenceResp = data;
+		await json2ImageInfo(scene.imageMap, scene.images, dataResp.imgResources);
+		await jsonArray2Tokens(scene.imageMap, scene.createrMap  , scene.creaters  , dataResp.mapDatas.creaters   );
+		await jsonArray2Tokens(scene.imageMap, scene.teamMap     , scene.teams     , dataResp.mapDatas.teams      );
+		await jsonArray2Tokens(scene.imageMap, scene.wallMap     , scene.walls     , dataResp.mapDatas.walls      );
+		await jsonArray2Tokens(scene.imageMap, scene.doorMap     , scene.doors     , dataResp.mapDatas.doors      );
+		await jsonArray2Tokens(scene.imageMap, scene.furnitureMap, scene.furnitures, dataResp.mapDatas.furnishings);
 	}).catch((err) => {
 		console.log(err.message);
 	});

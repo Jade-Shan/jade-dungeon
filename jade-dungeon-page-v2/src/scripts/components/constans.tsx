@@ -9,3 +9,6 @@ export const ENV_CFG: EnvCfg= {
 };
 
 export const CURR_ENV: AppCfg = /localhost:8000/.test(document.location.hostname) ? ENV_CFG.dev : ENV_CFG.rls;
+
+console.log(`curr env is :`);
+console.log(CURR_ENV);
