@@ -17,7 +17,7 @@ export const defaultImgData = 'data:image/jpeg;base64,' +
 	'PcBERbSP3AAUHFCFoRshUeovIE8dfhE5nBas2LuI2cBxLiWTKBWkBOoiFCP3KJmwGUyDua4I8TSNM9uhtMRg2r2yick' +
 	'18N8f/2Q==';
 
-const defaultIconData = 'data:image/jpeg;base64,' +
+export const defaultIconData = 'data:image/jpeg;base64,' +
 	'/9j/4AAQSkZJRgABAQEASABIAAD//gATQ3JlYXRlZCB3aXRoIEdJTVD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/2wBD' +
 	'AQMEBAUEBQkFBQkUDQsNFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBT/wgARCADIAJYDAREAAhEBAxEB/8QAHAAAAgIDAQEAAAAAAAAAAAAABgcEBQIDCAEA' +
 	'/8QAGwEAAgMBAQEAAAAAAAAAAAAAAwQAAgUBBgf/2gAMAwEAAhADEAAAAdyzcLObN7dr+l32FIuCiez1erZj17shPJI/KNzQGd9n0gTy8iVLe89k4dy/Ui451Zl8ps70Mi6u48U3oPCKHhniuvWYm7NH' +
@@ -208,7 +208,7 @@ const defaultIconData = 'data:image/jpeg;base64,' +
 	'T6QFxMF9bEFbxq+8Dddp3/DlL+8g/wB4wmsJfDPHfoPGG5r24ecYcbO/6M6jO/oQmftpbvKZWYVc9xMrKlDWwkmWO4LdMAM7fE+8JurN8QDm48+MvNBJSglZQb23eczrJ58AZ3y2q/nPJZOy/Zc9Ugl+' +
 	'FwPz7F8vWd0uSPfWICpVV6Hn5wH+W5/PjOq/LJO0624Uz1h9bnrudv8AuHpKQM0fDrjAgX+x39f7iRoGsdb59YekRvzGVvVfzhRbGtpw4dDOF6z/2Q==';
 
-const defaultMapData = 'data:image/jpeg;base64,' +
+export const defaultMapData = 'data:image/jpeg;base64,' +
 	'/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDABsSFBcUERsXFhceHBsgKEIrKCUlKFE6PTBCYFVlZF9VXVtqeJmBanGQc1tdhbWGkJ6jq62rZ4C8ybqmx5moq6T/2wBDARweHigjKE4rK06kbl1upKSkpKSk' +
 	'pKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKT/wgARCAMgBkADAREAAhEBAxEB/8QAGgABAAMBAQEAAAAAAAAAAAAAAAECAwQFBv/EABYBAQEBAAAAAAAAAAAAAAAAAAAB' +
 	'Av/aAAwDAQACEAMQAAABkyILFixAJABBUqQASXLAgyALGhBUsQUNCCC4MypczOIHcd4AIKlyxoDzjzQdJqaAsVLAAFSpUAFi5IKFADQsQUNDMFypJYgzBoUJLEmRANSQAAAUKElyxBBYAAqUIABcuAZl' +
@@ -964,21 +964,21 @@ const defaultMapData = 'data:image/jpeg;base64,' +
 	'RCrkuZEyUNDqdMUtQImTsaSJp2O4WMiXYSSssYUK57BZTCGmr4NCPPoMXvwJCxspGTdFA66iEJTPdGNdqDbeuLQ5Eqk1wuQ8IsYkosMaUTi1RjS8GNKGt2GQIdxtK+EDla4wVd8kUtJGqlsJdkjTWL2Z' +
 	'nUmMZahtNRpQIl0NUJJWz2SrNQ8ZHhxuJDLC/wBDy/GCyMPYdyQyKImb4MatiNpghJRKmNRqVUSRYf/Z';
 
+let img  : HTMLImageElement = null;
+let icons: HTMLImageElement = null;
+let map  : HTMLImageElement = null;
 
 export const loadDefaultImage = async (): Promise<ImageInfo> => {
-	let img: HTMLImageElement = await loadImage(new Image(), defaultImgData);
-	let imgInfo: ImageInfo = { id: "icons-001", location: {x: 0, y: 0}, width: 50, height: 50, src: defaultImgData, image: img};
-	return imgInfo;
+	img = null != img ? img : await loadImage(new Image(), defaultImgData, defaultImgData)
+	return { id: "icons-000", location: { x: 0, y: 0 }, width: 50, height: 50, src: defaultImgData, image: img };
 };
 
 export const loadDefaultIcons = async (): Promise<ImageInfo> => {
-	let icons: HTMLImageElement = await loadImage(new Image(), defaultIconData);
-	let imgInfo: ImageInfo = { id: "icons-001", location: {x: 100, y: 150}, width: 50, height: 50, src: defaultImgData, image: icons};
-	return imgInfo;
+	icons = null != icons ? icons : await loadImage(new Image(), defaultIconData, defaultImgData)
+	return { id: "icons-001", location: { x: 100, y: 150 }, width: 50, height: 50, src: defaultImgData, image: icons };
 };
 
 export const loadDefaultMap = async (): Promise<ImageInfo> => {
-	let map: HTMLImageElement = await loadImage(new Image(), defaultMapData);
-	let imgInfo: ImageInfo = { id: "icons-001", location: {x: 0, y: 0}, width: 1600, height: 800, src: defaultImgData, image: map};
-	return imgInfo;
+	map = null != map ? map : await loadImage(new Image(), defaultMapData, defaultImgData)
+	return { id: "map", location: { x: 0, y: 0 }, width: 1600, height: 800, src: defaultImgData, image: map };
 };

@@ -1,9 +1,9 @@
 import * as React from "react";
 import { ImageInfo } from "../utils/canvasGeo"
-import {CURR_ENV} from './constans';
+import { CURR_ENV } from './constans';
 
 import { Canvas2dShape, CanvasLine, CanvasRectangle, CanvasCircle, loadImage } from '../utils/canvasGeo';
-import { loadDefaultIcons, loadDefaultMap } from "../utils/defaultImages";
+import { defaultMapData, defaultIconData, loadDefaultIcons } from "../utils/defaultImages";
 
 const SANDTABLE_ROOT = `${CURR_ENV.apiRoot}/api/sandtable`;
 type Creater = {
@@ -49,7 +49,8 @@ type Scence = {
 let json2ImageInfo = async (imgMap: Map<string, ImageInfo>, images: Array<ImageInfo>, imgResources: Array<ImageResource>) => {
 	for (let i = 0; i < imgResources.length; i++) {
 		let imgRes: ImageResource = imgResources[i];
-		let img: HTMLImageElement = await loadImage(new Image(), imgRes.url);
+		let fallbackBase64: string = 'map' == imgRes.id ? defaultMapData : defaultIconData;
+		let img: HTMLImageElement = await loadImage(new Image(), imgRes.url, fallbackBase64);
 		let imgInfo: ImageInfo = { id: imgRes.id, location: { x: 0, y: 0 },
 			width: img.width, height: img.height, src: imgRes.url, image: img };
 		imgMap.set(imgInfo.id, imgInfo);
@@ -119,6 +120,7 @@ export let initMapDatas = async (campaignId: string, placeId: string, sceneId: s
 	await requestMapDatas(campaignId, placeId, sceneId).then((response) => response.json()).then(async (data) => {
 		console.log(data);
 		let dataResp: ScenceResp = data;
+
 		await json2ImageInfo(scene.imageMap, scene.images, dataResp.imgResources);
 		await jsonArray2Tokens(scene.imageMap, scene.createrMap  , scene.creaters  , dataResp.mapDatas.creaters   );
 		await jsonArray2Tokens(scene.imageMap, scene.teamMap     , scene.teams     , dataResp.mapDatas.teams      );
