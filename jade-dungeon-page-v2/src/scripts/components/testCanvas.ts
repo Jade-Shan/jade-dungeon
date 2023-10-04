@@ -20,7 +20,7 @@ export let initSandtable = async (cvs: HTMLCanvasElement, cvsCtx: CanvasRenderin
 	let circ = new CanvasCircle("circ-001", { x: 600, y: 500 }, 60, "#0000FF", icons, true, true);
 	circ.draw(cvsCtx);
 
-	let obs: Observer = new Observer("obs", 350, 350, 400);
+	let obs: Observer = new Observer("obs", 350, 350, 360);
 	// obs.drawVertexRays(cvsCtx, line01);
 	// obs.drawVertexRays(cvsCtx, tang01);
 	// obs.drawVertexRays(cvsCtx, circ);
