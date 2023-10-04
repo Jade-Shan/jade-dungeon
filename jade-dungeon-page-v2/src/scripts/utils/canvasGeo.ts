@@ -429,4 +429,23 @@ export class Observer {
 		return rays
 	}
 
+	strokeObstatleShadows(cvsCtx: CanvasRenderingContext2D, side: Array<Ray>) {
+		let start = side[0];
+		let end   = side[side.length - 1];
+		// 
+		cvsCtx.save();
+		cvsCtx.beginPath();
+		cvsCtx.moveTo(start.start.x, start.end.y);
+		cvsCtx.arc(this.location.x, this.location.y, this.viewRange, start.angle, end.angle, false);
+		cvsCtx.lineTo(end  .start.x, end  .start.y);
+		cvsCtx.lineTo(start.start.x, start.start.y);
+		cvsCtx.lineTo(start.end  .x, start.end  .y);
+		cvsCtx.fillStyle = "rgba(0, 100, 0, 0.7)";
+		cvsCtx.fill();
+		// cvsCtx.clip();
+		// cvsCtx.drawImage(shadowImage, 0, 0);
+		cvsCtx.restore();
+	}
+
+
 }

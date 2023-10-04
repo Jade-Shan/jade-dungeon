@@ -29,9 +29,13 @@ export let initSandtable = async (cvs: HTMLCanvasElement, cvsCtx: CanvasRenderin
 	// obs.drawObstacleRays(cvsCtx, tang01);
 	// obs.drawObstacleRays(cvsCtx, circ);
 
-	obs.drawTangengLine(cvsCtx, line01);
-	obs.drawTangengLine(cvsCtx, tang01);
-	obs.drawTangengLine(cvsCtx, circ);
+	let rays01 = obs.drawTangengLine(cvsCtx, line01);
+	let rays02 = obs.drawTangengLine(cvsCtx, tang01);
+	let rays03 = obs.drawTangengLine(cvsCtx, circ);
+
+	obs.strokeObstatleShadows(cvsCtx, rays01);
+	obs.strokeObstatleShadows(cvsCtx, rays02);
+	obs.strokeObstatleShadows(cvsCtx, rays03);
 }
 
 let initSandtable2 = async (cvs: HTMLCanvasElement, cvsCtx: CanvasRenderingContext2D): Promise<void> => {
