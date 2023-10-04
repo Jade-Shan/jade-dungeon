@@ -90,7 +90,7 @@ let loadImage = async (image, url) => {
 	// console.log(url);
 	if (url.indexOf('http') == 0) {
 		let encodeSrc = encodeURIComponent(url);
-		url = 'http://localhost:8088/api/sandtable/parseImage?src=' + encodeSrc;
+		url = apiRoot + 'parseImage?src=' + encodeSrc;
 	}
 	let pm = new Promise((resolve, reject) => {
 		image.src = url;
