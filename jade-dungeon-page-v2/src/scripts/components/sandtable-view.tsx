@@ -1,6 +1,7 @@
-import { initMapDatas } from '../components/sandtable';
+import * as STCom from '../components/sandtable'; // Sandtable common
 
 
-export let initSandtable = async (cvsCtx: CanvasRenderingContext2D): Promise<void> => {
-	 initMapDatas('campaign01', 'place01', 'scene01');
+export let initSandtable = async (cvs: HTMLCanvasElement, cvsCtx: CanvasRenderingContext2D): Promise<void> => {
+	let scene: STCom.Scence = await STCom.initMapDatas(cvs, 'campaign01', 'place01', 'scene01');
+	await STCom.drawSence(cvs, cvsCtx, scene);
 }

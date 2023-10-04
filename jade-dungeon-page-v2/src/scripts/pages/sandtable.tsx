@@ -31,9 +31,9 @@ let Sandtable = () => {
 	}
 
 	setTimeout(() => {
-		let cvs = cvsRef.current;
+		let cvs: HTMLCanvasElement = cvsRef.current;
 		let cvsCtx: CanvasRenderingContext2D = cvs.getContext('2d');
-		initSandtable(cvsCtx);
+		initSandtable(cvs, cvsCtx);
 	}, 5000);
 
 	return <>

@@ -29,7 +29,7 @@ type ScenceResp = {
 	} 
 };
 
-type Scence = { 
+export type Scence = { 
 	campaignId: string, placeId: string, sceneId: string,
 	width: number, height: number, shadowColor: string, viewRange: number,
 	images      : Array<ImageInfo>,
@@ -46,15 +46,19 @@ type Scence = {
 	furnitureMap: Map<string, Canvas2dShape>, 
 };
 
-let json2ImageInfo = async (imgMap: Map<string, ImageInfo>, images: Array<ImageInfo>, imgResources: Array<ImageResource>) => {
+let json2ImageInfo = async (cvs: HTMLCanvasElement, scene: Scence, imgResources: Array<ImageResource>) => {
 	for (let i = 0; i < imgResources.length; i++) {
 		let imgRes: ImageResource = imgResources[i];
 		let fallbackBase64: string = 'map' == imgRes.id ? defaultMapData : defaultIconData;
 		let img: HTMLImageElement = await loadImage(new Image(), imgRes.url, fallbackBase64);
 		let imgInfo: ImageInfo = { id: imgRes.id, location: { x: 0, y: 0 },
 			width: img.width, height: img.height, src: imgRes.url, image: img };
-		imgMap.set(imgInfo.id, imgInfo);
-		images.push(imgInfo);
+		scene.imageMap.set(imgInfo.id, imgInfo);
+		scene.images  .push(imgInfo);
+		if ('map' == imgRes.id) {
+			cvs.width  = img.width;
+			cvs.height = img.height;
+		}
 	}
 };
 
@@ -108,7 +112,7 @@ let requestMapDatas = async (campaignId: string, placeId: string, sceneId: strin
 	});
 };
 
-export let initMapDatas = async (campaignId: string, placeId: string, sceneId: string) => {
+export let initMapDatas = async (cvs: HTMLCanvasElement, campaignId: string, placeId: string, sceneId: string): Promise<Scence> => {
 	let scene: Scence = {
 		campaignId: campaignId, placeId: placeId, sceneId: sceneId,
 		width: 0, height: 0, shadowColor: "rgba(0,0,0, 0.7)", viewRange: 500,
@@ -121,7 +125,7 @@ export let initMapDatas = async (campaignId: string, placeId: string, sceneId: s
 		console.log(data);
 		let dataResp: ScenceResp = data;
 
-		await json2ImageInfo(scene.imageMap, scene.images, dataResp.imgResources);
+		await json2ImageInfo(cvs, scene, dataResp.imgResources);
 		await jsonArray2Tokens(scene.imageMap, scene.createrMap  , scene.creaters  , dataResp.mapDatas.creaters   );
 		await jsonArray2Tokens(scene.imageMap, scene.teamMap     , scene.teams     , dataResp.mapDatas.teams      );
 		await jsonArray2Tokens(scene.imageMap, scene.wallMap     , scene.walls     , dataResp.mapDatas.walls      );
@@ -130,4 +134,20 @@ export let initMapDatas = async (campaignId: string, placeId: string, sceneId: s
 	}).catch((err) => {
 		console.log(err.message);
 	});
+
+	return scene;
+};
+
+export let drawSence = async (cvs: HTMLCanvasElement, cvsCtx: CanvasRenderingContext2D, scene: Scence) => {
+	let map = scene.imageMap.get('map')?.image;
+	cvsCtx.clearRect(0, 0, cvs.width, cvs.height);
+	cvsCtx.drawImage(map, 0, 0);
+	cvsCtx.fillStyle = scene.shadowColor;
+	cvsCtx.fillRect(0, 0, cvs.width, cvs.height);
+	let darkMap = await loadImage(new Image(), cvs.toDataURL('image/png', 1.0));
+	darkMap.crossOrigin = 'Anonymous';
+
+	cvsCtx.clearRect(0, 0, cvs.width, cvs.height);
+	cvsCtx.drawImage(scene.imageMap.get('map').image, 0, 0);
+
 }
