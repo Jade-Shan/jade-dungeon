@@ -159,7 +159,7 @@ let calculateVertexRays = (location: Point2D, ...vertexes: Point2D[]): Array<Ray
 				vertexes[i + 1].x - location.x, vertexes[i + 1].y - location.y);
 		}
 		for (let i = 0; i < vertexes.length; i++) {
-			rays.push(calVtxDstAngle(vertexes[i], location, quad));
+			rays.push(calVtxDstAngle(location, vertexes[i], quad));
 		}
 	}
 	return rays;
@@ -590,7 +590,6 @@ export class Circle extends Abstract2dShape {
 //
 //		this.cvsCtx = canvasContext;
 //		this.body = body;
-//		// this.body  = new Circle(canvasContext, id, x, y, 25, selfColor, visiable, blockView);	
 //	}
 //
 //	move(dx, dy) {

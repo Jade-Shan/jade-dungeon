@@ -3,10 +3,10 @@ import { Resizable } from "re-resizable"
 import Draggable from 'react-draggable';
 
 import { Navbar } from "../ui/navbar";
-/* 
 import { initSandtable} from "../components/testCanvas"
-*/
+/* 
 import {initSandtable} from "../components/sandtable-view";
+*/
 
 import '../../styles/sandtable.less';
 

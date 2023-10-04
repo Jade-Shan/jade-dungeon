@@ -29,12 +29,13 @@ let drawLines = (cvsCtx: CanvasRenderingContext2D, rays: Array<Ray>) => {
 	cvsCtx.save();
 	applyStyle(cvsCtx, { lineWidth: 2, strokeStyle: 'rgba(255, 0, 0, 0.7)' });
 	if (rays) {
-		rays.forEach(r => {
+		for (let i=0; i< rays.length; i++) {
+			let r = rays[i];
 			cvsCtx.beginPath();
 			cvsCtx.moveTo(r.start.x, r.start.y);
 			cvsCtx.lineTo(r.end.x, r.end.y);
 			cvsCtx.stroke();
-		});
+		}
 	}
 	cvsCtx.restore();
 }
@@ -82,10 +83,6 @@ export interface Canvas2dShape extends Shape2D {
 	drawWantMove(cvsCtx: CanvasRenderingContext2D, start: Point2D, end: Point2D): Canvas2dShape;
 
 	drawWantScale(cvsCtx: CanvasRenderingContext2D, start: Point2D, end: Point2D): Canvas2dShape;
-
-	drawVertexRays(cvsCtx: CanvasRenderingContext2D, location: Point2D): Array<Ray>;
-
-	drawObstacleRays(cvsCtx: CanvasRenderingContext2D, location: Point2D): Array<Ray>;
 
 	// // 画出切线
 	// drawTangentLine(cvsCtx: CanvasRenderingContext2D, location: Point2D, rays: Array<Ray>): Array<Ray>;
@@ -193,17 +190,6 @@ export class CanvasLine extends Line implements Canvas2dShape {
 		return new CanvasLine(this.id, newLine.start, newLine.end, this.color, this.visiable, this.blockView);
 	}
 
-	drawVertexRays(cvsCtx: CanvasRenderingContext2D, location: Point2D): Array<Ray> {
-		let rays = this.genVertexRays(location);
-		drawLines(cvsCtx, rays);
-		return rays
-	}
-
-	drawObstacleRays(cvsCtx: CanvasRenderingContext2D, location: Point2D): Array<Ray> {
-		let rays = this.filterObstacleRays(location);
-		drawLines(cvsCtx, rays);
-		return rays
-	}
 
 }
 
@@ -292,17 +278,6 @@ export class CanvasRectangle extends Rectangle implements Canvas2dShape {
 		return this.byModel(dist);
 	}
 
-	drawVertexRays(cvsCtx: CanvasRenderingContext2D, location: Point2D): Array<Ray> {
-		let rays = this.genVertexRays(location);
-		drawLines(cvsCtx, rays);
-		return rays
-	}
-
-	drawObstacleRays(cvsCtx: CanvasRenderingContext2D, location: Point2D): Array<Ray> {
-		let rays = this.filterObstacleRays(location);
-		drawLines(cvsCtx, rays);
-		return rays
-	}
 
 }
 
@@ -398,14 +373,58 @@ export class CanvasCircle extends Circle implements Canvas2dShape {
 		return this.byModel(dist);
 	}
 
-	drawVertexRays(cvsCtx: CanvasRenderingContext2D, location: Point2D): Array<Ray> {
-		let rays = this.genVertexRays(location);
+
+}
+
+export class Observer {
+
+	id       : string;
+	// body     : Canvas2dShape;
+	location : Point2D;
+	viewRange: number;
+	// visiable : boolean;
+	// blockView: boolean;
+	
+	constructor(id: string, x: number, y: number, viewRange: number) {
+		this.id        = id;
+		this.location  = {x: x, y: y};
+		this.viewRange = viewRange;
+	}
+
+	// constructor(id: string, body: Canvas2dShape, viewRange: number, visiable : boolean, blockView: boolean) {
+	// 	this.id        = id;
+	// 	this.body      = body;
+	// 	this.location  = {x: body.location.x, y: this.location.y};
+	// 	this.viewRange = viewRange;
+	// 	this.visiable  = visiable;
+	// 	this.blockView = blockView;
+	// }
+
+	// viewObstatleSides(obstacle: Canvas2dShape) {
+	// 	// let rays = obstacle.genTangentLine(this.location, this.viewRange);
+	// 	// rays = obstacle.filterObstacleRays(rays);
+	// 	// rays = obstacle.genTangentLine(this.x, this.y, this.rayRange, rays);
+	// 	// return rays;
+	// }
+
+	// drawVertexRays(cvsCtx: CanvasRenderingContext2D, location: Point2D): Array<Ray>;
+
+	// drawObstacleRays(cvsCtx: CanvasRenderingContext2D, location: Point2D): Array<Ray>;
+
+	drawVertexRays(cvsCtx: CanvasRenderingContext2D, obstacle: Canvas2dShape): Array<Ray> {
+		let rays = obstacle.genVertexRays(this.location);
 		drawLines(cvsCtx, rays);
 		return rays
 	}
 
-	drawObstacleRays(cvsCtx: CanvasRenderingContext2D, location: Point2D): Array<Ray> {
-		let rays = this.filterObstacleRays(location);
+	drawObstacleRays(cvsCtx: CanvasRenderingContext2D, obstacle: Canvas2dShape): Array<Ray> {
+		let rays = obstacle.filterObstacleRays(this.location);
+		drawLines(cvsCtx, rays);
+		return rays
+	}
+
+	drawTangengLine(cvsCtx: CanvasRenderingContext2D, obstacle: Canvas2dShape): Array<Ray> {
+		let rays = obstacle.genTangentLine(this.location, this.viewRange);
 		drawLines(cvsCtx, rays);
 		return rays
 	}
