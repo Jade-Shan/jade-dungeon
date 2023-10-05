@@ -25,84 +25,78 @@ let debounce = (fn: () => any, intervalMS: number = 300) => {
 	};
 }
 
-let getMessageWindow = (() => {
-	let win: HTMLElement = null;
-	return (): HTMLElement => { 
-		if (null == win) {
-			win = document.getElementById('message-window');
+let getElementById: (elemId: string) => HTMLElement = (() => {
+	let map: Map<string, HTMLElement> = new Map();
+	return (elemId: string): HTMLElement => {
+		if (map.has(elemId) && null != map.get(elemId)) {
+			return map.get(elemId);
+			// win = document.getElementById('message-window');
+		} else {
+			let elem = document.getElementById(elemId);
+			if (null != elem) {
+				map.set(elemId, elem);
+			}
+			return elem;
 		}
-		return win;
 	}
 })();
-let getDiceWindow    = (() => {
-	let win: HTMLElement = null;
-	return (): HTMLElement => {
-		if (null == win) {
-			win = document.getElementById('dice-window');
-		}
-		return win;
-	}
-})();
-
 
 let Sandtable = () => {
-
-	let cvsRef = React.useRef(null);
-	let msgWin: React.MutableRefObject<HTMLDivElement> = React.useRef(null);
-	let dicWin: React.MutableRefObject<HTMLDivElement> = React.useRef(null);
 
 	const WIN_ID_MSG = "msg-win";
 	const WIN_ID_DIC = "dic-win";
 
-	// const [msgWinZIdx, setMsgWinZIdx] = React.useState(100);
-	// const [dicWinZIdx, setDicWinZIdx] = React.useState(100);
+	let cvsRef = React.useRef(null);
 
-	// const [msgWinTop , setMsgWinTop ] = React.useState( 60);
-	// const [msgWinLeft, setMsgWinLeft] = React.useState( 10);
-	// const [dicWinTop , setDicWinTop ] = React.useState( 60);
-	// const [dicWinLeft, setDicWinLeft] = React.useState(310);
+	let setWindowDrag = (winId: string) => {
 
-	// const [msgWinWidth , setMsgWinWidth ] = React.useState(200);
-	// const [msgWinHeight, setMsgWinHeight] = React.useState(100);
-	// const [dicWinWidth , setDicWinWidth ] = React.useState(200);
-	// const [dicWinHeight, setDicWinHeight] = React.useState(100);
+		let isDragingWindow = false;
+		let dragMoveStart = { x: 0, y: 0 };
+		let winPosStart   = { x: 0, y: 0 };
 
-	let dragMoveStart = {x: 0, y: 0};
-	let winPosStart   = {x: 0, y: 0};
-	let isDragingWindow = false;
+		let win       = getElementById(winId);
+		let winHeader = getElementById(`${winId}-header`);
 
-	let moveWinStart = (winId: string, event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-		let win = WIN_ID_MSG == winId ? getMessageWindow() : getDiceWindow();
-		dragMoveStart = { x: event.clientX, y: event.clientY };
-		winPosStart   = {
-			x: win.getBoundingClientRect().left, 
-			y: win.getBoundingClientRect().top   };
-		isDragingWindow = true;
-		console.log(dragMoveStart);
-	};
+		let moveWinStart = (event: MouseEvent) => {
+			dragMoveStart = { x: event.clientX, y: event.clientY };
+			winPosStart = {
+				x: win.getBoundingClientRect().left,
+				y: win.getBoundingClientRect().top
+			};
+			isDragingWindow = true;
+			console.log(dragMoveStart);
+		};
 
-	let moveWinEnd = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-		isDragingWindow = false;
-		console.log(`${event.clientX}, ${event.clientY}`);
-	};
+		let moveWinEnd = (event: MouseEvent) => {
+			isDragingWindow = false;
+			console.log(`${event.clientX}, ${event.clientY}`);
+		};
 
-	let moveingWin = (winId: string, event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-		if (isDragingWindow) {
-			let dx = event.clientX - dragMoveStart.x;
-			let dy = event.clientY - dragMoveStart.y;
-			let win = WIN_ID_MSG == winId ? getMessageWindow() : getDiceWindow();
-			win.style.left = `${winPosStart.x + dx}px`;
-			win.style.top  = `${winPosStart.y + dy}px`;
+		let moveingWin = (event: MouseEvent) => {
+			if (isDragingWindow) {
+				let dx = event.clientX - dragMoveStart.x;
+				let dy = event.clientY - dragMoveStart.y;
+				win.style.left = `${winPosStart.x + dx}px`;
+				win.style.top = `${winPosStart.y + dy}px`;
+			}
+		};
+
+		if (winHeader && win) {
+			winHeader.onmousedown  = moveWinStart;
+			winHeader.onmouseup    = moveWinEnd  ;
+			winHeader.onmouseleave = moveWinEnd  ;
+			winHeader.onmousemove  = moveingWin  ;
 		}
+
 	};
 
 	let topWindow = (winId: String): void => {
 		if (WIN_ID_MSG == winId) {
-			getMessageWindow().style.zIndex = `101`;
-			getDiceWindow   ().style.zIndex = `100`;
+			getElementById(WIN_ID_MSG).style.zIndex = `101`;
+			getElementById(WIN_ID_DIC).style.zIndex = `100`;
 		} else {
-			getMessageWindow().style.zIndex = `100`;
-			getDiceWindow   ().style.zIndex = `101`;
+			getElementById(WIN_ID_MSG).style.zIndex = `100`;
+			getElementById(WIN_ID_DIC).style.zIndex = `101`;
 		} 
 	}
 
@@ -110,6 +104,8 @@ let Sandtable = () => {
 			let cvs: HTMLCanvasElement = cvsRef.current;
 			let cvsCtx: CanvasRenderingContext2D = cvs.getContext('2d');
 			initSandtable(cvs, cvsCtx);
+			setWindowDrag(WIN_ID_MSG);
+			setWindowDrag(WIN_ID_DIC);
 	}, 5000);
 
 	return <>
@@ -119,14 +115,8 @@ let Sandtable = () => {
 				not support canvas
 			</canvas>
 		</div>
-		<div id={WIN_ID_MSG} ref={msgWin} className="float-window" 
-			onClick={e => topWindow(WIN_ID_MSG)}>
-				<div className="title-bar" onClick={e => topWindow("message-window")}
-					onMouseDown ={(e)=> { moveWinStart(WIN_ID_MSG, e); }}
-					onMouseUp   ={(e)=> { moveWinEnd  (e); }}
-					onMouseLeave={(e)=> { moveWinEnd  (e); }}
-					onMouseMove ={(e)=> { moveingWin(WIN_ID_MSG, e); }}
-					>
+		<div id={WIN_ID_MSG} className="float-window" onClick={e => topWindow(WIN_ID_MSG)}>
+				<div id={`${WIN_ID_MSG}-header`} className="title-bar" onClick={e => topWindow("message-window")} >
 					<i className="title-icon bi-people-fill" ></i>
 					<span className="title-text">Message</span>
 				</div>
@@ -134,14 +124,8 @@ let Sandtable = () => {
 					<p>This is Window Body. </p>
 				</div>
 		</div>
-		<div id={WIN_ID_DIC} ref={dicWin} className="float-window" 
-			onClick={e => topWindow(WIN_ID_DIC)}>
-				<div className="title-bar" onClick={e => topWindow("dice-window")}
-					onMouseDown ={(e)=> { moveWinStart(WIN_ID_DIC, e); }}
-					onMouseUp   ={(e)=> { moveWinEnd  (e); }}
-					onMouseLeave={(e)=> { moveWinEnd  (e); }}
-					onMouseMove ={(e)=> { moveingWin(WIN_ID_DIC, e); }}
-					>
+		<div id={WIN_ID_DIC} className="float-window" onClick={e => topWindow(WIN_ID_DIC)}>
+				<div id={`${WIN_ID_DIC}-header`} className="title-bar" onClick={e => topWindow("dice-window")} >
 					<i className="title-icon bi-dice-6" ></i>
 					<span className="title-text">Dice Log</span>
 				</div>
