@@ -140,6 +140,25 @@ function quadOfLine(x1, y1, x2, y2) {
 	return quad;
 }
 
+function drawLine(cvsCtx, color, width, x1, y1, x2, y2) {
+		cvsCtx.save();
+		cvsCtx.strokeStyle = color;
+		cvsCtx.lineWidth = width;
+		cvsCtx.beginPath();
+		cvsCtx.moveTo(x1, y1);
+		cvsCtx.lineTo(x2, y2);
+		cvsCtx.stroke();
+}
+
+function drawLines(cvsCtx, color, width, lines) {
+	if (lines && lines.length > 0) {
+		for (let i=0; i< lines.length; i++) {
+			let l = lines[i];
+			drawLine(cvsCtx, color, width, l.startX, l.startY, l.endX, l.endY);
+		}
+	}
+}
+
 
 class Ray {
 
@@ -902,11 +921,14 @@ class Observer {
 		let rays = obstacle.genVertexRays(this.x, this.y, this.rayRange);
 		rays = obstacle.filterObstacleRays(rays);
 		rays = obstacle.genTangentLine(this.x, this.y, this.rayRange, rays);
+		// drawLines(this.cvsCtx, 'rgba(0, 0, 255, 0.9)', 3, rays);
+		// debugger;
 		return rays;
 	}
 
 	/* 画出障碍物的阴影 */
 	drawObstatleShadows(side, shadowImage) {
+		// debugger;
 		let start = side[0];
 		let end   = side[side.length - 1];
 		// 
