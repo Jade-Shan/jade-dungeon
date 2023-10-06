@@ -5,10 +5,10 @@ import Draggable from 'react-draggable';
 */
 
 import { Navbar } from "../ui/navbar";
-import { initSandtable} from "../components/testCanvas"
 /* 
-import {initSandtable} from "../components/sandtable-view";
+import { initSandtable} from "../components/testCanvas"
 */
+import {initSandtable} from "../components/sandtable-view";
 
 import '../../styles/sandtable.less';
 
@@ -140,12 +140,12 @@ let Sandtable = () => {
 				y: win.getBoundingClientRect().top
 			};
 			isDragingWindow = true;
-			console.log(dragMoveStart);
+			// console.log(dragMoveStart);
 		};
 
 		let moveWinEnd = (event: MouseEvent) => {
 			isDragingWindow = false;
-			console.log(`${event.clientX}, ${event.clientY}`);
+			// console.log(`${event.clientX}, ${event.clientY}`);
 		};
 
 		let moveingWin = (event: MouseEvent) => {

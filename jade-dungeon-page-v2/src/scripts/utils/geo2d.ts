@@ -317,7 +317,7 @@ export class Line extends Abstract2dShape {
 	}
 
 	isHit(point: Point2D): boolean {
-		console.log(`${this.id} - ${this.start.x},${this.start.y} - ${this.end.x},${this.end.y} : ${point.x},${point.y}`);
+		// console.log(`${this.id} - ${this.start.x},${this.start.y} - ${this.end.x},${this.end.y} : ${point.x},${point.y}`);
 
 		if (this.start.x < this.end.x && (point.x < (this.start.x - 5) || point.x > (this.end  .x + 5))) { return false; } else 
 		if (this.start.x > this.end.x && (point.x < (this.end  .x - 5) || point.x > (this.start.x + 5))) { return false; } else 
@@ -325,7 +325,7 @@ export class Line extends Abstract2dShape {
 		if (this.start.y > this.end.y && (point.y < (this.end  .y - 5) || point.y > (this.start.y + 5))) { return false; }
 
 		let dist = pointToLineDistence(this.start, this.end, point);
-		console.log(`distence is ${dist}`);
+		// console.log(`distence is ${dist}`);
 		return dist < 10;
 	}
 
@@ -492,23 +492,23 @@ export class Circle extends Abstract2dShape {
 		// u.y = dy / distance;
 		// 切线与圆心的夹角
 		let angle = Math.asin(this.radius / distance);
-		console.log(' Math.cos( angle) ' + Math.cos( angle));
-		console.log(' Math.sin( angle) ' + Math.sin( angle));
-		console.log(' Math.cos(-angle) ' + Math.cos(-angle));
-		console.log(' Math.sin(-angle) ' + Math.sin(-angle));
+		// console.log(' Math.cos( angle) ' + Math.cos( angle));
+		// console.log(' Math.sin( angle) ' + Math.sin( angle));
+		// console.log(' Math.cos(-angle) ' + Math.cos(-angle));
+		// console.log(' Math.sin(-angle) ' + Math.sin(-angle));
 
 		// 向两个方向旋转单位向量
 		p1.x = u.x * Math.cos( angle) - u.y * Math.sin( angle);
 		p1.y = u.x * Math.sin( angle) + u.y * Math.cos( angle);
 		p2.x = u.x * Math.cos(-angle) - u.y * Math.sin(-angle);
 		p2.y = u.x * Math.sin(-angle) + u.y * Math.cos(-angle);
-		console.log(`p1: (${p1.x.toFixed(6)},${p1.y.toFixed(6)}),   p2: (${p2.x.toFixed(6)},${p2.y.toFixed(6)})`);
+		// console.log(`p1: (${p1.x.toFixed(6)},${p1.y.toFixed(6)}),   p2: (${p2.x.toFixed(6)},${p2.y.toFixed(6)})`);
 		// 得到新坐标
 		p1.x = p1.x * length + location.x;
 		p1.y = p1.y * length + location.y;
 		p2.x = p2.x * length + location.x;
 		p2.y = p2.y * length + location.y;
-		console.log(`p1: (${p1.x.toFixed(6)},${p1.y.toFixed(6)}),   p2: (${p2.x.toFixed(6)},${p2.y.toFixed(6)})`);
+		// console.log(`p1: (${p1.x.toFixed(6)},${p1.y.toFixed(6)}),   p2: (${p2.x.toFixed(6)},${p2.y.toFixed(6)})`);
 		return [p1, p2];
 	}
 

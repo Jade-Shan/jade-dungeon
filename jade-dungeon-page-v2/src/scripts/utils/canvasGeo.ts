@@ -306,6 +306,7 @@ export class CanvasCircle extends Circle implements Canvas2dShape {
 			let dy = this.location.y - this.radius;
 			let dwidth = this.radius * 2;
 			let dheight = dwidth;
+			// console.log(`${this.imgInfo.location.x},${this.imgInfo.location.y} ${this.imgInfo.width},${this.imgInfo.height} ${dx},${dy} ${dwidth},${dheight}`);
 			cvsCtx.drawImage(this.imgInfo.image, this.imgInfo.location.x, this.imgInfo.location.y,
 				this.imgInfo.width, this.imgInfo.height, dx, dy, dwidth, dheight);
 		}
@@ -427,6 +428,15 @@ export class Observer {
 		}
 		if (obstacle.visiable) {
 			obstacle.draw(cvsCtx);
+		}
+	}
+
+	/* 画出可见的物体与阴影 */
+	renderObstatlesTokenInView(cvsCtx: CanvasRenderingContext2D, darkMap: HTMLImageElement, obstacle: Array<Canvas2dShape>) {
+		let tokens = obstacle.filter(t => t.minDistance(this.location) < this.viewRange);
+		let orderTokens = tokens.sort((a, b) => a.minDistance(this.location) - b.minDistance(this.location))
+		for (let i = 0; i < orderTokens.length; i++) {
+			this.renderObstatleToken(cvsCtx, darkMap, orderTokens[i]);
 		}
 	}
 

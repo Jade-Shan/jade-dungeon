@@ -2,7 +2,7 @@ import * as React from "react";
 import { ImageInfo } from "../utils/canvasGeo"
 import { CURR_ENV } from './constans';
 
-import { Canvas2dShape, CanvasLine, CanvasRectangle, CanvasCircle, loadImage } from '../utils/canvasGeo';
+import { Observer, Canvas2dShape, CanvasLine, CanvasRectangle, CanvasCircle, loadImage } from '../utils/canvasGeo';
 import { defaultMapData, defaultIconData, loadDefaultIcons } from "../utils/defaultImages";
 
 const SANDTABLE_ROOT = `${CURR_ENV.apiRoot}/api/sandtable`;
@@ -10,7 +10,7 @@ type Creater = {
 	id: string, type: string, x: number, y: number, x2?: number, y2?: number, 
 	radius?: number, width?: number, height?: number,
 	img?: {imgKey: string, sx: number, sy: number, width: number, height: number},
-	color: string, visible: boolean, blockView: boolean
+	color: string, visiable: boolean, blockView: boolean
 };
 
 type ImageResource = {id: string, type: string, url: string};
@@ -32,6 +32,7 @@ type ScenceResp = {
 export type Scence = { 
 	campaignId: string, placeId: string, sceneId: string,
 	width: number, height: number, shadowColor: string, viewRange: number,
+	allTokens   : Array<Canvas2dShape>, 
 	images      : Array<ImageInfo>,
 	creaters    : Array<Canvas2dShape>, 
 	teams       : Array<Canvas2dShape>, 
@@ -65,7 +66,7 @@ let json2ImageInfo = async (cvs: HTMLCanvasElement, scene: Scence, imgResources:
 let json2Line = (creater: Creater): CanvasLine => {
 	return new CanvasLine(creater.id, { x: creater.x, y: creater.y },
 		{ x: creater.x2 ? creater.x2 : 0, y: creater.y2 ? creater.y2 : 0 },
-		creater.color, creater.visible, creater.blockView);
+		creater.color, creater.visiable, creater.blockView);
 };
 
 let json2Rectangle = async (creater: Creater, imgMap: Map<string, ImageInfo>): Promise<CanvasRectangle> => {
@@ -73,9 +74,12 @@ let json2Rectangle = async (creater: Creater, imgMap: Map<string, ImageInfo>): P
 	let imgInfo = imgMap.get(imgkey);
 	if (!imgInfo) { imgInfo = await loadDefaultIcons(); }
 	return new CanvasRectangle(creater.id, { x: creater.x, y: creater.y },
-		creater.width ? creater.width : 50, creater.height ? creater.height : 50,
-		creater.color, imgInfo,
-		creater.visible, creater.blockView);
+		creater.width ? creater.width : 50, creater.height ? creater.height : 50, creater.color, 
+		{
+			id: imgInfo.id, location: { x: creater.img.sx, y: creater.img.sy },
+			width: creater.img.width, height: creater.img.height, src: imgInfo.src, image: imgInfo.image 
+		},
+		creater.visiable, creater.blockView);
 };
 
 let json2Circle = async (creater: Creater, imgMap: Map<string, ImageInfo>): Promise<CanvasCircle> => {
@@ -83,20 +87,25 @@ let json2Circle = async (creater: Creater, imgMap: Map<string, ImageInfo>): Prom
 	let imgInfo = imgMap.get(imgkey);
 	if (!imgInfo) { imgInfo = await loadDefaultIcons(); }
 	return new CanvasCircle(creater.id, { x: creater.x, y: creater.y },
-		creater.radius ? creater.radius : 50, creater.color, imgInfo,
-		creater.visible, creater.blockView);
+		creater.radius ? creater.radius : 50, creater.color,
+		{
+			id: imgInfo.id, location: { x: creater.img.sx, y: creater.img.sy },
+			width: creater.img.width, height: creater.img.height, src: imgInfo.src, image: imgInfo.image 
+		},
+		creater.visiable, creater.blockView);
 };
 
-let jsonArray2Tokens = async (imgMap: Map<string, ImageInfo>, tokenMap: Map<String, Canvas2dShape>, tokenList: Array<Canvas2dShape>, creaters: Array<Creater>) => {
+let jsonArray2Tokens = async (imgMap: Map<string, ImageInfo>, allTokens: Array<Canvas2dShape>, tokenMap: Map<String, Canvas2dShape>, tokenList: Array<Canvas2dShape>, creaters: Array<Creater>) => {
 	for (let i = 0; i < creaters.length; i++) {
 		let c: Creater = creaters[i];
 		let token: Canvas2dShape | undefined = undefined;
-		if ('Line'      === c.type) { token = json2Line     (c); } else 
+		if ('Line'      === c.type) { token =       json2Line     (c        ); } else 
 		if ('Rectangle' === c.type) { token = await json2Rectangle(c, imgMap); } else 
 		if ('Circle'    === c.type) { token = await json2Circle   (c, imgMap); }
 		if (token) {
 			tokenMap.set(token.id, token);
 			tokenList.push(token);
+			allTokens.push(token);
 		}
 	}
 };
@@ -115,22 +124,22 @@ let requestMapDatas = async (campaignId: string, placeId: string, sceneId: strin
 export let initMapDatas = async (cvs: HTMLCanvasElement, campaignId: string, placeId: string, sceneId: string): Promise<Scence> => {
 	let scene: Scence = {
 		campaignId: campaignId, placeId: placeId, sceneId: sceneId,
-		width: 0, height: 0, shadowColor: "rgba(0,0,0, 0.7)", viewRange: 500,
+		width: 0, height: 0, shadowColor: "rgba(0,0,0, 0.7)", viewRange: 500, allTokens: [],
 		creaters: [], teams: [], walls: [], doors: [], furnitures: [], images: [],
 		imageMap: new Map(), createrMap: new Map(), teamMap     : new Map(),
 		wallMap : new Map(), doorMap   : new Map(), furnitureMap: new Map()
 	};
 
 	await requestMapDatas(campaignId, placeId, sceneId).then((response) => response.json()).then(async (data) => {
-		console.log(data);
+		// console.log(data);
 		let dataResp: ScenceResp = data;
 
 		await json2ImageInfo(cvs, scene, dataResp.imgResources);
-		await jsonArray2Tokens(scene.imageMap, scene.createrMap  , scene.creaters  , dataResp.mapDatas.creaters   );
-		await jsonArray2Tokens(scene.imageMap, scene.teamMap     , scene.teams     , dataResp.mapDatas.teams      );
-		await jsonArray2Tokens(scene.imageMap, scene.wallMap     , scene.walls     , dataResp.mapDatas.walls      );
-		await jsonArray2Tokens(scene.imageMap, scene.doorMap     , scene.doors     , dataResp.mapDatas.doors      );
-		await jsonArray2Tokens(scene.imageMap, scene.furnitureMap, scene.furnitures, dataResp.mapDatas.furnishings);
+		await jsonArray2Tokens(scene.imageMap, scene.allTokens, scene.createrMap  , scene.creaters  , dataResp.mapDatas.creaters   );
+		await jsonArray2Tokens(scene.imageMap, scene.allTokens, scene.teamMap     , scene.teams     , dataResp.mapDatas.teams      );
+		await jsonArray2Tokens(scene.imageMap, scene.allTokens, scene.wallMap     , scene.walls     , dataResp.mapDatas.walls      );
+		await jsonArray2Tokens(scene.imageMap, scene.allTokens, scene.doorMap     , scene.doors     , dataResp.mapDatas.doors      );
+		await jsonArray2Tokens(scene.imageMap, scene.allTokens, scene.furnitureMap, scene.furnitures, dataResp.mapDatas.furnishings);
 	}).catch((err) => {
 		console.log(err.message);
 	});
@@ -150,4 +159,17 @@ export let drawSence = async (cvs: HTMLCanvasElement, cvsCtx: CanvasRenderingCon
 	cvsCtx.clearRect(0, 0, cvs.width, cvs.height);
 	cvsCtx.drawImage(scene.imageMap.get('map').image, 0, 0);
 
+	let obs: Observer = new Observer("obs", 350, 350, 360);
+	obs.renderObstatlesTokenInView(cvsCtx, darkMap, scene.allTokens);
+
+	let brightMap = await loadImage(new Image(), cvs.toDataURL('image/png', 1.0));
+	brightMap.crossOrigin = 'Anonymous';
+
+	cvsCtx.drawImage(darkMap, 0, 0);
+	cvsCtx.save();
+	cvsCtx.beginPath();
+	cvsCtx.arc(obs.location.x, obs.location.y, obs.viewRange, 0, Math.PI * 2);
+	cvsCtx.clip();
+	cvsCtx.drawImage(brightMap, 0, 0);
+	cvsCtx.restore();
 }
