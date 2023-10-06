@@ -190,10 +190,14 @@ export interface Shape2D {
 
 	isHit(location: Point2D): boolean;
 
+	/* 计算外部点到图形这一面的顶点的连线*/
 	filterObstacleRays(location: Point2D): Array<Ray>;
 
+	/* 过滤出外部点到图形这一面的在可视距离内顶点的连线*/
+	filterObstacleRaysInRange(location: Point2D, range: Number): Array<Ray>;
+
 	// 计算出外部点到这个图形的线的线段
-	genTangentLine(point: Point2D, rayRange: number): Array<Ray>;
+	genShadowLine(point: Point2D, rayRange: number): Array<Ray>;
 
 };
 
@@ -235,7 +239,7 @@ abstract class Abstract2dShape implements Shape2D {
 		return minRange;
 	}
 
-	/* 计算外部点到障碍物轮廓的两条切线 */
+	/* 计算外部点到图形这一面的顶点的连线*/
 	filterObstacleRays(location: Point2D): Array<Ray> {
 		let rays: Array<Ray> = this.genVertexRays(location);
 		// 找到角度最大的点与最小的点
@@ -257,15 +261,29 @@ abstract class Abstract2dShape implements Shape2D {
 		return results;
 	}
 
+	/* 过滤出外部点到图形这一面的在可视距离内顶点的连线*/
+	filterObstacleRaysInRange(location: Point2D, range: number): Array<Ray> {
+		let rays = this.filterObstacleRays(location);
+		return rays.filter(r => distanceP2P(r.start, r.end) < range);
+	}
+
 	// 计算出外部点到这个图形的线的线段
-	genTangentLine(location: Point2D, rayRange: number): Array<Ray> {
+	genShadowLine(location: Point2D, rayRange: number): Array<Ray> {
 		rayRange = rayRange ? rayRange : Number.MAX_SAFE_INTEGER;
-		let rays: Array<Ray> = this.filterObstacleRays(location);
+		let result: Array<Ray> = [];
+		let rays: Array<Ray> = this.filterObstacleRaysInRange(location, rayRange);
 		for (let i = 0; i < rays.length; i++) {
-			rays[i].end.x = location.x + Math.round(rayRange * Math.cos(rays[i].angle));
-			rays[i].end.y = location.y + Math.round(rayRange * Math.sin(rays[i].angle));
+			let start = { x: rays[i].end.x, y: rays[i].end.y };
+			let end = {
+				x: location.x + Math.round(rayRange * Math.cos(rays[i].angle)),
+				y: location.y + Math.round(rayRange * Math.sin(rays[i].angle))
+			}
+			let r: Ray = { start: start, end: end, angle: rays[i].angle, cAngle: rays[i].cAngle, 
+				range: distanceP2P(start, end)
+			};
+			result.push(r);
 		}
-		return rays;
+		return result;
 	};
 }
 
@@ -419,12 +437,6 @@ export class Circle extends Abstract2dShape {
 	) {
 		super(id, location, color, visiable, blockView);
 		this.radius = radius;
-//		this.image = image;
-//		this.image.key = image.key;
-//		this.image.sx = image.sx ? image.sx : 0;
-//		this.image.sy = image.sy ? image.sy : 0;
-//		this.image.width = image.width ? image.width : 2 * radius;
-//		this.image.height = image.height ? image.height : 2 * radius;
 	}
 
 	clone(): Circle {
@@ -542,124 +554,3 @@ export class Circle extends Abstract2dShape {
 
 }
 
-
-
-//class Circle extends Canvas2dShape {
-//
-//
-//
-//	/* 外部点到圆心的连线 */
-//	drawLineToCentre(rays, angle) {
-//		this.cvsCtx.save();
-//		// 画出圆心
-//		this.cvsCtx.fillStyle = "#0000FF";
-//		this.cvsCtx.beginPath();
-//		this.cvsCtx.arc(this.x, this.y, 5, PI_DOUBLE, false);
-//		this.cvsCtx.fill();
-//		// 画出连线与圆周的交点
-//		let dx0 = this.radius * Math.cos(angle);
-//		let dy0 = this.radius * Math.sin(angle);
-//		this.cvsCtx.fillStyle = "#0000FF";
-//		this.cvsCtx.beginPath();
-//		this.cvsCtx.arc(this.x + dx0, this.y + dy0, 5, PI_DOUBLE, false);
-//		this.cvsCtx.fill();
-//		// 外部点连线到圆心
-//		this.cvsCtx.strokeStyle = "#FF0000";
-//		this.cvsCtx.beginPath();
-//		this.cvsCtx.moveTo(x, y);
-//		this.cvsCtx.lineTo(this.x, this.y);
-//		this.cvsCtx.stroke();
-//		this.cvsCtx.restore();
-//	}
-//
-//
-//
-//
-//
-//}
-//
-//class Observer {
-//
-//	constructor(canvasContext, id, x, y, viewRange, body, rayColor, visiable, blockView) {
-//		this.id = id;
-//		this.x = x;
-//		this.y = y;
-//		this.rayColor = rayColor;
-//		this.rayRange = viewRange + 5;
-//		// this.rays      = [];
-//
-//		this.cvsCtx = canvasContext;
-//		this.body = body;
-//	}
-//
-//	move(dx, dy) {
-//		this.x += dx; this.y += dy;
-//		this.body.x = this.x; this.body.y = this.y;
-//	}
-//
-//	draw() {
-//		this.cvsCtx.save();
-//		// this.body.draw();
-//		this.cvsCtx.beginPath();
-//		this.cvsCtx.moveTo(this.x, this.y);
-//
-//		this.cvsCtx.stroke();
-//		this.cvsCtx.fillStyle = this.rayColor;
-//		this.cvsCtx.fill();
-//		this.cvsCtx.restore();
-//	}
-//
-//	/* 每个障碍面对观察者的一边的每个关键点 */
-//	viewObstatleSides(obstacle) {
-//		let rays = obstacle.genVertexRays(this.x, this.y, this.rayRange);
-//		rays = obstacle.filterObstacleRays(rays);
-//		rays = obstacle.genTangentLine(this.x, this.y, this.rayRange, rays);
-//		return rays;
-//	}
-//
-//	/* 画出障碍物的阴影 */
-//	drawObstatleShadows(side, shadowImage) {
-//		let start = side[0];
-//		let end = side[side.length - 1];
-//		// 
-//		this.cvsCtx.save();
-//		this.cvsCtx.beginPath();
-//		this.cvsCtx.moveTo(start.endX, start.endY);
-//		this.cvsCtx.arc(this.x, this.y, this.rayRange, start.angle, end.angle, false);
-//		this.cvsCtx.lineTo(end.startX, end.startY);
-//		this.cvsCtx.lineTo(start.startX, start.startY);
-//		this.cvsCtx.lineTo(start.endX, start.endY);
-//		this.cvsCtx.clip();
-//		this.cvsCtx.drawImage(shadowImage, 0, 0);
-//		this.cvsCtx.restore();
-//	}
-//
-//	filterTokensInView(tokens) {
-//		return tokens.filter((c) => {
-//			return c.minDistance(this.x, this.y) < this.rayRange;
-//		}).sort((a, b) => { // 按距离从先画远的再画近的对象
-//			return b.minDistance(this.x, this.y) - a.minDistance(this.x, this.y);
-//		});
-//	}
-//
-//	renderTokensOnSandbox(mapImage, tokens, isObstatle) {
-//		for (let p = 0; p < tokens.length; p++) {
-//			if (tokens[p].blockView && tokens[p].id != this.id && tokens[p].id != 'spectator') {
-//				let side = this.viewObstatleSides(tokens[p]);
-//				this.drawObstatleShadows(side, mapImage);
-//			}
-//			if (tokens[p].visiable) {
-//				tokens[p].draw();
-//			}
-//		}
-//	}
-//
-//	renderTokensOnSandboxInView(mapImage, tokens) {
-//		let vTokens = this.filterTokensInView(tokens);
-//		this.renderTokensOnSandbox(mapImage, vTokens);
-//	}
-//
-//}
-//
-//
-//

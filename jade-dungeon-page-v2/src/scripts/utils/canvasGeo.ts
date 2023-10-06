@@ -84,21 +84,6 @@ export interface Canvas2dShape extends Shape2D {
 
 	drawWantScale(cvsCtx: CanvasRenderingContext2D, start: Point2D, end: Point2D): Canvas2dShape;
 
-	// // 画出切线
-	// drawTangentLine(cvsCtx: CanvasRenderingContext2D, location: Point2D, rays: Array<Ray>): Array<Ray>;
-
-
-	// // 画出切线
-	// drawTangentLine(painter: Painter, location: Point2D, rays: Array<Ray>) {
-	// 	for (let i = 0; i < rays.length; i++) {
-	// 		painter.draw(() => {
-	// 			painter.fillCircle(rays[i].start, 3, 0, PI_DOUBLE, false, { fillStyle: "#0000FF" });
-	// 			painter.strokeLine(location, rays[i].end, { strokeStyle: "#FF0000" });
-	// 		});
-	// 	}
-	// 	return rays;
-	// };
-
 }
 
 export class CanvasLine extends Line implements Canvas2dShape {
@@ -373,7 +358,6 @@ export class CanvasCircle extends Circle implements Canvas2dShape {
 		return this.byModel(dist);
 	}
 
-
 }
 
 export class Observer {
@@ -391,26 +375,6 @@ export class Observer {
 		this.viewRange = viewRange;
 	}
 
-	// constructor(id: string, body: Canvas2dShape, viewRange: number, visiable : boolean, blockView: boolean) {
-	// 	this.id        = id;
-	// 	this.body      = body;
-	// 	this.location  = {x: body.location.x, y: this.location.y};
-	// 	this.viewRange = viewRange;
-	// 	this.visiable  = visiable;
-	// 	this.blockView = blockView;
-	// }
-
-	// viewObstatleSides(obstacle: Canvas2dShape) {
-	// 	// let rays = obstacle.genTangentLine(this.location, this.viewRange);
-	// 	// rays = obstacle.filterObstacleRays(rays);
-	// 	// rays = obstacle.genTangentLine(this.x, this.y, this.rayRange, rays);
-	// 	// return rays;
-	// }
-
-	// drawVertexRays(cvsCtx: CanvasRenderingContext2D, location: Point2D): Array<Ray>;
-
-	// drawObstacleRays(cvsCtx: CanvasRenderingContext2D, location: Point2D): Array<Ray>;
-
 	drawVertexRays(cvsCtx: CanvasRenderingContext2D, obstacle: Canvas2dShape): Array<Ray> {
 		let rays = obstacle.genVertexRays(this.location);
 		drawLines(cvsCtx, rays);
@@ -423,28 +387,47 @@ export class Observer {
 		return rays
 	}
 
-	drawTangengLine(cvsCtx: CanvasRenderingContext2D, obstacle: Canvas2dShape): Array<Ray> {
-		let rays = obstacle.genTangentLine(this.location, this.viewRange);
+
+	drawObstacleRaysInRange(cvsCtx: CanvasRenderingContext2D, obstacle: Canvas2dShape): Array<Ray> {
+		let rays = obstacle.filterObstacleRaysInRange(this.location, this.viewRange);
 		drawLines(cvsCtx, rays);
 		return rays
 	}
 
-	strokeObstatleShadows(cvsCtx: CanvasRenderingContext2D, side: Array<Ray>) {
-		let start = side[0];
-		let end   = side[side.length - 1];
-		// 
-		cvsCtx.save();
-		cvsCtx.beginPath();
-		cvsCtx.moveTo(start.start.x, start.end.y);
-		cvsCtx.arc(this.location.x, this.location.y, this.viewRange, start.angle, end.angle, false);
-		cvsCtx.lineTo(end  .start.x, end  .start.y);
-		cvsCtx.lineTo(start.start.x, start.start.y);
-		cvsCtx.lineTo(start.end  .x, start.end  .y);
-		cvsCtx.fillStyle = "rgba(0, 100, 0, 0.7)";
-		cvsCtx.fill();
-		// cvsCtx.clip();
-		// cvsCtx.drawImage(shadowImage, 0, 0);
-		cvsCtx.restore();
+	drawShadowLine(cvsCtx: CanvasRenderingContext2D, obstacle: Canvas2dShape): Array<Ray> {
+		let rays = obstacle.genShadowLine(this.location, this.viewRange);
+		drawLines(cvsCtx, rays);
+		return rays
+	}
+
+	/* 画出障碍物的阴影 */
+	drawObstatleShadows(cvsCtx: CanvasRenderingContext2D, side: Array<Ray>, shadowImage: HTMLImageElement) {
+		if (side.length > 1) {
+			let start = side[0];
+			let end = side[side.length - 1];
+			// 
+			cvsCtx.save();
+			cvsCtx.beginPath();
+			cvsCtx.moveTo(start.end.x, start.end.y);
+			cvsCtx.arc(this.location.x, this.location.y, this.viewRange, start.angle, end.angle, false);
+			cvsCtx.lineTo(end.start.x, end.start.y);
+			cvsCtx.lineTo(start.start.x, start.start.y);
+			cvsCtx.lineTo(start.end.x, start.end.y);
+			cvsCtx.clip();
+			cvsCtx.drawImage(shadowImage, 0, 0);
+			cvsCtx.restore();
+		}
+	}
+
+	/* 画出可见的物体与阴影 */
+	renderObstatleToken(cvsCtx: CanvasRenderingContext2D, darkMap: HTMLImageElement, obstacle: Canvas2dShape) {
+		if (obstacle.blockView) {
+			let rays = obstacle.genShadowLine(this.location, this.viewRange);
+			this.drawObstatleShadows(cvsCtx, rays, darkMap);
+		}
+		if (obstacle.visiable) {
+			obstacle.draw(cvsCtx);
+		}
 	}
 
 

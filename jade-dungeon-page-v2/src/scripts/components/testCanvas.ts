@@ -1,5 +1,5 @@
 
-import { ImageInfo } from "../utils/canvasGeo"
+import { ImageInfo, loadImage } from "../utils/canvasGeo"
 
 import { loadDefaultIcons, loadDefaultMap } from "../utils/defaultImages";
 
@@ -10,15 +10,54 @@ export let initSandtable = async (cvs: HTMLCanvasElement, cvsCtx: CanvasRenderin
 	let map  : ImageInfo = await loadDefaultMap();
 
 	cvsCtx.drawImage(map.image, 0, 0);
+	cvsCtx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+	cvsCtx.fillRect(0, 0, cvs.width, cvs.height);
+	let darkMap = await loadImage(new Image(), cvs.toDataURL('image/png', 1.0));
+	darkMap.crossOrigin = 'Anonymous';
+	cvsCtx.clearRect(0, 0, cvs.width, cvs.height);
+	cvsCtx.drawImage(map.image, 0, 0);
 
 	let line01 = new CanvasLine("line-001", { x: 100, y: 200 }, { x: 200, y: 300 }, "#0000FF", true, true);
-	line01.draw(cvsCtx);
+	let tang01 = new CanvasRectangle("tang-001", { x: 600, y: 100 }, 80, 90, "#0000FF", icons, true, true);
+	let circ01 = new CanvasCircle("circ-001", { x: 600, y: 500 }, 60, "#0000FF", icons, true, true);
+
+	let obs: Observer = new Observer("obs", 350, 350, 360);
+	obs.renderObstatleToken(cvsCtx, darkMap, line01);
+	obs.renderObstatleToken(cvsCtx, darkMap, tang01);
+	obs.renderObstatleToken(cvsCtx, darkMap, circ01);
+
+	let brightMap = await loadImage(new Image(), cvs.toDataURL('image/png', 1.0));
+	brightMap.crossOrigin = 'Anonymous';
+
+	cvsCtx.drawImage(darkMap, 0, 0);
+	cvsCtx.save();
+	cvsCtx.beginPath();
+	cvsCtx.arc(obs.location.x, obs.location.y, obs.viewRange, 0, Math.PI * 2);
+	cvsCtx.clip();
+	cvsCtx.drawImage(brightMap, 0, 0);
+	cvsCtx.restore();
+}
+
+
+let initSandtable3 = async (cvs: HTMLCanvasElement, cvsCtx: CanvasRenderingContext2D): Promise<void> => {
+	let icons: ImageInfo = await loadDefaultIcons();
+	let map  : ImageInfo = await loadDefaultMap();
+
+	cvsCtx.drawImage(map.image, 0, 0);
+	cvsCtx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+	cvsCtx.fillRect(0, 0, cvs.width, cvs.height);
+	let darkMap = await loadImage(new Image(), cvs.toDataURL('image/png', 1.0));
+	darkMap.crossOrigin = 'Anonymous';
+
+	cvsCtx.clearRect(0, 0, cvs.width, cvs.height);
+
+	cvsCtx.drawImage(map.image, 0, 0);
+
+	let line01 = new CanvasLine("line-001", { x: 100, y: 200 }, { x: 200, y: 300 }, "#0000FF", true, true);
 
 	let tang01 = new CanvasRectangle("tang-001", { x: 600, y: 100 }, 80, 90, "#0000FF", icons, true, true);
-	tang01.draw(cvsCtx);
 
 	let circ = new CanvasCircle("circ-001", { x: 600, y: 500 }, 60, "#0000FF", icons, true, true);
-	circ.draw(cvsCtx);
 
 	let obs: Observer = new Observer("obs", 350, 350, 360);
 	// obs.drawVertexRays(cvsCtx, line01);
@@ -29,13 +68,26 @@ export let initSandtable = async (cvs: HTMLCanvasElement, cvsCtx: CanvasRenderin
 	// obs.drawObstacleRays(cvsCtx, tang01);
 	// obs.drawObstacleRays(cvsCtx, circ);
 
-	let rays01 = obs.drawTangengLine(cvsCtx, line01);
-	let rays02 = obs.drawTangengLine(cvsCtx, tang01);
-	let rays03 = obs.drawTangengLine(cvsCtx, circ);
+	// obs.drawObstacleRaysInRange(cvsCtx, line01);
+	// obs.drawObstacleRaysInRange(cvsCtx, tang01);
+	// obs.drawObstacleRaysInRange(cvsCtx, circ);
 
-	obs.strokeObstatleShadows(cvsCtx, rays01);
-	obs.strokeObstatleShadows(cvsCtx, rays02);
-	obs.strokeObstatleShadows(cvsCtx, rays03);
+	let rays01 = obs.drawShadowLine(cvsCtx, line01);
+	let rays02 = obs.drawShadowLine(cvsCtx, tang01);
+	let rays03 = obs.drawShadowLine(cvsCtx, circ);
+
+	// obs.strokeObstatleShadows(cvsCtx, rays01);
+	// obs.strokeObstatleShadows(cvsCtx, rays02);
+	// obs.strokeObstatleShadows(cvsCtx, rays03);
+
+	obs.drawObstatleShadows(cvsCtx, rays01, darkMap);
+	obs.drawObstatleShadows(cvsCtx, rays02, darkMap);
+	obs.drawObstatleShadows(cvsCtx, rays03, darkMap);
+
+
+	line01.draw(cvsCtx);
+	tang01.draw(cvsCtx);
+	circ.draw(cvsCtx);
 }
 
 let initSandtable2 = async (cvs: HTMLCanvasElement, cvsCtx: CanvasRenderingContext2D): Promise<void> => {
