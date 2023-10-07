@@ -2,7 +2,9 @@ import * as React from "react";
 import { ImageInfo } from "../utils/canvasGeo"
 import { CURR_ENV } from './constans';
 
-import { Observer, Canvas2dShape, CanvasLine, CanvasRectangle, CanvasCircle, loadImage } from '../utils/canvasGeo';
+import {loadImage} from '../utils/commonUtils'
+
+import { Observer, Canvas2dShape, CanvasLine, CanvasRectangle, CanvasCircle } from '../utils/canvasGeo';
 import { defaultMapData, defaultIconData, loadDefaultIcons } from "../utils/defaultImages";
 
 const SANDTABLE_ROOT = `${CURR_ENV.apiRoot}/api/sandtable`;
@@ -45,6 +47,56 @@ export type Scence = {
 	wallMap     : Map<string, Canvas2dShape>, 
 	doorMap     : Map<string, Canvas2dShape>, 
 	furnitureMap: Map<string, Canvas2dShape>, 
+};
+
+let transImage2Data = (token: ImageInfo): ImageResource => {
+	return { "id": token.id, "type": "Image", "url": token.src };
+};
+
+let transLine2Data = (token: CanvasLine): Creater => {
+	return {
+		"id": token.id, "type": "Line",
+		"x": token.location.x, "y": token.location.y,
+		"x2": token.end.x, "y2": token.end.y,
+		"visiable": token.visiable,
+		"blockView": token.blockView,
+		"color": token.color
+	}
+};
+
+let transRect2Data = (token: CanvasRectangle): Creater => {
+	return {
+		"id": token.id, "type": "Rectangle",
+		"x": token.location.x, "y": token.location.y,
+		"width": token.width, "height": token.height,
+		"visiable": token.visiable,
+		"blockView": token.blockView,
+		"color": token.color,
+		"img": {
+			"imgKey": token.imgInfo.id,
+			"sx": token.imgInfo.location.x,
+			"sy": token.imgInfo.location.y,
+			"width": token.imgInfo.width,
+			"height": token.imgInfo.height,
+		},
+	}
+};
+
+let transCircle2Data = (token: CanvasCircle): Creater => {
+	return {"id": token.id, "type": "Circle",
+		"x": token.location.x, "y": token.location.y,
+		"radius": token.radius,
+		"visiable": token.visiable,
+		"blockView": token.blockView,
+		"color": token.color,
+		"img": {
+			"imgKey": token.imgInfo.id,
+			"sx": token.imgInfo.location.x,
+			"sy": token.imgInfo.location.y,
+			"width": token.imgInfo.width,
+			"height": token.imgInfo.height,
+		},
+	}
 };
 
 let json2ImageInfo = async (cvs: HTMLCanvasElement, scene: Scence, imgResources: Array<ImageResource>) => {
@@ -168,7 +220,7 @@ export let drawSence = async (cvs: HTMLCanvasElement, cvsCtx: CanvasRenderingCon
 	cvsCtx.drawImage(darkMap, 0, 0);
 	cvsCtx.save();
 	cvsCtx.beginPath();
-	cvsCtx.arc(obs.location.x, obs.location.y, obs.viewRange, 0, Math.PI * 2);
+	cvsCtx.arc(obs.location.x, obs.location.y, obs.viewRange - 3, 0, Math.PI * 2);
 	cvsCtx.clip();
 	cvsCtx.drawImage(brightMap, 0, 0);
 	cvsCtx.restore();

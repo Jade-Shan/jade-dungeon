@@ -1,4 +1,5 @@
-import { ImageInfo, loadImage } from "../utils/canvasGeo"
+import { ImageInfo } from "../utils/canvasGeo"
+import { loadImage } from "../utils/commonUtils"
 
 export const defaultImgData = 'data:image/jpeg;base64,' +
 	'/9j/4AAQSkZJRgABAQEASABIAAD/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc' +

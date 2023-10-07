@@ -1,5 +1,6 @@
 
-import { ImageInfo, loadImage } from "../utils/canvasGeo"
+import { ImageInfo} from "../utils/canvasGeo"
+import {loadImage} from '../utils/commonUtils'
 
 import { loadDefaultIcons, loadDefaultMap } from "../utils/defaultImages";
 
