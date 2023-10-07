@@ -434,7 +434,7 @@ export class Observer {
 	/* 画出可见的物体与阴影 */
 	renderObstatlesTokenInView(cvsCtx: CanvasRenderingContext2D, darkMap: HTMLImageElement, obstacle: Array<Canvas2dShape>) {
 		let tokens = obstacle.filter(t => t.minDistance(this.location) < this.viewRange);
-		let orderTokens = tokens.sort((a, b) => a.minDistance(this.location) - b.minDistance(this.location))
+		let orderTokens = tokens.sort((a, b) => b.minDistance(this.location) - a.minDistance(this.location))
 		for (let i = 0; i < orderTokens.length; i++) {
 			this.renderObstatleToken(cvsCtx, darkMap, orderTokens[i]);
 		}
