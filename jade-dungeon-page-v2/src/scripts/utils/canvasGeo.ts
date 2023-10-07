@@ -40,23 +40,62 @@ let drawLines = (cvsCtx: CanvasRenderingContext2D, rays: Array<Ray>) => {
 	cvsCtx.restore();
 }
 
-let fetchImage =  async (url: string): Promise<Response> => {
-	if (url.indexOf('http') == 0) {
-		let encodeSrc = encodeURIComponent(url);
-		url = `${CURR_ENV.apiRoot}/api/sandtable/parseImage?src=${encodeSrc}`;
+const IMG_CACHE_PREFIX: string = 'cache-img-base64-';
+const IMG_CACHE_TIMEOUT: number = 1000 * 60 * 60;
+
+type ImageCache = {url: string, time: number, data: string};
+
+let fetchImage = async (url: string, fallbackBase64?: string): Promise<string> => {
+	let imgBase64 = fallbackBase64 ? fallbackBase64 : defaultImgData;
+	if (url.indexOf('data:image/') == 0) {
+		imgBase64 = url;
+	} else {
+		if (url.indexOf('http') == 0) {
+			url = `${CURR_ENV.apiRoot}/api/sandtable/parseImage?src=${encodeURIComponent(url)}`;
+		}
+		let resp: Response = await fetch(url, {
+			method: 'GET',
+			headers: {
+				'Accept': 'image/avif,image/webp,*/*',
+				'Accept-Encoding': 'gzip, deflate',
+				'Accept-Language': 'en-US,en;q=0.5',
+				//'Access-Control-Allow-Headers': '*',
+				//'Access-Control-Allow-Origin': '*',
+				'Connection': 'keep-alive',
+				//'Cache-Control': 'max-age=3600'
+			},
+		});
+		if (resp) {
+			let getBuffer = (resp: Response) => { return resp.arrayBuffer(); };
+			let buffer: ArrayBuffer = await getBuffer(resp);
+			let imgBase64Src = transArrayBufferToBase64(buffer);
+			imgBase64 = 'data:image/png;base64,' + imgBase64Src;
+			localStorage.setItem(IMG_CACHE_PREFIX + url, JSON.stringify({ url: url, time: (new Date()).getTime(), data: imgBase64 }));
+		}
 	}
-	return fetch(url, {
-		method: 'GET',
-		headers: {
-			'Accept': 'image/avif,image/webp,*/*',
-			'Accept-Encoding': 'gzip, deflate',
-			'Accept-Language': 'en-US,en;q=0.5',
-			//'Access-Control-Allow-Headers': '*',
-			//'Access-Control-Allow-Origin': '*',
-			'Connection': 'keep-alive',
-			//'Cache-Control': 'max-age=3600'
-		},
-	});
+	return imgBase64;
+};
+
+let loadImageCache = (url: string) => {
+	let data = '';
+	try {
+		let str = localStorage.getItem(IMG_CACHE_PREFIX + url);
+		let c: ImageCache = JSON.parse(str);	
+		if ((c.time + IMG_CACHE_TIMEOUT) > (new Date()).getTime()) {
+			data = c.data;
+		}
+	} catch (error) {
+		// 	
+	}
+	return data;
+};
+
+let fetchImageWithCache = async (url: string, fallbackBase64?: string) => {
+	let imgBase64 = loadImageCache(url);
+	if (!imgBase64 || imgBase64.length < 20) {
+		imgBase64 = await fetchImage(url, fallbackBase64);
+	}
+	return imgBase64;
 }
 
 let transArrayBufferToBase64 = (buffer: ArrayBuffer) => {
@@ -70,19 +109,8 @@ let transArrayBufferToBase64 = (buffer: ArrayBuffer) => {
 };
 
 export let loadImage = async (image: HTMLImageElement, imgSrcURL: string, fallbackBase64?: string): Promise<HTMLImageElement> => {
-	let imgBase64 = fallbackBase64 ? fallbackBase64 : defaultImgData;
-	let resp: Response = null;
-	await fetchImage(imgSrcURL).then(succResp => {
-		resp = succResp;
-	}).catch(failResp => {
-		console.log(`load image err: ${imgSrcURL}`);
-	});
-	if (resp) {
-		let getBuffer = (resp: Response) => { return resp.arrayBuffer(); };
-		let buffer: ArrayBuffer = await getBuffer(resp);
-		let imgBase64Src = transArrayBufferToBase64(buffer); 
-		imgBase64 = 'data:image/png;base64,' + imgBase64Src;
-	}
+	//let imgBase64 = await fetchImage(imgSrcURL, fallbackBase64);
+	let imgBase64 = await fetchImageWithCache(imgSrcURL, fallbackBase64);
 	let pm = new Promise((
 		resolve: (rp: { image: HTMLImageElement, url: string }) => any,
 		reject : (jp: { image: HTMLImageElement, url: string }) => any
@@ -108,8 +136,9 @@ export let loadImage = async (image: HTMLImageElement, imgSrcURL: string, fallba
 		return await errPm.then(rp => rp.image).catch(jp => { return null; });
 	});
 	return image;
-}
-export let loadImageV1 = async (image: HTMLImageElement, url: string, fallbackBase64?: string): Promise<HTMLImageElement> => {
+};
+
+let loadImage_old_version = async (image: HTMLImageElement, url: string, fallbackBase64?: string): Promise<HTMLImageElement> => {
 	// console.log(url);
 	if (url.indexOf('http') == 0) {
 		let encodeSrc = encodeURIComponent(url);
