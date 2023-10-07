@@ -40,7 +40,76 @@ let drawLines = (cvsCtx: CanvasRenderingContext2D, rays: Array<Ray>) => {
 	cvsCtx.restore();
 }
 
-export let loadImage = async (image: HTMLImageElement, url: string, fallbackBase64?: string): Promise<HTMLImageElement> => {
+let fetchImage =  async (url: string): Promise<Response> => {
+	if (url.indexOf('http') == 0) {
+		let encodeSrc = encodeURIComponent(url);
+		url = `${CURR_ENV.apiRoot}/api/sandtable/parseImage?src=${encodeSrc}`;
+	}
+	return fetch(url, {
+		method: 'GET',
+		headers: {
+			'Accept': 'image/avif,image/webp,*/*',
+			'Accept-Encoding': 'gzip, deflate',
+			'Accept-Language': 'en-US,en;q=0.5',
+			//'Access-Control-Allow-Headers': '*',
+			//'Access-Control-Allow-Origin': '*',
+			'Connection': 'keep-alive',
+			//'Cache-Control': 'max-age=3600'
+		},
+	});
+}
+
+let transArrayBufferToBase64 = (buffer: ArrayBuffer) => {
+    let binary = '';
+    let bytes = new Uint8Array(buffer);
+    let len = bytes.byteLength;
+    for (var i = 0; i < len; i++) {
+        binary += String.fromCharCode(bytes[i]);
+    }
+    return btoa( binary );
+};
+
+export let loadImage = async (image: HTMLImageElement, imgSrcURL: string, fallbackBase64?: string): Promise<HTMLImageElement> => {
+	let imgBase64 = fallbackBase64 ? fallbackBase64 : defaultImgData;
+	let resp: Response = null;
+	await fetchImage(imgSrcURL).then(succResp => {
+		resp = succResp;
+	}).catch(failResp => {
+		console.log(`load image err: ${imgSrcURL}`);
+	});
+	if (resp) {
+		let getBuffer = (resp: Response) => { return resp.arrayBuffer(); };
+		let buffer: ArrayBuffer = await getBuffer(resp);
+		let imgBase64Src = transArrayBufferToBase64(buffer); 
+		imgBase64 = 'data:image/png;base64,' + imgBase64Src;
+	}
+	let pm = new Promise((
+		resolve: (rp: { image: HTMLImageElement, url: string }) => any,
+		reject : (jp: { image: HTMLImageElement, url: string }) => any
+	) => {
+		image.src = imgBase64;
+		image.crossOrigin = 'Anonymous';
+		image.onload  = () => { resolve({ image: image, url: imgBase64 }); };
+		image.onabort = () => { reject ({ image: image, url: imgBase64 }); };
+		image.onerror = () => { reject ({ image: image, url: imgBase64 }); };
+	});
+	return await pm.then(rp => rp.image).catch(async jp => {
+		console.log(`load image err: ${imgBase64}`);
+		image.src = fallbackBase64 ? fallbackBase64 : defaultImgData;
+		image.crossOrigin = 'Anonymous';
+		let errPm = new Promise((
+			resolve: (rp: { image: HTMLImageElement, url: string }) => any,
+			reject : (jp: { image: HTMLImageElement, url: string }) => any
+		) => {
+			image.onload  = () => { resolve({ image: image, url: imgBase64 }); };
+			image.onabort = () => { reject ({ image: image, url: imgBase64 }); };
+			image.onerror = () => { reject ({ image: image, url: imgBase64 }); };
+		});
+		return await errPm.then(rp => rp.image).catch(jp => { return null; });
+	});
+	return image;
+}
+export let loadImageV1 = async (image: HTMLImageElement, url: string, fallbackBase64?: string): Promise<HTMLImageElement> => {
 	// console.log(url);
 	if (url.indexOf('http') == 0) {
 		let encodeSrc = encodeURIComponent(url);
