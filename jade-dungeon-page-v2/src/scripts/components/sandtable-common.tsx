@@ -178,11 +178,8 @@ let jsonArray2Tokens = async (imgMap: Map<string, ImageInfo>, allTokens: Array<C
 	}
 };
 
-let requestMapDatas = async (
-		campaignId: string, placeId: string, sceneId: string, 
-		resolve: (resp: ScenceResp) => void, reject: (resp: Response) => void): Promise<void> => 
-{
-	let resp = await fetch(`${SANDTABLE_ROOT}/load-map?campaignId=${encodeURIComponent(campaignId)}&placeId=${encodeURIComponent(placeId)}&sceneId=${encodeURIComponent(sceneId)}&t=${(new Date()).getTime()}`, {
+let requestMapDatas = async (campaignId: string, placeId: string, sceneId: string): Promise<Response> => {
+	return fetch(`${SANDTABLE_ROOT}/load-map?campaignId=${encodeURIComponent(campaignId)}&placeId=${encodeURIComponent(placeId)}&sceneId=${encodeURIComponent(sceneId)}&t=${(new Date()).getTime()}`, {
 		method: 'GET',
 		headers: {
 			'Accept': 'application/json',
@@ -190,11 +187,6 @@ let requestMapDatas = async (
 			'Connection': 'keep-alive'
 		},
 	});
-	try {
-		resolve(await resp.json());
-	} catch (err) {
-		reject(resp);
-	}
 };
 
 export let initMapDatas = async (cvs: HTMLCanvasElement, campaignId: string, placeId: string, sceneId: string): Promise<Scence> => {
@@ -205,16 +197,16 @@ export let initMapDatas = async (cvs: HTMLCanvasElement, campaignId: string, pla
 		imageMap: new Map(), createrMap: new Map(), teamMap     : new Map(),
 		wallMap : new Map(), doorMap   : new Map(), furnitureMap: new Map()
 	};
-	await requestMapDatas(campaignId, placeId, sceneId, async dataResp => {
-		if ('success' == dataResp.status) {
-			await json2ImageInfo(cvs, scene, dataResp.imgResources);
-			await jsonArray2Tokens(scene.imageMap, scene.allTokens, scene.createrMap  , scene.creaters  , dataResp.mapDatas.creaters   );
-			await jsonArray2Tokens(scene.imageMap, scene.allTokens, scene.teamMap     , scene.teams     , dataResp.mapDatas.teams      );
-			await jsonArray2Tokens(scene.imageMap, scene.allTokens, scene.wallMap     , scene.walls     , dataResp.mapDatas.walls      );
-			await jsonArray2Tokens(scene.imageMap, scene.allTokens, scene.doorMap     , scene.doors     , dataResp.mapDatas.doors      );
-			await jsonArray2Tokens(scene.imageMap, scene.allTokens, scene.furnitureMap, scene.furnitures, dataResp.mapDatas.furnishings);
-		}
-	}, resp => {});
+	let resp = await requestMapDatas(campaignId, placeId, sceneId);
+	let dataResp: ScenceResp = await resp.json();
+	if ('success' == dataResp.status) {
+		await json2ImageInfo(cvs, scene, dataResp.imgResources);
+		await jsonArray2Tokens(scene.imageMap, scene.allTokens, scene.createrMap, scene.creaters, dataResp.mapDatas.creaters);
+		await jsonArray2Tokens(scene.imageMap, scene.allTokens, scene.teamMap, scene.teams, dataResp.mapDatas.teams);
+		await jsonArray2Tokens(scene.imageMap, scene.allTokens, scene.wallMap, scene.walls, dataResp.mapDatas.walls);
+		await jsonArray2Tokens(scene.imageMap, scene.allTokens, scene.doorMap, scene.doors, dataResp.mapDatas.doors);
+		await jsonArray2Tokens(scene.imageMap, scene.allTokens, scene.furnitureMap, scene.furnitures, dataResp.mapDatas.furnishings);
+	}
 	return scene;
 };
 
@@ -260,7 +252,7 @@ export let updateMapDatas = async (
 };
 
 
-export let drawSence = async (cvs: HTMLCanvasElement, cvsCtx: CanvasRenderingContext2D, scene: Scence) => {
+export let drawSence = async (cvs: HTMLCanvasElement, cvsCtx: CanvasRenderingContext2D, scene: Scence, observer: Observer) => {
 	let map = scene.imageMap.get('map')?.image;
 	cvsCtx.clearRect(0, 0, cvs.width, cvs.height);
 	cvsCtx.drawImage(map, 0, 0);
@@ -272,8 +264,9 @@ export let drawSence = async (cvs: HTMLCanvasElement, cvsCtx: CanvasRenderingCon
 	cvsCtx.clearRect(0, 0, cvs.width, cvs.height);
 	cvsCtx.drawImage(scene.imageMap.get('map').image, 0, 0);
 
-	let obs: Observer = new Observer("obs", 350, 350, 360);
-	obs.renderObstatlesTokenInView(cvsCtx, darkMap, scene.allTokens);
+	//let obs: Observer = new Observer("obs", 350, 350, 360, null);
+	//observer = new Observer("obs", 350, 350, 360, null);
+	observer.renderObstatlesTokenInView(cvsCtx, darkMap, scene.allTokens);
 
 	let brightMap = await loadImage(new Image(), cvs.toDataURL('image/png', 1.0));
 	brightMap.crossOrigin = 'Anonymous';
@@ -281,7 +274,7 @@ export let drawSence = async (cvs: HTMLCanvasElement, cvsCtx: CanvasRenderingCon
 	cvsCtx.drawImage(darkMap, 0, 0);
 	cvsCtx.save();
 	cvsCtx.beginPath();
-	cvsCtx.arc(obs.location.x, obs.location.y, obs.viewRange - 3, 0, Math.PI * 2);
+	cvsCtx.arc(observer.location.x, observer.location.y, observer.viewRange - 3, 0, Math.PI * 2);
 	cvsCtx.clip();
 	cvsCtx.drawImage(brightMap, 0, 0);
 	cvsCtx.restore();

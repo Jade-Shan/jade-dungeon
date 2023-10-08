@@ -332,16 +332,17 @@ export class CanvasCircle extends Circle implements Canvas2dShape {
 export class Observer {
 
 	id       : string;
-	// body     : Canvas2dShape;
+	body     : Canvas2dShape;
 	location : Point2D;
 	viewRange: number;
 	// visiable : boolean;
 	// blockView: boolean;
 	
-	constructor(id: string, x: number, y: number, viewRange: number) {
+	constructor(id: string, x: number, y: number, viewRange: number, body: Canvas2dShape) {
 		this.id        = id;
 		this.location  = {x: x, y: y};
 		this.viewRange = viewRange;
+		this.body      = body;
 	}
 
 	drawVertexRays(cvsCtx: CanvasRenderingContext2D, obstacle: Canvas2dShape): Array<Ray> {

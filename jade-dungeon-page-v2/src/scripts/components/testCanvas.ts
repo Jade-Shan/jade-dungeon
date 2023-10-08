@@ -22,7 +22,7 @@ export let initSandtable = async (cvs: HTMLCanvasElement, cvsCtx: CanvasRenderin
 	let tang01 = new CanvasRectangle("tang-001", { x: 600, y: 100 }, 80, 90, "#0000FF", icons, true, true);
 	let circ01 = new CanvasCircle("circ-001", { x: 600, y: 500 }, 60, "#0000FF", icons, true, true);
 
-	let obs: Observer = new Observer("obs", 350, 350, 360);
+	let obs: Observer = new Observer("obs", 350, 350, 360, circ01);
 	obs.renderObstatleToken(cvsCtx, darkMap, line01);
 	obs.renderObstatleToken(cvsCtx, darkMap, tang01);
 	obs.renderObstatleToken(cvsCtx, darkMap, circ01);
@@ -60,7 +60,7 @@ let initSandtable3 = async (cvs: HTMLCanvasElement, cvsCtx: CanvasRenderingConte
 
 	let circ = new CanvasCircle("circ-001", { x: 600, y: 500 }, 60, "#0000FF", icons, true, true);
 
-	let obs: Observer = new Observer("obs", 350, 350, 360);
+	let obs: Observer = new Observer("obs", 350, 350, 360, circ);
 	// obs.drawVertexRays(cvsCtx, line01);
 	// obs.drawVertexRays(cvsCtx, tang01);
 	// obs.drawVertexRays(cvsCtx, circ);
