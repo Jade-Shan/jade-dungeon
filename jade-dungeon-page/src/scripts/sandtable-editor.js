@@ -226,8 +226,9 @@ class SandTableEditor {
 				// console.log(data);
 				this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 				this.ctx.drawImage(this.brightMap, 0, 0);
-				for(let key in data.data) {
-					let pos   = data.data[key];
+				for(let rec in data.data) {
+					let key   = data.data[rec].userId;
+					let pos   = data.data[rec].pos;
 					let token = this.scene.teamMap.get(key);
 					if (token && pos && pos.x && pos.y) {
 						token.onMoveing(token.x + 5, token.y + 5, pos.x, pos.y);

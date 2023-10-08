@@ -17,6 +17,8 @@ type Creater = {
 
 type ImageResource = {id: string, type: string, url: string};
 
+type BasicResp = {status: string, msg?: string};
+
 type ScenceResp = {
 	status    : string,
 	username  : string,
@@ -178,8 +180,8 @@ let jsonArray2Tokens = async (imgMap: Map<string, ImageInfo>, allTokens: Array<C
 	}
 };
 
-let requestMapDatas = async (campaignId: string, placeId: string, sceneId: string): Promise<Response> => {
-	return fetch(`${SANDTABLE_ROOT}/load-map?campaignId=${encodeURIComponent(campaignId)}&placeId=${encodeURIComponent(placeId)}&sceneId=${encodeURIComponent(sceneId)}&t=${(new Date()).getTime()}`, {
+let requestMapDatas = async (campaignId: string, placeId: string, sceneId: string): Promise<ScenceResp> => {
+	let resp = await fetch(`${SANDTABLE_ROOT}/load-map?campaignId=${encodeURIComponent(campaignId)}&placeId=${encodeURIComponent(placeId)}&sceneId=${encodeURIComponent(sceneId)}&t=${(new Date()).getTime()}`, {
 		method: 'GET',
 		headers: {
 			'Accept': 'application/json',
@@ -187,6 +189,7 @@ let requestMapDatas = async (campaignId: string, placeId: string, sceneId: strin
 			'Connection': 'keep-alive'
 		},
 	});
+	return await resp.json();
 };
 
 export let initMapDatas = async (cvs: HTMLCanvasElement, campaignId: string, placeId: string, sceneId: string): Promise<Scence> => {
@@ -197,8 +200,7 @@ export let initMapDatas = async (cvs: HTMLCanvasElement, campaignId: string, pla
 		imageMap: new Map(), createrMap: new Map(), teamMap     : new Map(),
 		wallMap : new Map(), doorMap   : new Map(), furnitureMap: new Map()
 	};
-	let resp = await requestMapDatas(campaignId, placeId, sceneId);
-	let dataResp: ScenceResp = await resp.json();
+	let dataResp: ScenceResp = await requestMapDatas(campaignId, placeId, sceneId);
 	if ('success' == dataResp.status) {
 		await json2ImageInfo(cvs, scene, dataResp.imgResources);
 		await jsonArray2Tokens(scene.imageMap, scene.allTokens, scene.createrMap, scene.creaters, dataResp.mapDatas.creaters);
@@ -227,28 +229,21 @@ export let deSerializeScene = (scence: Scence): ScenceResp => {
 	return reqJson;
 }
 
-export let updateMapDatas = async (
-	campaignId: string, placeId: string, sceneId: string, jsonStr: string,
-	resolve: (resp: ScenceResp) => void, reject: (resp: Response) => void): Promise<void> => 
-{
+export let updateMapDatas = async (campaignId: string, placeId: string, sceneId: string, jsonStr: string): Promise<BasicResp> => {
 	let resp = await fetch(`${SANDTABLE_ROOT}/save-map?` + 
 			`campaignId=${encodeURIComponent(campaignId)}&placeId=${encodeURIComponent(placeId)}&sceneId=${encodeURIComponent(sceneId)}` + 
 			`&t=${(new Date()).getTime()}`, {
 		method: 'POST',
-		body: jsonStr,
+		body: `jsonStr=${encodeURIComponent(jsonStr)}`,
 		headers: {
-			'Content-Type': 'application/json',
+			'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
 			'Access-Control-Allow-Origin': '*',
 			'Accept': 'application/json',
 			'Accept-Encoding': 'gzip, deflate',
 			'Connection': 'keep-alive'
 		},
 	});
-	try {
-		resolve(await resp.json());
-	} catch (err) {
-		reject(resp);
-	}
+	return await resp.json();
 };
 
 

@@ -30,12 +30,13 @@ exports.handler = {
 			console.log(res);
 			if (!res.isSuccess) { json.msg = res.err; } else {
 				if (!res.isSuccess) { result.msg = res.err; } else {
-					json.data = {};
+					json.data = [];
 					try {
 						// console.log(res.data);
 						for (let key in res.data) {
 							try {
-								json.data[key] = JSON.parse(res.data[key]);
+								// json.data[key] = JSON.parse(res.data[key]);
+								json.data.push({"userId": key, "pos": JSON.parse(res.data[key])});
 							} catch(e) {/* do nothing */}
 						}
 						// json.data = null == res.data ? {} : JSON.parse(res.data);
