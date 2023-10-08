@@ -49,11 +49,16 @@ export type Scence = {
 	furnitureMap: Map<string, Canvas2dShape>, 
 };
 
-let transImage2Data = (token: ImageInfo): ImageResource => {
-	return { "id": token.id, "type": "Image", "url": token.src };
+let deserializeImageDatas = (tokens: Array<ImageInfo>): Array<ImageResource> => {
+	let datas: Array<ImageResource> = [];
+	for (let i = 0; i < tokens.length; i++) {
+		let token: ImageInfo = tokens[i];
+		datas.push({ "id": token.id, "type": "Image", "url": token.src });
+	}
+	return datas;
 };
 
-let transLine2Data = (token: CanvasLine): Creater => {
+let deserializeLine = (token: CanvasLine): Creater => {
 	return {
 		"id": token.id, "type": "Line",
 		"x": token.location.x, "y": token.location.y,
@@ -64,7 +69,7 @@ let transLine2Data = (token: CanvasLine): Creater => {
 	}
 };
 
-let transRect2Data = (token: CanvasRectangle): Creater => {
+let deserializeRect = (token: CanvasRectangle): Creater => {
 	return {
 		"id": token.id, "type": "Rectangle",
 		"x": token.location.x, "y": token.location.y,
@@ -82,7 +87,7 @@ let transRect2Data = (token: CanvasRectangle): Creater => {
 	}
 };
 
-let transCircle2Data = (token: CanvasCircle): Creater => {
+let deserializeCircle = (token: CanvasCircle): Creater => {
 	return {"id": token.id, "type": "Circle",
 		"x": token.location.x, "y": token.location.y,
 		"radius": token.radius,
@@ -98,6 +103,17 @@ let transCircle2Data = (token: CanvasCircle): Creater => {
 		},
 	}
 };
+
+let deserializeShape = (tokens: Array<Canvas2dShape>): Array<Creater> => {
+	let datas: Array<Creater> = [];
+	for (let i = 0; i < tokens.length; i++) {
+		let token = tokens[i];
+		if (token instanceof CanvasLine     ) { datas.push(deserializeLine  (token)); } else 
+		if (token instanceof CanvasRectangle) { datas.push(deserializeRect  (token)); } else 
+		if (token instanceof CanvasCircle   ) { datas.push(deserializeCircle(token)); }
+	}
+	return datas;
+}
 
 let json2ImageInfo = async (cvs: HTMLCanvasElement, scene: Scence, imgResources: Array<ImageResource>) => {
 	for (let i = 0; i < imgResources.length; i++) {
@@ -202,6 +218,48 @@ export let initMapDatas = async (cvs: HTMLCanvasElement, campaignId: string, pla
 	return scene;
 };
 
+export let deSerializeScene = (scence: Scence): ScenceResp => {
+	//imgResources: Array<ImageResource>,
+	//teams      : Array<Creater>,
+	let reqJson: ScenceResp = {
+		status: "success", username: "", loginToken: "",
+		imgResources: deserializeImageDatas(scence.images),
+		mapDatas: {
+			teams      : deserializeShape(scence.teams     ), 
+			creaters   : deserializeShape(scence.creaters  ), 
+			furnishings: deserializeShape(scence.furnitures), 
+			doors      : deserializeShape(scence.doors     ), 
+			walls      : deserializeShape(scence.walls     )
+		}
+	};
+	return reqJson;
+}
+
+export let updateMapDatas = async (
+	campaignId: string, placeId: string, sceneId: string, jsonStr: string,
+	resolve: (resp: ScenceResp) => void, reject: (resp: Response) => void): Promise<void> => 
+{
+	let resp = await fetch(`${SANDTABLE_ROOT}/save-map?` + 
+			`campaignId=${encodeURIComponent(campaignId)}&placeId=${encodeURIComponent(placeId)}&sceneId=${encodeURIComponent(sceneId)}` + 
+			`&t=${(new Date()).getTime()}`, {
+		method: 'POST',
+		body: jsonStr,
+		headers: {
+			'Content-Type': 'application/json',
+			'Access-Control-Allow-Origin': '*',
+			'Accept': 'application/json',
+			'Accept-Encoding': 'gzip, deflate',
+			'Connection': 'keep-alive'
+		},
+	});
+	try {
+		resolve(await resp.json());
+	} catch (err) {
+		reject(resp);
+	}
+};
+
+
 export let drawSence = async (cvs: HTMLCanvasElement, cvsCtx: CanvasRenderingContext2D, scene: Scence) => {
 	let map = scene.imageMap.get('map')?.image;
 	cvsCtx.clearRect(0, 0, cvs.width, cvs.height);
@@ -273,5 +331,93 @@ export let requestMoveTo = async (
 		reject(resp);
 	}
 };
+
+export let rollDice = async (
+	campaignId: string, placeId: string, sceneId: string, username: string,
+	resolve: (resp: ScenceResp) => void, reject: (resp: Response) => void): Promise<void> => 
+{
+	let resp = await fetch(`${SANDTABLE_ROOT}/roll-dice?` + 
+			`campaignId=${encodeURIComponent(campaignId)}&placeId=${encodeURIComponent(placeId)}&sceneId=${encodeURIComponent(sceneId)}` + 
+			`&username=${encodeURIComponent(username)}` +
+			`&t=${(new Date()).getTime()}`, {
+		method: 'GET',
+		headers: {
+			'Access-Control-Allow-Origin': '*',
+			'Accept': 'application/json',
+			'Accept-Encoding': 'gzip, deflate',
+			'Connection': 'keep-alive'
+		},
+	});
+	try {
+		resolve(await resp.json());
+	} catch (err) {
+		reject(resp);
+	}
+};
+
+export let queryRollResult = async (
+	campaignId: string, placeId: string, sceneId: string,
+	resolve: (resp: ScenceResp) => void, reject: (resp: Response) => void): Promise<void> => 
+{
+	let resp = await fetch(`${SANDTABLE_ROOT}/get-roll-result?` + 
+			`campaignId=${encodeURIComponent(campaignId)}&placeId=${encodeURIComponent(placeId)}&sceneId=${encodeURIComponent(sceneId)}` + 
+			`&t=${(new Date()).getTime()}`, {
+		method: 'GET',
+		headers: {
+			'Access-Control-Allow-Origin': '*',
+			'Accept': 'application/json',
+			'Accept-Encoding': 'gzip, deflate',
+			'Connection': 'keep-alive'
+		},
+	});
+	try {
+		resolve(await resp.json());
+	} catch (err) {
+		reject(resp);
+	}
+};
+
+export let requestRollThreshold = async (
+	campaignId: string, placeId: string, sceneId: string, username: string,
+	resolve: (resp: ScenceResp) => void, reject: (resp: Response) => void): Promise<void> => 
+{
+	let resp = await fetch(`${SANDTABLE_ROOT}/set-roll-threshold?` + 
+			`campaignId=${encodeURIComponent(campaignId)}&placeId=${encodeURIComponent(placeId)}&sceneId=${encodeURIComponent(sceneId)}` + 
+			`&username=${encodeURIComponent(username)}` +
+			`&t=${(new Date()).getTime()}`, {
+		method: 'GET',
+		headers: {
+			'Access-Control-Allow-Origin': '*',
+			'Accept': 'application/json',
+			'Accept-Encoding': 'gzip, deflate',
+			'Connection': 'keep-alive'
+		},
+	});
+	try {
+		resolve(await resp.json());
+	} catch (err) {
+		reject(resp);
+	}
+};
+
+export let queryCampaignOwner = async (campaignId: string, resolve: (resp: ScenceResp) => void, reject: (resp: Response) => void): Promise<void> => {
+	let resp = await fetch(`${SANDTABLE_ROOT}/map-owner?campaignId=${encodeURIComponent(campaignId)}&t=${(new Date()).getTime()}`, {
+		method: 'GET',
+		headers: {
+			'Access-Control-Allow-Origin': '*',
+			'Accept': 'application/json',
+			'Accept-Encoding': 'gzip, deflate',
+			'Connection': 'keep-alive'
+		},
+	});
+	try {
+		resolve(await resp.json());
+	} catch (err) {
+		reject(resp);
+	}
+};
+
+
+
 
 
