@@ -1,4 +1,4 @@
-import * as STCom from '../components/sandtable'; // Sandtable common
+import * as STCom from './sandtable-common'; // Sandtable common
 
 
 export let initSandtable = async (cvs: HTMLCanvasElement, cvsCtx: CanvasRenderingContext2D): Promise<void> => {
