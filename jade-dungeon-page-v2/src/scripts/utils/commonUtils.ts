@@ -135,7 +135,7 @@ export let loadImage_old_version = async (image: HTMLImageElement, url: string, 
 
 
 
-let cookieOperator = (name: string, value: string, options: any) => {
+export let cookieOperator = (name: string, value: string, options: any) => {
 	if (typeof value != 'undefined') {
 		options = options || {};
 		if (value === null) {
