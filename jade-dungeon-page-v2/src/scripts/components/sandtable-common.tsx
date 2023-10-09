@@ -6,6 +6,7 @@ import {loadImage} from '../utils/commonUtils'
 
 import { Observer, Canvas2dShape, CanvasLine, CanvasRectangle, CanvasCircle } from '../utils/canvasGeo';
 import { defaultMapData, defaultIconData, loadDefaultIcons } from "../utils/defaultImages";
+import { Point2D } from "../utils/geo2d";
 
 const SANDTABLE_ROOT = `${CURR_ENV.apiRoot}/api/sandtable`;
 type Creater = {
@@ -18,6 +19,17 @@ type Creater = {
 type ImageResource = {id: string, type: string, url: string};
 
 type BasicResp = {status: string, msg?: string};
+
+type RollSettingResp = {status: string, msg: string, data?: number};
+
+// {"status":"success","msg":"34=34(5d10)","threshold":30,"sum":34}
+// {"status":"error","msg":"not your turn"}
+type RollDiceOptResp = {status: string, msg: string, threshold: number, sum: number};
+
+// {"status":"success","msg":"","data":{"jade":{"sum":34,"msg":"34=34(5d10)","threshold":30}}}
+type RollDiceResultResp = { status: string, msg: string, data: Array<{ userId: string, threshold: number, sum: number, msg: string }> };
+
+type TokenMoveResp = { status: string, msg: string, data: Array<{ userId: string, pos: Point2D }> };
 
 type ScenceResp = {
 	status    : string,
@@ -275,10 +287,7 @@ export let drawSence = async (cvs: HTMLCanvasElement, cvsCtx: CanvasRenderingCon
 	cvsCtx.restore();
 }
 
-export let loadMoveRequest = async (
-	campaignId: string, placeId: string, sceneId: string,
-	resolve: (resp: ScenceResp) => void, reject: (resp: Response) => void): Promise<void> => 
-{
+export let loadMoveRequest = async (campaignId: string, placeId: string, sceneId: string): Promise<TokenMoveResp> => {
 	let resp = await fetch(`${SANDTABLE_ROOT}/load-move-request?` + 
 			`campaignId=${encodeURIComponent(campaignId)}&placeId=${encodeURIComponent(placeId)}&sceneId=${encodeURIComponent(sceneId)}` + 
 			`&t=${(new Date()).getTime()}` , {
@@ -290,17 +299,10 @@ export let loadMoveRequest = async (
 			'Connection': 'keep-alive'
 		},
 	});
-	try {
-		resolve(await resp.json());
-	} catch (err) {
-		reject(resp);
-	}
+	return await resp.json();
 };
 
-export let requestMoveTo = async (
-	campaignId: string, placeId: string, sceneId: string, username: string, x: number, y: number,
-	resolve: (resp: ScenceResp) => void, reject: (resp: Response) => void): Promise<void> => 
-{
+export let requestMoveTo = async (campaignId: string, placeId: string, sceneId: string, username: string, x: number, y: number): Promise<BasicResp> => {
 	let resp = await fetch(`${SANDTABLE_ROOT}/request-move?` + 
 			`campaignId=${encodeURIComponent(campaignId)}&placeId=${encodeURIComponent(placeId)}&sceneId=${encodeURIComponent(sceneId)}` + 
 			`&username=${encodeURIComponent(username)}&x=${x}&y=${y}` +
@@ -313,17 +315,10 @@ export let requestMoveTo = async (
 			'Connection': 'keep-alive'
 		},
 	});
-	try {
-		resolve(await resp.json());
-	} catch (err) {
-		reject(resp);
-	}
+	return await resp.json();
 };
 
-export let rollDice = async (
-	campaignId: string, placeId: string, sceneId: string, username: string,
-	resolve: (resp: ScenceResp) => void, reject: (resp: Response) => void): Promise<void> => 
-{
+export let rollDice = async (campaignId: string, placeId: string, sceneId: string, username: string): Promise<RollDiceOptResp> => {
 	let resp = await fetch(`${SANDTABLE_ROOT}/roll-dice?` + 
 			`campaignId=${encodeURIComponent(campaignId)}&placeId=${encodeURIComponent(placeId)}&sceneId=${encodeURIComponent(sceneId)}` + 
 			`&username=${encodeURIComponent(username)}` +
@@ -336,17 +331,10 @@ export let rollDice = async (
 			'Connection': 'keep-alive'
 		},
 	});
-	try {
-		resolve(await resp.json());
-	} catch (err) {
-		reject(resp);
-	}
+	return await resp.json();
 };
 
-export let queryRollResult = async (
-	campaignId: string, placeId: string, sceneId: string,
-	resolve: (resp: ScenceResp) => void, reject: (resp: Response) => void): Promise<void> => 
-{
+export let queryRollResult = async (campaignId: string, placeId: string, sceneId: string): Promise<RollDiceResultResp> => {
 	let resp = await fetch(`${SANDTABLE_ROOT}/get-roll-result?` + 
 			`campaignId=${encodeURIComponent(campaignId)}&placeId=${encodeURIComponent(placeId)}&sceneId=${encodeURIComponent(sceneId)}` + 
 			`&t=${(new Date()).getTime()}`, {
@@ -358,17 +346,10 @@ export let queryRollResult = async (
 			'Connection': 'keep-alive'
 		},
 	});
-	try {
-		resolve(await resp.json());
-	} catch (err) {
-		reject(resp);
-	}
+	return await resp.json();
 };
 
-export let requestRollThreshold = async (
-	campaignId: string, placeId: string, sceneId: string, username: string,
-	resolve: (resp: ScenceResp) => void, reject: (resp: Response) => void): Promise<void> => 
-{
+export let requestRollThreshold = async (campaignId: string, placeId: string, sceneId: string, username: string): Promise<RollSettingResp> => {
 	let resp = await fetch(`${SANDTABLE_ROOT}/set-roll-threshold?` + 
 			`campaignId=${encodeURIComponent(campaignId)}&placeId=${encodeURIComponent(placeId)}&sceneId=${encodeURIComponent(sceneId)}` + 
 			`&username=${encodeURIComponent(username)}` +
@@ -381,14 +362,10 @@ export let requestRollThreshold = async (
 			'Connection': 'keep-alive'
 		},
 	});
-	try {
-		resolve(await resp.json());
-	} catch (err) {
-		reject(resp);
-	}
+	return await resp.json();
 };
 
-export let queryCampaignOwner = async (campaignId: string, resolve: (resp: ScenceResp) => void, reject: (resp: Response) => void): Promise<void> => {
+export let queryCampaignOwner = async (campaignId: string): Promise<void> => {
 	let resp = await fetch(`${SANDTABLE_ROOT}/map-owner?campaignId=${encodeURIComponent(campaignId)}&t=${(new Date()).getTime()}`, {
 		method: 'GET',
 		headers: {
@@ -398,11 +375,7 @@ export let queryCampaignOwner = async (campaignId: string, resolve: (resp: Scenc
 			'Connection': 'keep-alive'
 		},
 	});
-	try {
-		resolve(await resp.json());
-	} catch (err) {
-		reject(resp);
-	}
+	return await resp.json();
 };
 
 
