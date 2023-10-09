@@ -521,12 +521,12 @@ class SandTableEditor {
 			}).catch((err) => { alert("网络异常"); });
 		//
 		let text = '';
-		for(let key in rollResult) {
-			let rec = rollResult[key];
+		for(let i=0; i< rollResult.length; i++) {
+			let rec = rollResult[i];
 			let threshold = rec.threshold;
 			let sum = rec.sum;
 			let msg = rec.msg;
-			text = text + '* ' + key + '    ';
+			text = text + '* ' + rec.userId + '    ';
 			if (sum > 0) {
 				text = text + '阈值：' + threshold + '\n';
 				text = text + (sum < threshold ? '  失败：' : '  成功：');
