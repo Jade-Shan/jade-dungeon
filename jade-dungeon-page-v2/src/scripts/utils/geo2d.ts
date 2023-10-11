@@ -1,4 +1,8 @@
 /* jshint esversion: 8 */
+/**
+ * 二维几工类
+ * @author Qiwei Shan
+ */
 
 export const PI_HALF    : number = Math.PI / 2;
 export const PI_ONE_HALF: number = Math.PI + PI_HALF;
@@ -7,22 +11,44 @@ export const PI_DOUBLE  : number = Math.PI * 2;
 export type Point2D = { x: number, y: number };
 export type Ray = { start: Point2D, end: Point2D, angle: number, cAngle: number, range: number };
 
-/* 计算两点的距离 */
+/**
+ *   计算两点的距离 
+ * 
+ * @param start - 第一个点
+ * @param end - 第二个点
+ * 
+ * @return 两点间的距离 
+ */
 export let distanceP2P = (start: Point2D, end: Point2D) => {
 	let d1 = start.x - end.x;
 	let d2 = start.y - end.y;
 	return Math.sqrt(d1 * d1 + d2 * d2);
 };
 
-/* 判断点px,py是在线段ax,ay->bx,by左边还是右边的 */
-/* result > 0为左， < 0为右， =0为线上 */
+/**
+ * 判断点$(px,py)$是在线段$(ax,ay)->(bx,by)$左边还是右边的
+ * @param ax - 点横坐标　
+ * @param ay - 点纵坐标
+ * @param bx - 点横坐标
+ * @param by - 点纵坐标
+ * 
+ * @return > 0为左， < 0为右， =0为线上 
+ */
 let pointOfLineSide = (
 	ax: number, ay: number, bx: number, by: number, x: number, y: number
 ) => {
 	return (ay - by) * x + (bx - ax) * y + ax * ay - bx * ay;
 }
 
-/* 判断点location在线段start->end的垂直交点 */
+/**  
+ * 判断点location在线段start->end的垂直交点 
+ * 
+ * @param start - 线段的端点
+ * @param end - 线段的端点
+ * @param location - 点的位置
+ * 
+ * @return location在线段start->end的垂直交点  
+ */
 let pointToLine = (start: Point2D, end: Point2D, location: Point2D) => {
 	if (start.x == end.x && start.y == end.y) { return { x:    start.x, y:      end.y }; } else 
 	if (start.x == end.x                    ) { return { x:    start.x, y: location.y }; } else 
