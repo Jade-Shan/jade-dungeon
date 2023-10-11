@@ -10,12 +10,14 @@
     "source-map-loader": "^4.0.1",
     "style-loader": "^3.3.3",
     "ts-loader": "^9.4.4",
+    "typedoc": "^0.25.2",
     "typescript": "^5.2.2",
     "webpack": "^5.88.2",
     "webpack-cli": "^5.1.4",
     "webpack-dev-server": "^4.15.1"
   },
   "scripts": {
+    "doc": "node ./node_modules/.bin/typedoc ./src/scripts/*.ts*",
     "package-dev": "node ./node_modules/.bin/cross-env NODE_ENV=dev ./node_modules/.bin/webpack",
     "package-rls": "node ./node_modules/.bin/cross-env NODE_ENV=rls ./node_modules/.bin/webpack",
     "start": "node ./node_modules/.bin/cross-env NODE_ENV=dev ./node_modules/.bin/webpack serve"

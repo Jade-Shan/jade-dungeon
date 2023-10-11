@@ -1,3 +1,4 @@
 package-lock.json
 dist/*
+doc/*
 node_modules/*
