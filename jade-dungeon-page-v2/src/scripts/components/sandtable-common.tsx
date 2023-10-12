@@ -18,16 +18,16 @@ type Creater = {
 
 type ImageResource = {id: string, type: string, url: string};
 
-type BasicResp = {status: string, msg?: string};
+export type BasicResp = {status: string, msg?: string};
 
-type RollSettingResp = {status: string, msg: string, data?: number};
+export type RollSettingResp = {status: string, msg: string, data?: number};
 
 // {"status":"success","msg":"34=34(5d10)","threshold":30,"sum":34}
 // {"status":"error","msg":"not your turn"}
-type RollDiceOptResp = {status: string, msg: string, threshold: number, sum: number};
+export type RollDiceOptResp = {status: string, msg: string, threshold: number, sum: number};
 
 // {"status":"success","msg":"","data":{"jade":{"sum":34,"msg":"34=34(5d10)","threshold":30}}}
-type RollDiceResultResp = { status: string, msg: string, data: Array<{ userId: string, threshold: number, sum: number, msg: string }> };
+export type RollDiceResultResp = { status: string, msg: string, data: Array<{ userId: string, threshold: number, sum: number, msg: string }> };
 
 type TokenMoveResp = { status: string, msg: string, data: Array<{ userId: string, pos: Point2D }> };
 
