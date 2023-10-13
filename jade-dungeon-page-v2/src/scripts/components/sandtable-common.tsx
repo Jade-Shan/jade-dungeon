@@ -287,9 +287,9 @@ export let drawSence = async (cvs: HTMLCanvasElement, cvsCtx: CanvasRenderingCon
 	cvsCtx.restore();
 }
 
-export let loadMoveRequest = async (campaignId: string, placeId: string, sceneId: string): Promise<TokenMoveResp> => {
+export let loadMoveRequest = async (scence: Scence): Promise<TokenMoveResp> => {
 	let resp = await fetch(`${SANDTABLE_ROOT}/load-move-request?` + 
-			`campaignId=${encodeURIComponent(campaignId)}&placeId=${encodeURIComponent(placeId)}&sceneId=${encodeURIComponent(sceneId)}` + 
+			`campaignId=${encodeURIComponent(scence.campaignId)}&placeId=${encodeURIComponent(scence.placeId)}&sceneId=${encodeURIComponent(scence.sceneId)}` + 
 			`&t=${(new Date()).getTime()}` , {
 		method: 'GET',
 		headers: {
@@ -302,10 +302,10 @@ export let loadMoveRequest = async (campaignId: string, placeId: string, sceneId
 	return await resp.json();
 };
 
-export let requestMoveTo = async (campaignId: string, placeId: string, sceneId: string, username: string, x: number, y: number): Promise<BasicResp> => {
+export let requestMoveTo = async (scence: Scence, location: Point2D, username: string): Promise<BasicResp> => {
 	let resp = await fetch(`${SANDTABLE_ROOT}/request-move?` + 
-			`campaignId=${encodeURIComponent(campaignId)}&placeId=${encodeURIComponent(placeId)}&sceneId=${encodeURIComponent(sceneId)}` + 
-			`&username=${encodeURIComponent(username)}&x=${x}&y=${y}` +
+			`campaignId=${encodeURIComponent(scence.campaignId)}&placeId=${encodeURIComponent(scence.placeId)}&sceneId=${encodeURIComponent(scence.sceneId)}` + 
+			`&username=${encodeURIComponent(username)}&x=${location.x}&y=${location.y}` +
 			`&t=${(new Date()).getTime()}`, {
 		method: 'GET',
 		headers: {
@@ -318,9 +318,9 @@ export let requestMoveTo = async (campaignId: string, placeId: string, sceneId: 
 	return await resp.json();
 };
 
-export let rollDice = async (campaignId: string, placeId: string, sceneId: string, username: string): Promise<RollDiceOptResp> => {
+export let rollDice = async (scence: Scence, username: string): Promise<RollDiceOptResp> => {
 	let resp = await fetch(`${SANDTABLE_ROOT}/roll-dice?` + 
-			`campaignId=${encodeURIComponent(campaignId)}&placeId=${encodeURIComponent(placeId)}&sceneId=${encodeURIComponent(sceneId)}` + 
+			`campaignId=${encodeURIComponent(scence.campaignId)}&placeId=${encodeURIComponent(scence.placeId)}&sceneId=${encodeURIComponent(scence.sceneId)}` + 
 			`&username=${encodeURIComponent(username)}` +
 			`&t=${(new Date()).getTime()}`, {
 		method: 'GET',
@@ -334,9 +334,9 @@ export let rollDice = async (campaignId: string, placeId: string, sceneId: strin
 	return await resp.json();
 };
 
-export let queryRollResult = async (campaignId: string, placeId: string, sceneId: string): Promise<RollDiceResultResp> => {
+export let queryRollResult = async (scence: Scence): Promise<RollDiceResultResp> => {
 	let resp = await fetch(`${SANDTABLE_ROOT}/get-roll-result?` + 
-			`campaignId=${encodeURIComponent(campaignId)}&placeId=${encodeURIComponent(placeId)}&sceneId=${encodeURIComponent(sceneId)}` + 
+			`campaignId=${encodeURIComponent(scence.campaignId)}&placeId=${encodeURIComponent(scence.placeId)}&sceneId=${encodeURIComponent(scence.sceneId)}` + 
 			`&t=${(new Date()).getTime()}`, {
 		method: 'GET',
 		headers: {
@@ -349,9 +349,9 @@ export let queryRollResult = async (campaignId: string, placeId: string, sceneId
 	return await resp.json();
 };
 
-export let requestRollThreshold = async (campaignId: string, placeId: string, sceneId: string, username: string): Promise<RollSettingResp> => {
+export let requestRollThreshold = async (scence: Scence, username: string): Promise<RollSettingResp> => {
 	let resp = await fetch(`${SANDTABLE_ROOT}/set-roll-threshold?` + 
-			`campaignId=${encodeURIComponent(campaignId)}&placeId=${encodeURIComponent(placeId)}&sceneId=${encodeURIComponent(sceneId)}` + 
+			`campaignId=${encodeURIComponent(scence.campaignId)}&placeId=${encodeURIComponent(scence.placeId)}&sceneId=${encodeURIComponent(scence.sceneId)}` + 
 			`&username=${encodeURIComponent(username)}` +
 			`&t=${(new Date()).getTime()}`, {
 		method: 'GET',
@@ -377,8 +377,3 @@ export let queryCampaignOwner = async (campaignId: string): Promise<void> => {
 	});
 	return await resp.json();
 };
-
-
-
-
-

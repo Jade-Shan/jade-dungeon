@@ -46,7 +46,7 @@ let caculateNodeOffset  = (node: HTMLElement, location: Point2D): Point2D => {
 
 let rollDice = async (scene: STCom.Scence, rollCmd: string, username: string) => {
 	if (rollCmd && rollCmd.length > 0) {
-		let resp: STCom.RollDiceOptResp = await STCom.rollDice(scene.campaignId, scene.placeId, scene.sceneId, username);
+		let resp: STCom.RollDiceOptResp = await STCom.rollDice(scene, username);
 		console.log(resp);
 	} else {
 		alert('请输入Roll命令');
@@ -55,7 +55,7 @@ let rollDice = async (scene: STCom.Scence, rollCmd: string, username: string) =>
 
 let queryRollResult = async (scene: STCom.Scence) => {
 	// let username = cookieOperator('username');
-	let resp: STCom.RollDiceResultResp = await STCom.queryRollResult(scene.campaignId, scene.placeId, scene.sceneId);
+	let resp: STCom.RollDiceResultResp = await STCom.queryRollResult(scene);
 	let text = "";
 	if (resp && resp.data) {
 		for (let i = 0; i < resp.data.length; i++) {
@@ -76,5 +76,78 @@ let queryRollResult = async (scene: STCom.Scence) => {
 	console.log(text);
 };
 
-export type UIStatus = { start: Point2D, end: Point2D, isMovingItem: boolean };
+export type UIStatus = { 
+	start        : Point2D, 
+	isMovingItem : boolean, 
+	currDragging : Canvas2dShape,
+	reqMoveDst   : Canvas2dShape,
+	addTokenType : any,
+	addTokenGroup: any 
+};
 
+// 按住Ctrl拖动棋子
+let bindCanvasPressCtrl = (element: HTMLElement, status: UIStatus) => {
+	element.addEventListener('keydown', (e: KeyboardEvent) => {
+		if (e.key == 'Control') { status.isMovingItem = true ; }
+	});
+	element.addEventListener('keyup'  , (e: KeyboardEvent) => {
+		if (e.key == 'Control') { status.isMovingItem = false; }
+	});
+};
+
+// 绑定输入框中按回车提交投骰子的请求
+let bindRollDiceReq = (element: HTMLElement, scene: STCom.Scence, rollCmd: string, username: string) => {
+	element.addEventListener('keydown', (e: KeyboardEvent) => {
+		if (e.key == 'Enter') { rollDice(scene, rollCmd, username); }
+	});
+};
+
+// 绑定鼠标操作
+let bindCanvasMouseDown = (cvs: HTMLCanvasElement, buffer: HTMLCanvasElement, bufferCtx: CanvasRenderingContext2D, viewMap: CanvasImageSource, scene: STCom.Scence, status: UIStatus, username: string) => {
+	buffer.addEventListener('mousedown', (e: MouseEvent) => {
+		let offset = caculateNodeOffset(cvs, { x: 0, y: 0 });
+		let location = { x: e.pageX - offset.x, y: e.pageY - offset.y }
+		status.currDragging = undefined;
+		for (let i = 0; i < scene.teams.length; i++) {
+			let token = scene.teams[i];
+			if (token.isHit(location) && token.id == username) {
+				// console.log(`hit: ${token.id}`);
+				status.currDragging = token;
+				break;
+			}
+		}
+		if (status.reqMoveDst && status.reqMoveDst.isHit(location)) {
+			// 撤消移动
+			let resp: Promise<STCom.BasicResp> = STCom.requestMoveTo(scene, {x: -1, y: -1}, username); 
+			bufferCtx.clearRect(0, 0, buffer.width, buffer.height);
+			bufferCtx.drawImage(viewMap, 0, 0);
+		}
+	});
+};
+
+let bindCanvasMouseUp   = (cvs: HTMLCanvasElement, buffer: HTMLCanvasElement, bufferCtx: CanvasRenderingContext2D, viewMap: CanvasImageSource, scene: STCom.Scence, status: UIStatus, username: string) => {
+	buffer.addEventListener('mouseup'  , (e: MouseEvent) => {
+		let offset = caculateNodeOffset(cvs, { x: 0, y: 0 });
+		let location = { x: e.pageX - offset.x, y: e.pageY - offset.y }
+		if (status.currDragging && status.isMovingItem) {
+			let resp: Promise<STCom.BasicResp> = STCom.requestMoveTo(scene, status.reqMoveDst.location, username); 
+			console.log(resp);
+		}
+		status.isMovingItem  = false;
+		status.currDragging  = undefined;
+		status.addTokenGroup = undefined;
+		status.addTokenType  = undefined;
+	});
+};
+
+let bindCanvasMouseDrag = (cvs: HTMLCanvasElement, buffer: HTMLCanvasElement, bufferCtx: CanvasRenderingContext2D, viewMap: CanvasImageSource, scene: STCom.Scence, status: UIStatus, username: string) => {
+	buffer.addEventListener('mousemove'  , (e: MouseEvent) => {
+		let offset = caculateNodeOffset(cvs, { x: 0, y: 0 });
+		let location = { x: e.pageX - offset.x, y: e.pageY - offset.y }
+		if (status.currDragging && status.isMovingItem) {
+			bufferCtx.clearRect(0, 0, buffer.width, buffer.height);
+			bufferCtx.drawImage(viewMap, 0, 0);
+			status.reqMoveDst = status.currDragging.drawWantMove(bufferCtx, status.start, location);
+		}
+	});
+};
