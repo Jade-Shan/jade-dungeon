@@ -2,13 +2,29 @@ import {defaultImgData, loadDefaultImage} from '../utils/defaultImages'
 import { Canvas2dShape, CanvasCircle, ImageInfo, Observer } from '../utils/canvasGeo';
 import * as STCom from './sandtable-common'; // Sandtable common
 import { Point2D } from '../utils/geo2d';
-import { cookieOperator } from '../utils/commonUtils';
+import { cookieOperator, loadImage } from '../utils/commonUtils';
 
 
-export let initSandtable = async (cvs: HTMLCanvasElement, cvsCtx: CanvasRenderingContext2D): Promise<void> => {
+export let initSandtable = async (document: Document, cvs: HTMLCanvasElement, cvsCtx: CanvasRenderingContext2D): Promise<void> => {
+	let username = 'jade';
+	// username  = cookieOperator('username');
 	let scene: STCom.Scence = await STCom.initMapDatas(cvs, 'campaign01', 'place01', 'scene01');
-	let observer = await findObserverOnMap(scene, 'jade');
+	let observer = await findObserverOnMap(scene, username);
 	await STCom.drawSence(cvs, cvsCtx, scene, observer);
+	let viewMap = await loadImage(new Image(), cvs.toDataURL('image/png', 1.0));
+	let status: UIStatus = {
+		start: { x: 0, y: 0 },
+		isMovingItem: false,
+		currDragging: undefined,
+		reqMoveDst: undefined,
+		addTokenType: undefined,
+		addTokenGroup: undefined
+	};
+	await showWantMoveTo(cvs, cvs, cvsCtx, viewMap, scene, status, username);
+	await bindCanvasPressCtrl(document, status);
+	await bindCanvasMouseDown(cvs, cvs, cvsCtx, viewMap, scene, status, username);
+	await bindCanvasMouseUp  (cvs, cvs, cvsCtx, viewMap, scene, status, username);
+	await bindCanvasMouseDrag(cvs, cvs, cvsCtx, viewMap, scene, status, username);
 };
 
 let findObserverOnMap = async (scene: STCom.Scence, userId: string): Promise<Observer> => {
@@ -28,6 +44,23 @@ let findObserverOnMap = async (scene: STCom.Scence, userId: string): Promise<Obs
 
 	return new Observer("obs", obtm.location.x, obtm.location.y, scene.viewRange, obtm);
 };
+
+let showWantMoveTo = async (cvs: HTMLCanvasElement, buffer: HTMLCanvasElement, bufferCtx: CanvasRenderingContext2D, viewMap: CanvasImageSource, scence: STCom.Scence, status: UIStatus, username: string) => {
+	let resp: STCom.TokenMoveResp = await STCom.loadMoveRequest(scence);
+	// console.log(resp);
+	if (resp.data && resp.data.length > 0) {
+		for (let i=0; i< resp.data.length; i++) {
+			let rec = resp.data[i];
+			let token = scence.teamMap.get(rec.userId);
+			if (rec.userId == username) {
+				status.currDragging = token;
+				status.start.x = token.location.x;
+				status.start.y = token.location.y;
+			}
+			token.drawWantMove(bufferCtx, token.location, rec.pos);
+		}
+	}
+}
 
 let moveObs = (observer: Observer, dx: number, dy: number) => {
 	observer.location.x  += dx;
@@ -86,12 +119,13 @@ export type UIStatus = {
 };
 
 // 按住Ctrl拖动棋子
-let bindCanvasPressCtrl = (element: HTMLElement, status: UIStatus) => {
+let bindCanvasPressCtrl = (element: Document, status: UIStatus) => {
+	console.log('bind control');
 	element.addEventListener('keydown', (e: KeyboardEvent) => {
-		if (e.key == 'Control') { status.isMovingItem = true ; }
+		if (e.key == 'Control') { status.isMovingItem = true ;}
 	});
 	element.addEventListener('keyup'  , (e: KeyboardEvent) => {
-		if (e.key == 'Control') { status.isMovingItem = false; }
+		if (e.key == 'Control') { status.isMovingItem = false;}
 	});
 };
 
@@ -106,17 +140,18 @@ let bindRollDiceReq = (element: HTMLElement, scene: STCom.Scence, rollCmd: strin
 let bindCanvasMouseDown = (cvs: HTMLCanvasElement, buffer: HTMLCanvasElement, bufferCtx: CanvasRenderingContext2D, viewMap: CanvasImageSource, scene: STCom.Scence, status: UIStatus, username: string) => {
 	buffer.addEventListener('mousedown', (e: MouseEvent) => {
 		let offset = caculateNodeOffset(cvs, { x: 0, y: 0 });
-		let location = { x: e.pageX - offset.x, y: e.pageY - offset.y }
+		status.start.x = e.pageX - offset.x;
+		status.start.y = e.pageY - offset.y;
 		status.currDragging = undefined;
 		for (let i = 0; i < scene.teams.length; i++) {
 			let token = scene.teams[i];
-			if (token.isHit(location) && token.id == username) {
+			if (token.isHit(status.start) && token.id == username) {
 				// console.log(`hit: ${token.id}`);
 				status.currDragging = token;
 				break;
 			}
 		}
-		if (status.reqMoveDst && status.reqMoveDst.isHit(location)) {
+		if (status.reqMoveDst && status.reqMoveDst.isHit(status.start)) {
 			// 撤消移动
 			let resp: Promise<STCom.BasicResp> = STCom.requestMoveTo(scene, {x: -1, y: -1}, username); 
 			bufferCtx.clearRect(0, 0, buffer.width, buffer.height);

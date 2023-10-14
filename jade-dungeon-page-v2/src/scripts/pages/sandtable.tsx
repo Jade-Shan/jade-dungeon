@@ -179,7 +179,7 @@ let Sandtable = () => {
 	setTimeout(() => {
 			let cvs: HTMLCanvasElement = cvsRef.current;
 			let cvsCtx: CanvasRenderingContext2D = cvs.getContext('2d');
-			initSandtable(cvs, cvsCtx);
+			initSandtable(document, cvs, cvsCtx);
 			setWindowDrag(WIN_ID_MSG);
 			setWindowDrag(WIN_ID_DIC);
 			setWindowScale(WIN_ID_MSG);

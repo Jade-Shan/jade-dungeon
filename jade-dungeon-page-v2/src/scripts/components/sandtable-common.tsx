@@ -29,7 +29,7 @@ export type RollDiceOptResp = {status: string, msg: string, threshold: number, s
 // {"status":"success","msg":"","data":{"jade":{"sum":34,"msg":"34=34(5d10)","threshold":30}}}
 export type RollDiceResultResp = { status: string, msg: string, data: Array<{ userId: string, threshold: number, sum: number, msg: string }> };
 
-type TokenMoveResp = { status: string, msg: string, data: Array<{ userId: string, pos: Point2D }> };
+export type TokenMoveResp = { status: string, msg: string, data: Array<{ userId: string, pos: Point2D }> };
 
 type ScenceResp = {
 	status    : string,
@@ -249,7 +249,6 @@ export let updateMapDatas = async (campaignId: string, placeId: string, sceneId:
 		body: `jsonStr=${encodeURIComponent(jsonStr)}`,
 		headers: {
 			'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-			'Access-Control-Allow-Origin': '*',
 			'Accept': 'application/json',
 			'Accept-Encoding': 'gzip, deflate',
 			'Connection': 'keep-alive'
@@ -293,7 +292,6 @@ export let loadMoveRequest = async (scence: Scence): Promise<TokenMoveResp> => {
 			`&t=${(new Date()).getTime()}` , {
 		method: 'GET',
 		headers: {
-			'Access-Control-Allow-Origin': '*',
 			'Accept': 'application/json',
 			'Accept-Encoding': 'gzip, deflate',
 			'Connection': 'keep-alive'
@@ -309,8 +307,7 @@ export let requestMoveTo = async (scence: Scence, location: Point2D, username: s
 			`&t=${(new Date()).getTime()}`, {
 		method: 'GET',
 		headers: {
-			'Access-Control-Allow-Origin': '*',
-			'Accept': 'application/json',
+			'Accept': 'application/json, text/javascript, */*; q=0.01',
 			'Accept-Encoding': 'gzip, deflate',
 			'Connection': 'keep-alive'
 		},
@@ -325,7 +322,6 @@ export let rollDice = async (scence: Scence, username: string): Promise<RollDice
 			`&t=${(new Date()).getTime()}`, {
 		method: 'GET',
 		headers: {
-			'Access-Control-Allow-Origin': '*',
 			'Accept': 'application/json',
 			'Accept-Encoding': 'gzip, deflate',
 			'Connection': 'keep-alive'
@@ -340,7 +336,6 @@ export let queryRollResult = async (scence: Scence): Promise<RollDiceResultResp>
 			`&t=${(new Date()).getTime()}`, {
 		method: 'GET',
 		headers: {
-			'Access-Control-Allow-Origin': '*',
 			'Accept': 'application/json',
 			'Accept-Encoding': 'gzip, deflate',
 			'Connection': 'keep-alive'
@@ -356,7 +351,6 @@ export let requestRollThreshold = async (scence: Scence, username: string): Prom
 			`&t=${(new Date()).getTime()}`, {
 		method: 'GET',
 		headers: {
-			'Access-Control-Allow-Origin': '*',
 			'Accept': 'application/json',
 			'Accept-Encoding': 'gzip, deflate',
 			'Connection': 'keep-alive'
@@ -369,7 +363,6 @@ export let queryCampaignOwner = async (campaignId: string): Promise<void> => {
 	let resp = await fetch(`${SANDTABLE_ROOT}/map-owner?campaignId=${encodeURIComponent(campaignId)}&t=${(new Date()).getTime()}`, {
 		method: 'GET',
 		headers: {
-			'Access-Control-Allow-Origin': '*',
 			'Accept': 'application/json',
 			'Accept-Encoding': 'gzip, deflate',
 			'Connection': 'keep-alive'
