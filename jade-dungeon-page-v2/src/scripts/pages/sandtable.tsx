@@ -69,6 +69,20 @@ let Sandtable = () => {
 			win.onmouseleave = e => { scaleType = 'none'; win.style.cursor = 'auto'; }
 
 			win.onmousedown  = e => {
+
+				// set window on top
+				if (WIN_ID_MSG == winId) {
+					document.getElementById(WIN_ID_MSG).style.zIndex = `101`;
+					document.getElementById(WIN_ID_DIC).style.zIndex = `100`;
+				} else {
+					document.getElementById(WIN_ID_MSG).style.zIndex = `100`;
+					document.getElementById(WIN_ID_DIC).style.zIndex = `101`;
+				} 
+
+
+
+
+
 				let hh = winHeader.getBoundingClientRect().y + winHeader.clientHeight + 5;
 				let bx = win.getBoundingClientRect().x + win.clientWidth  - e.clientX;
 				let by = win.getBoundingClientRect().y + win.clientHeight - e.clientY;
@@ -175,16 +189,6 @@ let Sandtable = () => {
 
 	};
 
-	let topWindow = (winId: String): void => {
-		if (WIN_ID_MSG == winId) {
-			document.getElementById(WIN_ID_MSG).style.zIndex = `101`;
-			document.getElementById(WIN_ID_DIC).style.zIndex = `100`;
-		} else {
-			document.getElementById(WIN_ID_MSG).style.zIndex = `100`;
-			document.getElementById(WIN_ID_DIC).style.zIndex = `101`;
-		} 
-	}
-
 	setTimeout(() => {
 			let cvs: HTMLCanvasElement = cvsRef.current;
 			let cvsCtx: CanvasRenderingContext2D = cvs.getContext('2d');
@@ -202,7 +206,7 @@ let Sandtable = () => {
 				not support canvas
 			</canvas>
 		</div>
-		<div id={WIN_ID_MSG} className="float-window" onClick={e => topWindow(WIN_ID_MSG)}>
+		<div id={WIN_ID_MSG} className="float-window">
 				<div id={getWinTitleId(WIN_ID_MSG)} className="title-bar">
 					<i className="title-icon bi-people-fill" ></i>
 					<span className="title-text">Message</span>
@@ -229,7 +233,7 @@ let Sandtable = () => {
 					</div>
 				</div>
 		</div>
-		<div id={WIN_ID_DIC} className="float-window" onClick={e => topWindow(WIN_ID_DIC)}>
+		<div id={WIN_ID_DIC} className="float-window">
 				<div id={getWinTitleId(WIN_ID_DIC)} className="title-bar">
 					<i className="title-icon bi-dice-6" ></i>
 					<span className="title-text">Dice Log</span>
