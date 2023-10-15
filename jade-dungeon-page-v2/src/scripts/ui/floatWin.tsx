@@ -1,10 +1,10 @@
 
 import * as React from "react";
 
-let getWinTitleId = (winId: string) => `${winId}-header`;
-let getWinBodyId = (winId: string) => `${winId}-body`;
-let getWinScaleBodyId = (winId: string) => `${winId}-scale-body`;
-let getWinTailId = (winId: string) => `${winId}-tail`;
+export let getWinTitleId = (winId: string) => `${winId}-header`;
+export let getWinBodyId = (winId: string) => `${winId}-body`;
+export let getWinScaleBodyId = (winId: string) => `${winId}-scale-body`;
+export let getWinTailId = (winId: string) => `${winId}-tail`;
 
 export abstract class FloatWindow extends React.Component<{ id: string, title: string, icon: string}, {}> {
 

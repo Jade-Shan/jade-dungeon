@@ -315,10 +315,10 @@ export let requestMoveTo = async (scence: Scence, location: Point2D, username: s
 	return await resp.json();
 };
 
-export let rollDice = async (scence: Scence, username: string): Promise<RollDiceOptResp> => {
+export let rollDice = async (scence: Scence, rollCmd: string, username: string): Promise<RollDiceOptResp> => {
 	let resp = await fetch(`${SANDTABLE_ROOT}/roll-dice?` + 
 			`campaignId=${encodeURIComponent(scence.campaignId)}&placeId=${encodeURIComponent(scence.placeId)}&sceneId=${encodeURIComponent(scence.sceneId)}` + 
-			`&username=${encodeURIComponent(username)}` +
+			`&username=${encodeURIComponent(username)}&rollCmd=${encodeURIComponent(rollCmd)}` +
 			`&t=${(new Date()).getTime()}`, {
 		method: 'GET',
 		headers: {

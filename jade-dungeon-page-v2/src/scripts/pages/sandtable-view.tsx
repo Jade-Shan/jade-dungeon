@@ -15,6 +15,9 @@ import '../../styles/sandtable.less';
 import * as FWin from "../ui/floatWin"
 
 
+export const WIN_ID_MSG = "msg-win";
+export const WIN_ID_DIC = "dic-win";
+
 /* 防抖函数，防止指间隔内重复触发 */
 let debounce = (fn: () => any, intervalMS: number = 300) => {
 	// 作为闭包存了上次调的引用
@@ -87,10 +90,7 @@ class MessageWindow extends FWin.FloatWindow {
 
 
 
-let Sandtable = () => {
-
-	const WIN_ID_MSG = "msg-win";
-	const WIN_ID_DIC = "dic-win";
+let SandtableView = () => {
 
 	let cvsRef = React.useRef(null);
 
@@ -116,4 +116,4 @@ let Sandtable = () => {
 
 };
 
-export default Sandtable;
+export default SandtableView;

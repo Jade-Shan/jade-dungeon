@@ -3,7 +3,8 @@ import { Canvas2dShape, CanvasCircle, ImageInfo, Observer } from '../utils/canva
 import * as STCom from './sandtable-common'; // Sandtable common
 import { Point2D } from '../utils/geo2d';
 import { cookieOperator, loadImage } from '../utils/commonUtils';
-
+import { WIN_ID_DIC } from '../pages/sandtable-view';
+import * as FWin from '../ui/floatWin';
 
 export let initSandtable = async (document: Document, cvs: HTMLCanvasElement, cvsCtx: CanvasRenderingContext2D): Promise<void> => {
 	let username = 'jade';
@@ -25,6 +26,19 @@ export let initSandtable = async (document: Document, cvs: HTMLCanvasElement, cv
 	await bindCanvasMouseDown(cvs, cvs, cvsCtx, viewMap, scene, status, username);
 	await bindCanvasMouseUp  (cvs, cvs, cvsCtx, viewMap, scene, status, username);
 	await bindCanvasMouseDrag(cvs, cvs, cvsCtx, viewMap, scene, status, username);
+
+	let rollIpt = document.getElementById('ipt-roll') as HTMLInputElement;
+	bindRollDiceReq(rollIpt, scene, username);
+
+	let refreshDiceLog = async () => {
+		let html = await queryRollResult(scene);
+		let log = document.getElementById(FWin.getWinScaleBodyId(WIN_ID_DIC));
+		log.innerHTML = html;
+	};
+
+	setInterval(()=> {
+		refreshDiceLog()
+	}, 10000);
 };
 
 let findObserverOnMap = async (scene: STCom.Scence, userId: string): Promise<Observer> => {
@@ -79,34 +93,45 @@ let caculateNodeOffset  = (node: HTMLElement, location: Point2D): Point2D => {
 
 let rollDice = async (scene: STCom.Scence, rollCmd: string, username: string) => {
 	if (rollCmd && rollCmd.length > 0) {
-		let resp: STCom.RollDiceOptResp = await STCom.rollDice(scene, username);
+		let resp: STCom.RollDiceOptResp = await STCom.rollDice(scene, rollCmd, username);
 		console.log(resp);
 	} else {
 		alert('请输入Roll命令');
 	}
 };
 
-let queryRollResult = async (scene: STCom.Scence) => {
+export let queryRollResult = async (scene: STCom.Scence) => {
 	// let username = cookieOperator('username');
 	let resp: STCom.RollDiceResultResp = await STCom.queryRollResult(scene);
-	let text = "";
+	let text = "<dl>";
 	if (resp && resp.data) {
 		for (let i = 0; i < resp.data.length; i++) {
 			let rec = resp.data[i];
 			let threshold = rec.threshold;
+			rec.userId;
 			let sum = rec.sum;
 			let msg = rec.msg;
-			text = `${text} * ${rec.userId}    `;
+
+			text = text + "<dt>" + rec.userId + "</dt>";
 			if (sum > 0 && sum < threshold) {
-				text = `${text}   失败：${msg}\n`;
+				text = text + '<dd> - <span class="badge bg-danger">失败</span>';
 			} else if (sum > 0) {
-				text = `${text}   成功：${msg}\n`;
+				text = text + '<dd> - <span class="badge bg-success">成功</span>';
 			} else {
-				text = '${text}  等待中……\n';
+				text = text + '<dd> - <span class="badge bg-secondary">等待</span>';
 			}
+			text = text + '检定难度（' + rec.threshold + '）：</dd>';
+			if (sum > 0) {
+				text = text + '<dd> - ' + msg + '</dd>';
+			} else {
+				text = text + '<dd> - 尚未投骰子……</dd>';
+			}
+			text = text + "</dd>";
 		}
 	}
+	text = text + "</dl>";
 	console.log(text);
+	return text;
 };
 
 export type UIStatus = { 
@@ -130,9 +155,10 @@ let bindCanvasPressCtrl = (element: Document, status: UIStatus) => {
 };
 
 // 绑定输入框中按回车提交投骰子的请求
-let bindRollDiceReq = (element: HTMLElement, scene: STCom.Scence, rollCmd: string, username: string) => {
-	element.addEventListener('keydown', (e: KeyboardEvent) => {
-		if (e.key == 'Enter') { rollDice(scene, rollCmd, username); }
+let bindRollDiceReq = (input: HTMLInputElement, scene: STCom.Scence, username: string) => {
+	input.addEventListener('keydown', (e: KeyboardEvent) => {
+		if (e.key == 'Enter') { rollDice(scene, input.value, username); }
+		// if (e.key == 'Enter') { console.log(input.value); }
 	});
 };
 
