@@ -45,8 +45,10 @@ let Sandtable = () => {
 	const WIN_ID_MSG = "msg-win";
 	const WIN_ID_DIC = "dic-win";
 
-	let getWinTitleId = (winId: string) => `${winId}-header`;
-	let getWinBodyId  = (winId: string) => `${winId}-body`  ;
+	let getWinTitleId     = (winId: string) => `${winId}-header`    ;
+	let getWinBodyId      = (winId: string) => `${winId}-body`      ;
+	let getWinScaleBodyId = (winId: string) => `${winId}-scale-body`;
+	let getWinTailId      = (winId: string) => `${winId}-tail`      ;
 
 	let cvsRef = React.useRef(null);
 
@@ -56,8 +58,11 @@ let Sandtable = () => {
 		let dragStart = { x: 0, y: 0 };
 		let winSizeStart  = { width: 0, height: 0 };
 
-		let win       = document.getElementById(winId);
-		let winHeader = document.getElementById(getWinTitleId(winId));
+		let win          = document.getElementById(winId);
+		let winHeader    = document.getElementById(getWinTitleId    (winId));
+		let winBody      = document.getElementById(getWinBodyId     (winId));
+		let winScaleBody = document.getElementById(getWinScaleBodyId(winId));
+		let winTail      = document.getElementById(getWinTailId     (winId));
 
 		if (win) {
 			win.onmouseup    = e => { scaleType = 'none'; }
@@ -113,12 +118,16 @@ let Sandtable = () => {
 				if (scaleType != 'none') {
 					let dx = e.clientX - dragStart.x;
 					let dy = e.clientY - dragStart.y;
-					if (scaleType == 'both' || scaleType == 'horizontal') {
-						win.style.width  = `${winSizeStart.width  + dx + 5}px`;
+					let width  = winSizeStart.width  + dx + 5;
+					let height = winSizeStart.height + dy + 5;
+					if (scaleType == 'both' || scaleType == 'horizontal') { 
+						win.style.width  = `${width  < 150 ? 150 : width }px`; 
 					} 
-					if (scaleType == 'both' || scaleType == 'vertical') {
-						win.style.height = `${winSizeStart.height + dy + 5}px`;
+					if (scaleType == 'both' || scaleType == 'vertical'  ) { 
+						win.style.height = `${height < 200 ? 200 : height}px`; 
 					}
+					let sheight = winBody.clientHeight - winHeader.clientHeight - winTail.clientHeight;
+					winScaleBody.style.height = `${sheight}px`;
 				} 
 			};
 		}
@@ -199,23 +208,25 @@ let Sandtable = () => {
 					<span className="title-text">Message</span>
 				</div>
 				<div id={getWinBodyId(WIN_ID_MSG)} className="window-body containe-fluid">
-					<div id="msg-log" className="log-text">
-						<p>aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa</p>
-						<p>aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa</p>
-						<p>aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa</p>
-						<p>aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa</p>
-						<p>aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa</p>
-						<p>aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa</p>
-						<p>aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa</p>
-						<p>aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa</p>
-						<p>aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa</p>
-						<p>aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa</p>
-						<p>aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa</p>
-						<p>aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa</p>
-						<p>aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa</p>
-						<p>aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa</p>
+					<div id={getWinScaleBodyId(WIN_ID_MSG)} className="log-text col-12">
+						<p>aaaa aaaa aaaa aaaa aaaa.</p>
+						<p>aaaa aaaa aaaa aaaa aaaa.</p>
+						<p>aaaa aaaa aaaa aaaa aaaa.</p>
+						<p>aaaa aaaa aaaa aaaa aaaa.</p>
+						<p>aaaa aaaa aaaa aaaa aaaa.</p>
+						<p>aaaa aaaa aaaa aaaa aaaa.</p>
+						<p>aaaa aaaa aaaa aaaa aaaa.</p>
+						<p>aaaa aaaa aaaa aaaa aaaa.</p>
+						<p>aaaa aaaa aaaa aaaa aaaa.</p>
+						<p>aaaa aaaa aaaa aaaa aaaa.</p>
+						<p>aaaa aaaa aaaa aaaa aaaa.</p>
+						<p>aaaa aaaa aaaa aaaa aaaa.</p>
+						<p>aaaa aaaa aaaa aaaa aaaa.</p>
+						<p>aaaa aaaa aaaa aaaa aaaa.</p>
 					</div>
-					<input type="text" id="ipt-msg" className="form-control" placeholder="按回车提交"></input>
+					<div id={getWinTailId(WIN_ID_MSG)} className="col-12">
+						<input type="text" id="ipt-msg" className="form-control" placeholder="按回车提交"></input>
+					</div>
 				</div>
 		</div>
 		<div id={WIN_ID_DIC} className="float-window" onClick={e => topWindow(WIN_ID_DIC)}>
@@ -224,23 +235,25 @@ let Sandtable = () => {
 					<span className="title-text">Dice Log</span>
 				</div>
 				<div id={getWinBodyId(WIN_ID_DIC)} className="window-body containe-fluid">
-					<div id="roll-log" className="log-text">
-						<p>aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa</p>
-						<p>aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa</p>
-						<p>aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa</p>
-						<p>aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa</p>
-						<p>aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa</p>
-						<p>aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa</p>
-						<p>aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa</p>
-						<p>aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa</p>
-						<p>aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa</p>
-						<p>aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa</p>
-						<p>aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa</p>
-						<p>aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa</p>
-						<p>aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa</p>
-						<p>aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa aaaa</p>
+					<div id={getWinScaleBodyId(WIN_ID_DIC)} className="log-text col-12">
+						aaaa aaaa aaaa aaaa aaaa.<br/>
+						aaaa aaaa aaaa aaaa aaaa.<br/>
+						aaaa aaaa aaaa aaaa aaaa.<br/>
+						aaaa aaaa aaaa aaaa aaaa.<br/>
+						aaaa aaaa aaaa aaaa aaaa.<br/>
+						aaaa aaaa aaaa aaaa aaaa.<br/>
+						aaaa aaaa aaaa aaaa aaaa.<br/>
+						aaaa aaaa aaaa aaaa aaaa.<br/>
+						aaaa aaaa aaaa aaaa aaaa.<br/>
+						aaaa aaaa aaaa aaaa aaaa.<br/>
+						aaaa aaaa aaaa aaaa aaaa.<br/>
+						aaaa aaaa aaaa aaaa aaaa.<br/>
+						aaaa aaaa aaaa aaaa aaaa.<br/>
+						aaaa aaaa aaaa aaaa aaaa.<br/>
 					</div>
-					<input type="text" id="ipt-roll" className="form-control" placeholder="example: 2d6+1d4+3"></input>
+					<div id={getWinTailId(WIN_ID_DIC)} className="col-12">
+						<input type="text" id="ipt-roll" className="form-control" placeholder="example: 2d6+1d4+3"></input>
+					</div>
 				</div>
 		</div>
 	</>;
