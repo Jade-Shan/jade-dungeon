@@ -1,10 +1,13 @@
-import {defaultImgData, loadDefaultImage} from '../utils/defaultImages'
-import { Canvas2dShape, CanvasCircle, ImageInfo, Observer } from '../utils/canvasGeo';
-import * as STCom from './sandtable-common'; // Sandtable common
+import {loadDefaultImage} from '../utils/defaultImages'
+import { Canvas2dShape, CanvasCircle, Observer } from '../utils/canvasGeo';
 import { Point2D } from '../utils/geo2d';
-import { cookieOperator, loadImage } from '../utils/commonUtils';
-import { WIN_ID_DIC } from '../pages/sandtable-view';
+import { loadImage } from '../utils/commonUtils';
+
+import * as STCom from './sandtable-common'; // Sandtable common
+
 import * as FWin from '../ui/floatWin';
+import { WIN_ID_DIC } from '../pages/sandtable-view';
+import React = require('react');
 
 export let initSandtable = async (document: Document, cvs: HTMLCanvasElement, cvsCtx: CanvasRenderingContext2D): Promise<void> => {
 	let username = 'jade';
@@ -107,30 +110,28 @@ export let queryRollResult = async (scene: STCom.Scence) => {
 	if (resp && resp.data) {
 		for (let i = 0; i < resp.data.length; i++) {
 			let rec = resp.data[i];
-			let threshold = rec.threshold;
-			rec.userId;
-			let sum = rec.sum;
-			let msg = rec.msg;
-
-			text = text + "<dt>" + rec.userId + "</dt>";
-			if (sum > 0 && sum < threshold) {
-				text = text + '<dd> - <span class="badge bg-danger">失败</span>';
-			} else if (sum > 0) {
-				text = text + '<dd> - <span class="badge bg-success">成功</span>';
+			let statusText  = "";
+			let statusClass = "";
+			let msgDetail   = "";
+			if (rec.sum > 0 && rec.sum < rec.threshold) {
+				statusText = "失败";
+				statusClass = "badge bg-danger";
+				msgDetail = rec.msg;
+			} else if (rec.sum > 0) {
+				statusText = "成功";
+				statusClass = "badge bg-success";
+				msgDetail = rec.msg;
 			} else {
-				text = text + '<dd> - <span class="badge bg-secondary">等待</span>';
+				statusText = "等待";
+				statusClass = "badge bg-secondary";
+				msgDetail = "尚未投骰子……";
 			}
-			text = text + '检定难度（' + rec.threshold + '）：</dd>';
-			if (sum > 0) {
-				text = text + '<dd> - ' + msg + '</dd>';
-			} else {
-				text = text + '<dd> - 尚未投骰子……</dd>';
-			}
-			text = text + "</dd>";
+			text = text + `<dt>${rec.userId}：检定难度（${rec.threshold}）<span className=${statusClass}>${statusText}</span>：</dt>`;
+			text = text + `<dd>${msgDetail}</dd>`;
 		}
 	}
 	text = text + "</dl>";
-	console.log(text);
+	// console.log(text);
 	return text;
 };
 
