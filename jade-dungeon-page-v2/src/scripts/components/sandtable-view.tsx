@@ -126,7 +126,7 @@ export let queryRollResult = async (scene: STCom.Scence) => {
 				statusClass = "badge bg-secondary";
 				msgDetail = "尚未投骰子……";
 			}
-			text = text + `<dt>${rec.userId}：检定难度（${rec.threshold}）<span className=${statusClass}>${statusText}</span>：</dt>`;
+			text = text + `<dt>${rec.userId}：检定难度（${rec.threshold}）<span class="${statusClass}">${statusText}</span>：</dt>`;
 			text = text + `<dd>${msgDetail}</dd>`;
 		}
 	}
