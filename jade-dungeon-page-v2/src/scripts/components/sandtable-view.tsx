@@ -192,7 +192,7 @@ let bindCanvasMouseUp   = (cvs: HTMLCanvasElement, buffer: HTMLCanvasElement, bu
 		let offset = caculateNodeOffset(cvs, { x: 0, y: 0 });
 		let location = { x: e.pageX - offset.x, y: e.pageY - offset.y }
 		if (status.currDragging && status.isMovingItem) {
-			let resp: Promise<STCom.BasicResp> = STCom.requestMoveTo(scene, status.reqMoveDst.location, username); 
+			let resp: Promise<STCom.BasicResp> = STCom.requestMoveTo(scene, location, username); 
 			console.log(resp);
 		}
 		status.isMovingItem  = false;
