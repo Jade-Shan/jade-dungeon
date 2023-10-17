@@ -16,6 +16,7 @@ export let initSandtable = async (document: Document, cvs: HTMLCanvasElement, cv
 	let observer = await findObserverOnMap(scene, username);
 	await STCom.drawSence(cvs, cvsCtx, scene, observer);
 	let viewMap = await loadImage(new Image(), cvs.toDataURL('image/png', 1.0));
+
 	let status: UIStatus = {
 		start: { x: 0, y: 0 },
 		isMovingItem: false,
@@ -24,7 +25,13 @@ export let initSandtable = async (document: Document, cvs: HTMLCanvasElement, cv
 		addTokenType: undefined,
 		addTokenGroup: undefined
 	};
-	await showWantMoveTo(cvs, cvs, cvsCtx, viewMap, scene, status, username);
+
+	// await showWantMoveTo(cvs, cvs, cvsCtx, viewMap, scene, status, username);
+	// viewMap = await loadImage(new Image(), cvs.toDataURL('image/png', 1.0));
+
+
+	viewMap = await showWantMoveTo(cvs, cvs, cvsCtx, viewMap, scene, status, username);
+
 	await bindCanvasPressCtrl(document, status);
 	await bindCanvasMouseDown(cvs, cvs, cvsCtx, viewMap, scene, status, username);
 	await bindCanvasMouseUp  (cvs, cvs, cvsCtx, viewMap, scene, status, username);
@@ -39,9 +46,7 @@ export let initSandtable = async (document: Document, cvs: HTMLCanvasElement, cv
 		log.innerHTML = html;
 	};
 
-	setInterval(()=> {
-		refreshDiceLog()
-	}, 10000);
+	setInterval(()=> { refreshDiceLog() }, 60000);
 };
 
 let findObserverOnMap = async (scene: STCom.Scence, userId: string): Promise<Observer> => {
@@ -65,6 +70,8 @@ let findObserverOnMap = async (scene: STCom.Scence, userId: string): Promise<Obs
 let showWantMoveTo = async (cvs: HTMLCanvasElement, buffer: HTMLCanvasElement, bufferCtx: CanvasRenderingContext2D, viewMap: CanvasImageSource, scence: STCom.Scence, status: UIStatus, username: string) => {
 	let resp: STCom.TokenMoveResp = await STCom.loadMoveRequest(scence);
 	// console.log(resp);
+	let userMovePos: Point2D = null; 
+	let userToken: Canvas2dShape = null;
 	if (resp.data && resp.data.length > 0) {
 		for (let i=0; i< resp.data.length; i++) {
 			let rec = resp.data[i];
@@ -73,10 +80,18 @@ let showWantMoveTo = async (cvs: HTMLCanvasElement, buffer: HTMLCanvasElement, b
 				status.currDragging = token;
 				status.start.x = token.location.x;
 				status.start.y = token.location.y;
+				userMovePos = rec.pos;
+				userToken   = token;
+			} else {
+				token.drawWantMove(bufferCtx, token.location, rec.pos);
 			}
-			token.drawWantMove(bufferCtx, token.location, rec.pos);
 		}
 	}
+	let newImage = await loadImage(new Image(), buffer.toDataURL('image/png', 1.0));
+	if (userToken && userMovePos) {
+		userToken.drawWantMove(bufferCtx, userToken.location, userMovePos);
+	}
+	return newImage;
 }
 
 let moveObs = (observer: Observer, dx: number, dy: number) => {
