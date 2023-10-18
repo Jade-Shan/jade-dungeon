@@ -92,14 +92,17 @@ class MessageWindow extends FWin.FloatWindow {
 
 let SandtableView = () => {
 
-	let cvsRef = React.useRef(null);
+	let cvsRef    = React.useRef(null);
+	let bufferRef = React.useRef(null);
 
 	// let setWindowDrag = (winId: string) => { };
 
 	setTimeout(() => {
-			let cvs: HTMLCanvasElement = cvsRef.current;
-			let cvsCtx: CanvasRenderingContext2D = cvs.getContext('2d');
-			initSandtable(document, cvs, cvsCtx);
+			let cvs      : HTMLCanvasElement        =    cvsRef.current;
+			let buffer   : HTMLCanvasElement        = bufferRef.current;
+			let cvsCtx   : CanvasRenderingContext2D =    cvs.getContext('2d');
+			let bufferCtx: CanvasRenderingContext2D = buffer.getContext('2d');
+			initSandtable(document, cvs, cvsCtx, buffer, bufferCtx);
 			FWin.initFloatWindows(WIN_ID_MSG, WIN_ID_DIC);
 	}, 5000);
 
@@ -107,6 +110,11 @@ let SandtableView = () => {
 		<Navbar title="Sand Table" />
 		<div id="sandtable-body" className="container-fluid">
 			<canvas ref={cvsRef} id="tutorial" width="1600" height="800">
+				not support canvas
+			</canvas>
+		</div>
+		<div id="bufferDiv" style={{display:"none"}} >
+			<canvas ref={bufferRef} id="buffer" width="1600" height="800">
 				not support canvas
 			</canvas>
 		</div>

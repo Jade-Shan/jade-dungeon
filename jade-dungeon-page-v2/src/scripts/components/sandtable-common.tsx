@@ -284,6 +284,7 @@ export let drawSence = async (cvs: HTMLCanvasElement, cvsCtx: CanvasRenderingCon
 	cvsCtx.clip();
 	cvsCtx.drawImage(brightMap, 0, 0);
 	cvsCtx.restore();
+	return await loadImage(new Image(), cvs.toDataURL('image/png', 1.0));
 }
 
 export let loadMoveRequest = async (scence: Scence): Promise<TokenMoveResp> => {

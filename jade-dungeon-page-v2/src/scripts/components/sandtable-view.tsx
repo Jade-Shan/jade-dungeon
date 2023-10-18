@@ -9,13 +9,27 @@ import * as FWin from '../ui/floatWin';
 import { WIN_ID_DIC } from '../pages/sandtable-view';
 import React = require('react');
 
-export let initSandtable = async (document: Document, cvs: HTMLCanvasElement, cvsCtx: CanvasRenderingContext2D): Promise<void> => {
+type FrameBuffer = {
+	viewMap    : CanvasImageSource,
+	teamMoveMap: CanvasImageSource,
+	userMoveMap: CanvasImageSource,
+}
+
+export let initSandtable = async (document: Document, cvs: HTMLCanvasElement, cvsCtx: CanvasRenderingContext2D, buffer: HTMLCanvasElement, bufferCtx: CanvasRenderingContext2D): Promise<void> => {
 	let username = 'jade';
 	// username  = cookieOperator('username');
-	let scene: STCom.Scence = await STCom.initMapDatas(cvs, 'campaign01', 'place01', 'scene01');
+	let scene: STCom.Scence = await STCom.initMapDatas(buffer, 'campaign01', 'place01', 'scene01');
+	cvs.width  = buffer.width ;
+	cvs.height = buffer.height;
 	let observer = await findObserverOnMap(scene, username);
-	await STCom.drawSence(cvs, cvsCtx, scene, observer);
-	let viewMap = await loadImage(new Image(), cvs.toDataURL('image/png', 1.0));
+
+	let fb: FrameBuffer = {
+		viewMap    : new Image(),
+		teamMoveMap: new Image(),
+		userMoveMap: new Image(),
+	}
+
+	fb.viewMap = await STCom.drawSence(buffer, bufferCtx, scene, observer);
 
 	let status: UIStatus = {
 		start: { x: 0, y: 0 },
@@ -26,27 +40,45 @@ export let initSandtable = async (document: Document, cvs: HTMLCanvasElement, cv
 		addTokenGroup: undefined
 	};
 
-	// await showWantMoveTo(cvs, cvs, cvsCtx, viewMap, scene, status, username);
-	// viewMap = await loadImage(new Image(), cvs.toDataURL('image/png', 1.0));
+	// 没有画上当前玩家移动请求的那一帧，因为拖动的时候还会改
+	fb.teamMoveMap = await showWantMoveTo(cvs, buffer, bufferCtx, fb.viewMap, scene, status, username);
+	// 画上当前玩家移动请求的那一帧
+	// fb.userMoveMap = await loadImage(new Image(), buffer.toDataURL('image/png', 1.0));
+	// 把缓存中的内容画到显示的画布上
+	// cvsCtx.drawImage(fb.userMoveMap, 0, 0);
 
-
-	viewMap = await showWantMoveTo(cvs, cvs, cvsCtx, viewMap, scene, status, username);
-
+	// 绑定鼠标拖动操作
 	await bindCanvasPressCtrl(document, status);
-	await bindCanvasMouseDown(cvs, cvs, cvsCtx, viewMap, scene, status, username);
-	await bindCanvasMouseUp  (cvs, cvs, cvsCtx, viewMap, scene, status, username);
-	await bindCanvasMouseDrag(cvs, cvs, cvsCtx, viewMap, scene, status, username);
+	await bindCanvasMouseDown(cvs, cvs, cvsCtx, fb.teamMoveMap, scene, status, username);
+	await bindCanvasMouseUp  (cvs, cvs, cvsCtx, fb.teamMoveMap, scene, status, username);
+	await bindCanvasMouseDrag(cvs, cvs, cvsCtx, fb.teamMoveMap, scene, status, username);
 
+	// 绑定提交roll操作
 	let rollIpt = document.getElementById('ipt-roll') as HTMLInputElement;
 	bindRollDiceReq(rollIpt, scene, username);
 
+	// 刷新roll记录
 	let refreshDiceLog = async () => {
 		let html = await queryRollResult(scene);
 		let log = document.getElementById(FWin.getWinScaleBodyId(WIN_ID_DIC));
 		log.innerHTML = html;
 	};
 
-	setInterval(()=> { refreshDiceLog() }, 60000);
+	let refreshMoveRequest = async () => {
+		// 没有画上当前玩家移动请求的那一帧，因为拖动的时候还会改
+		// fb.teamMoveMap = await showWantMoveTo(cvs, buffer, bufferCtx, fb.viewMap, scene, status, username);
+		// 画上当前玩家移动请求的那一帧
+		// fb.userMoveMap = await loadImage(new Image(), buffer.toDataURL('image/png', 1.0));
+		// 把缓存中的内容画到显示的画布上
+		// cvsCtx.drawImage(fb.userMoveMap, 0, 0);
+	};
+
+	await refreshDiceLog();
+	await refreshMoveRequest();
+	setInterval(()=> {
+		refreshDiceLog();
+		refreshMoveRequest();
+	}, 10000);
 };
 
 let findObserverOnMap = async (scene: STCom.Scence, userId: string): Promise<Observer> => {
