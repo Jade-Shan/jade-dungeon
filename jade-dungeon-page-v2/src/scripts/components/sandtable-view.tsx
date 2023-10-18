@@ -43,9 +43,9 @@ export let initSandtable = async (document: Document, cvs: HTMLCanvasElement, cv
 	// 没有画上当前玩家移动请求的那一帧，因为拖动的时候还会改
 	fb.teamMoveMap = await showWantMoveTo(cvs, buffer, bufferCtx, fb.viewMap, scene, status, username);
 	// 画上当前玩家移动请求的那一帧
-	// fb.userMoveMap = await loadImage(new Image(), buffer.toDataURL('image/png', 1.0));
+	fb.userMoveMap = await loadImage(new Image(), buffer.toDataURL('image/png', 1.0));
 	// 把缓存中的内容画到显示的画布上
-	// cvsCtx.drawImage(fb.userMoveMap, 0, 0);
+	cvsCtx.drawImage(fb.userMoveMap, 0, 0);
 
 	// 绑定鼠标拖动操作
 	await bindCanvasPressCtrl(document, status);
