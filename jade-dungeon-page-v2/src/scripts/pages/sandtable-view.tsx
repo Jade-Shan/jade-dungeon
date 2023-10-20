@@ -113,7 +113,7 @@ let SandtableView = () => {
 				not support canvas
 			</canvas>
 		</div>
-		<div id="bufferDiv" >
+		<div id="bufferDiv" style={{display:"none"}} >
 			<canvas ref={bufferRef} id="buffer" width="1600" height="800">
 				not support canvas
 			</canvas>
