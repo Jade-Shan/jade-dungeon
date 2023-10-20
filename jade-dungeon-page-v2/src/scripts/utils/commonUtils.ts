@@ -1,6 +1,18 @@
 import { CURR_ENV } from "../components/constans";
 import { defaultImgData } from './defaultImages';
 
+/* 防抖函数，防止指间隔内重复触发 */
+export let debounce = (fn: () => any, intervalMS: number = 300) => {
+	// 作为闭包存了上次调的引用
+	let timeout: NodeJS.Timeout = null;
+	return () => {
+		// 如果上次调用还没执行，就清除上次调用
+		clearTimeout(timeout);
+		// 记录下本次定时任的引用，用于下次调用时取消
+		timeout = setTimeout(() => { fn(); }, intervalMS);
+	};
+}
+
 const IMG_CACHE_PREFIX: string = 'cache-img-base64-';
 const IMG_CACHE_TIMEOUT: number = 1000 * 60 * 60;
 

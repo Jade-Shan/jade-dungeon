@@ -18,6 +18,9 @@ export class Navbar extends React.Component<{ title: String }, {}> {
 							<NavLink className="nav-link" to="/sandtable">Sandtable</NavLink> <br />
 						</li>
 						<li className="nav-item">
+							<NavLink className="nav-link" to="/dungeonedit">Dungeon Edit</NavLink> <br />
+						</li>
+						<li className="nav-item">
 							<NavLink className="nav-link" to="/dashboard">Dashboard</NavLink> <br />
 						</li>
 						<li className="nav-item">

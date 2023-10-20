@@ -1,8 +1,4 @@
 import * as React from "react";
-/*
-import { Resizable } from "re-resizable"
-import Draggable from 'react-draggable';
-*/
 
 import { Navbar } from "../ui/navbar";
 /* 
@@ -17,18 +13,6 @@ import * as FWin from "../ui/floatWin"
 
 export const WIN_ID_MSG = "msg-win";
 export const WIN_ID_DIC = "dic-win";
-
-/* 防抖函数，防止指间隔内重复触发 */
-let debounce = (fn: () => any, intervalMS: number = 300) => {
-	// 作为闭包存了上次调的引用
-	let timeout: NodeJS.Timeout = null;
-	return () => {
-		// 如果上次调用还没执行，就清除上次调用
-		clearTimeout(timeout);
-		// 记录下本次定时任的引用，用于下次调用时取消
-		timeout = setTimeout(() => { fn(); }, intervalMS);
-	};
-}
 
 class DiceWindow extends FWin.FloatWindow {
 
@@ -92,8 +76,8 @@ class MessageWindow extends FWin.FloatWindow {
 
 let SandtableView = () => {
 
-	let cvsRef    = React.useRef(null);
-	let bufferRef = React.useRef(null);
+	let cvsRef    = React.useRef(null as HTMLCanvasElement);
+	let bufferRef = React.useRef(null as HTMLCanvasElement);
 
 	// let setWindowDrag = (winId: string) => { };
 
@@ -124,8 +108,8 @@ let SandtableView = () => {
 				not support canvas
 			</canvas>
 		</div>
-		<MessageWindow id={WIN_ID_MSG} title="Message"  icon="bi-people-fill"></MessageWindow>
-		<DiceWindow    id={WIN_ID_DIC} title="Dice Log" icon="bi-dice-6"     ></DiceWindow>
+		<MessageWindow id={WIN_ID_MSG} title="Message"  icon="bi-chat-left-dots"></MessageWindow>
+		<DiceWindow    id={WIN_ID_DIC} title="Dice Log" icon="bi-dice-6"        ></DiceWindow>
 	</>;
 
 };

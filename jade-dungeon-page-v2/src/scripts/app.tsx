@@ -7,6 +7,7 @@ import { Home } from './pages/home';
 import { About } from './pages/about';
 import { Dashboard } from './pages/dashboard';
 import SandtableView from './pages/sandtable-view';
+import SandtableEdit from './pages/sandtable-edit';
 
 import '../styles/base.css';
 import '../styles/h1.less';
@@ -18,6 +19,7 @@ let App = () => {
 		<Routes>
 			<Route path="/" element={<Home />} />
 			<Route path="/sandtable" element={<SandtableView />} />
+			<Route path="/dungeonedit" element={<SandtableEdit />} />
 			<Route path="/dashboard" element={<Dashboard />} />
 			<Route path="/about" element={<About />} />
 		</Routes>

@@ -38,9 +38,14 @@ div.float-window .title-bar>.title-icon { float: left ;  }
 div.float-window .title-bar>.title-ctrl { float: right;  }
 
 div.float-window .window-body { width:100%; height:  100%; }
-div.float-window .window-body div.log-text { height: 120px; word-wrap: break-word; overflow-y: scroll; }
-
-/* 
+/* div.float-window .window-body div.log-text { height: 120px; word-wrap: break-word; overflow-y: scroll; }
 */
-div#msg-win { top:  60px; left:  10px; width: 200; height: 100; z-index: 100; }
-div#dic-win { top: 100px; left: 160px; width: 300; height: 100; z-index: 100;}
+
+div#msg-win { top:  60px; left:  10px; width: 300; height: 100; z-index: 100; }
+div#dic-win { top: 100px; left: 160px; width: 300; height: 100; z-index: 100; }
+div#msg-win .window-body div.log-text { height: 120px; word-wrap: break-word; overflow-y: scroll; }
+div#dic-win .window-body div.log-text { height: 120px; word-wrap: break-word; overflow-y: scroll; }
+
+div#token-win    { top: 500px; left:  10px; width: 500; height: 100; z-index: 100; }
+div#token-win .window-body div.log-text { overflow: scroll; }
+div#resource-win { top: 150px; left: 190px; width: 300; height: 100; z-index: 100; }
