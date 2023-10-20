@@ -98,12 +98,18 @@ let SandtableView = () => {
 	// let setWindowDrag = (winId: string) => { };
 
 	setTimeout(() => {
-			let cvs      : HTMLCanvasElement        =    cvsRef.current;
-			let buffer   : HTMLCanvasElement        = bufferRef.current;
-			let cvsCtx   : CanvasRenderingContext2D =    cvs.getContext('2d');
-			let bufferCtx: CanvasRenderingContext2D = buffer.getContext('2d');
-			initSandtable(document, cvs, cvsCtx, buffer, bufferCtx);
-			FWin.initFloatWindows(WIN_ID_MSG, WIN_ID_DIC);
+		let cvs: HTMLCanvasElement = cvsRef.current;
+		let buffer: HTMLCanvasElement = bufferRef.current;
+		let cvsCtx: CanvasRenderingContext2D = cvs.getContext('2d');
+		let bufferCtx: CanvasRenderingContext2D = buffer.getContext('2d');
+
+		let userId = 'jade';
+		// userId = cookieOperator('username');
+		let campaignId = 'campaign01';
+		let placeId = 'place01';
+		let scenceId = 'scene01';
+		initSandtable(document, cvs, cvsCtx, buffer, bufferCtx, campaignId, placeId, scenceId, userId);
+		FWin.initFloatWindows(WIN_ID_MSG, WIN_ID_DIC);
 	}, 5000);
 
 	return <>

@@ -15,13 +15,15 @@ type FrameBuffer = {
 	userMoveMap: CanvasImageSource,
 }
 
-export let initSandtable = async (document: Document, cvs: HTMLCanvasElement, cvsCtx: CanvasRenderingContext2D, buffer: HTMLCanvasElement, bufferCtx: CanvasRenderingContext2D): Promise<void> => {
-	let username = 'jade';
-	// username  = cookieOperator('username');
-	let scene: STCom.Scence = await STCom.initMapDatas(buffer, 'campaign01', 'place01', 'scene01');
+export let initSandtable = async (
+	document: Document, cvs: HTMLCanvasElement, cvsCtx: CanvasRenderingContext2D, 
+	buffer: HTMLCanvasElement, bufferCtx: CanvasRenderingContext2D, 
+	campaignId: string, placeId: string, scenceId: string, userId: string): Promise<void> => 
+{
+	let scene: STCom.Scence = await STCom.initMapDatas(buffer, campaignId, placeId, scenceId);
 	cvs.width  = buffer.width ;
 	cvs.height = buffer.height;
-	let observer = await findObserverOnMap(scene, username);
+	let observer = await findObserverOnMap(scene, userId);
 
 	let fb: FrameBuffer = {
 		viewMap    : new Image(),
@@ -41,7 +43,7 @@ export let initSandtable = async (document: Document, cvs: HTMLCanvasElement, cv
 	};
 
 	// 没有画上当前玩家移动请求的那一帧，因为拖动的时候还会改
-	fb.teamMoveMap = await showWantMoveTo(cvs, buffer, bufferCtx, fb.viewMap, scene, status, username);
+	fb.teamMoveMap = await showWantMoveTo(cvs, buffer, bufferCtx, fb.viewMap, scene, status, userId);
 	// 画上当前玩家移动请求的那一帧
 	fb.userMoveMap = await loadImage(new Image(), buffer.toDataURL('image/png', 1.0));
 	// 把缓存中的内容画到显示的画布上
@@ -49,13 +51,13 @@ export let initSandtable = async (document: Document, cvs: HTMLCanvasElement, cv
 
 	// 绑定鼠标拖动操作
 	await bindCanvasPressCtrl(document, status);
-	await bindCanvasMouseDown(cvs, cvs, cvsCtx, fb.teamMoveMap, scene, status, username);
-	await bindCanvasMouseUp  (cvs, cvs, cvsCtx, fb.teamMoveMap, scene, status, username);
-	await bindCanvasMouseDrag(cvs, cvs, cvsCtx, fb.teamMoveMap, scene, status, username);
+	await bindCanvasMouseDown(cvs, cvs, cvsCtx, fb.teamMoveMap, scene, status, userId);
+	await bindCanvasMouseUp  (cvs, cvs, cvsCtx, fb.teamMoveMap, scene, status, userId);
+	await bindCanvasMouseDrag(cvs, cvs, cvsCtx, fb.teamMoveMap, scene, status, userId);
 
 	// 绑定提交roll操作
 	let rollIpt = document.getElementById('ipt-roll') as HTMLInputElement;
-	bindRollDiceReq(rollIpt, scene, username);
+	bindRollDiceReq(rollIpt, scene, userId);
 
 	// 刷新roll记录
 	let refreshDiceLog = async () => {
@@ -66,7 +68,7 @@ export let initSandtable = async (document: Document, cvs: HTMLCanvasElement, cv
 
 	let refreshMoveRequest = async () => {
 		// 没有画上当前玩家移动请求的那一帧，因为拖动的时候还会改
-		fb.teamMoveMap = await showWantMoveTo(cvs, buffer, bufferCtx, fb.viewMap, scene, status, username);
+		fb.teamMoveMap = await showWantMoveTo(cvs, buffer, bufferCtx, fb.viewMap, scene, status, userId);
 		// 画上当前玩家移动请求的那一帧
 		fb.userMoveMap = await loadImage(new Image(), buffer.toDataURL('image/png', 1.0));
 		// 把缓存中的内容画到显示的画布上
@@ -78,14 +80,14 @@ export let initSandtable = async (document: Document, cvs: HTMLCanvasElement, cv
 	setInterval(()=> {
 		refreshDiceLog();
 		refreshMoveRequest();
-	}, 10000);
+	}, 30000);
 };
 
 let findObserverOnMap = async (scene: STCom.Scence, userId: string): Promise<Observer> => {
 	let obtm: Canvas2dShape = new CanvasCircle('spectator', { x: 10, y: 10 }, 50, 
 		scene.shadowColor, await loadDefaultImage(), false, false);
 	if (scene.teams) {
-		let l1 = scene.teams.filter((e) => { return e.id == userId; });
+		let l1 = scene.teams.filter((e) => { return e.id == userId     ; });
 		let l2 = scene.teams.filter((e) => { return e.id == 'spectator'; });
 		if (l1.length > 0) {
 			obtm = l1[0];
