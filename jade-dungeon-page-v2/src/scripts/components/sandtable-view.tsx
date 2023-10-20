@@ -66,11 +66,11 @@ export let initSandtable = async (document: Document, cvs: HTMLCanvasElement, cv
 
 	let refreshMoveRequest = async () => {
 		// 没有画上当前玩家移动请求的那一帧，因为拖动的时候还会改
-		// fb.teamMoveMap = await showWantMoveTo(cvs, buffer, bufferCtx, fb.viewMap, scene, status, username);
+		fb.teamMoveMap = await showWantMoveTo(cvs, buffer, bufferCtx, fb.viewMap, scene, status, username);
 		// 画上当前玩家移动请求的那一帧
-		// fb.userMoveMap = await loadImage(new Image(), buffer.toDataURL('image/png', 1.0));
+		fb.userMoveMap = await loadImage(new Image(), buffer.toDataURL('image/png', 1.0));
 		// 把缓存中的内容画到显示的画布上
-		// cvsCtx.drawImage(fb.userMoveMap, 0, 0);
+		cvsCtx.drawImage(fb.userMoveMap, 0, 0);
 	};
 
 	await refreshDiceLog();
@@ -100,6 +100,7 @@ let findObserverOnMap = async (scene: STCom.Scence, userId: string): Promise<Obs
 };
 
 let showWantMoveTo = async (cvs: HTMLCanvasElement, buffer: HTMLCanvasElement, bufferCtx: CanvasRenderingContext2D, viewMap: CanvasImageSource, scence: STCom.Scence, status: UIStatus, username: string) => {
+	bufferCtx.drawImage(viewMap, 0, 0);
 	let resp: STCom.TokenMoveResp = await STCom.loadMoveRequest(scence);
 	// console.log(resp);
 	let userMovePos: Point2D = null; 
