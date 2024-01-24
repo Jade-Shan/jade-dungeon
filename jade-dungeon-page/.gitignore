@@ -8,4 +8,6 @@ envs.sample.js
 *.tar.gz
 tmp/
 webroot/
+node_modules/
+package-lock.json
 *.tar.gz
