@@ -41,7 +41,11 @@ var cfg = {
 	pageTitle: "Gallery", subTitle: "My Gallery"
 };
 
-cfg.authorId = 'u001';
+cfg.authorId = 'guest';
+let currUser = localStorage.getItem('currUser');
+if (currUser) {
+	cfg.authorId = currUser;
+}
 var page = new net.jadedungeon.gallery(cfg);
 page.render();
 page.loadPage(1);

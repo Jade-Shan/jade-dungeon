@@ -45,7 +45,12 @@ var cfg = {
 	pageTitle: "Journal", subTitle: "My Journal"
 };
 
-cfg.authorId = 'u001';
+cfg.authorId = 'guest';
+let currUser = localStorage.getItem('currUser');
+if (currUser) {
+	cfg.authorId = currUser;
+}
+
 var page = new net.jadedungeon.journal(cfg);
 page.render();
 page.loadPage(1);
