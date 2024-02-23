@@ -43,6 +43,11 @@ var cfg = {
 
 cfg.authorId = 'guest';
 let currUser = localStorage.getItem('currUser');
+let urlParams = new URLSearchParams(window.location.search);
+let urlUser = urlParams.get('currUser')
+if (urlUser && urlUser.length > 0) {
+	currUser = urlUser;
+}
 if (currUser) {
 	cfg.authorId = currUser;
 }
