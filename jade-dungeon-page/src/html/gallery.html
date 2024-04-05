@@ -62,6 +62,7 @@ if (urlUser && urlUser.length > 0) {
 }
 if (currUser && currUser.length > 0) {
 	cfg.authorId = currUser;
+	jadeUtils.web.cookieOperator('data.currUser', currUser, {SameSite:'Lax', expires: 90});
 }
 
 let currPage = 1;
@@ -103,7 +104,7 @@ if (needAmpParam && needAmpParam == 'true') {
 } else if (needAmpParam && needAmpParam == 'false') {
 	needAmp = false;
 }
-jadeUtils.web.cookieOperator('ui.needAmp', needAmp);
+jadeUtils.web.cookieOperator('ui.needAmp', needAmp, {SameSite:'Lax', expires: 90 });
 if (needAmp) {
 	/* https://webamp.org/ */
 	/* https://github.com/captbaritone/webamp */
@@ -111,6 +112,5 @@ if (needAmp) {
 	const webamp = new Webamp();
 	webamp.renderWhenReady(webAmpDiv);
 }
-
 </script>
 </html>

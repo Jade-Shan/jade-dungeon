@@ -171,7 +171,7 @@ var net = net || {};
 			let lnk = styles[i];
 			let ttitle = lnk.title;
 			if (ttitle == themeName) { 
-				jadeUtils.web.cookieOperator("ui.theme", themeName, {SameSite:'Lax'});
+				jadeUtils.web.cookieOperator("ui.theme", themeName, {SameSite:'Lax', expires: 90 });
 				lnk.disabled = false; 
 			}
 		}
