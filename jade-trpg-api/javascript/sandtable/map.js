@@ -101,33 +101,51 @@ exports.handler = {
 		let contenttype = '';
 		let body = null;
 
-		let request = https.get(src, (res) => {
-			contenttype = res.headers['content-type'];
-			if (res.statusCode !== 200) {
-				console.error(`Did not get an OK from the server. Code: ${res.statusCode}`);
-				context.response.writeHead(404, {
-					'Content-Type': contenttype,
-					'Cache-Control': 'public,s-maxage=300,max-age=300',
-					'Access-Control-Allow-Origin': '*',
-					'Access-Control-Allow-Methods': 'GET,POST',
-					'Access-Control-Allow-Headers': 'x-requested-with,content-type'
+		let request = https.get(src, {
+				// add agent for skip 'certificate has expired' error 
+				agent: new https.Agent({ rejectUnauthorized: false, keepAlive: true })}, 
+			(res) => {
+				res.on('data', (chunk) => { buffers.push(chunk); });
+				res.on('close', () => {
+					contenttype = res.headers['content-type'];
+					try {
+						body = Buffer.concat(buffers);
+					} catch (e) {
+						body = '\n    ' + e;
+					}
+					if (res.statusCode !== 200) {
+						console.error(`Did not get an OK from the server. Code: ${res.statusCode}`);
+						context.response.writeHead(500, {
+							'Content-Type': contenttype,
+							'Cache-Control': 'public,s-maxage=300,max-age=300',
+							'Access-Control-Allow-Origin': '*',
+							'Access-Control-Allow-Methods': 'GET,POST',
+							'Access-Control-Allow-Headers': 'x-requested-with,content-type'
+						});
+						let errBody = 'Err on get : ' + src;
+						errBody = errBody + '\n   call src err-code: ' + res.statusCode;
+						try {
+							errBody = errBody + '\n    ' + body;
+						} catch (e) {
+							errBody = errBody + '\n    ' + e;
+						}
+						context.response.end(errBody);
+						return;
+					} else {
+						// console.log('Retrieved all data');
+						// 'Cache-Control': 'public,s-maxage=36000,max-age=36000',
+						context.response.writeHead(200, {
+							'Content-Type': contenttype,
+							'Cache-Control': 'private,maxage=36000',
+							'Access-Control-Allow-Origin': '*',
+							'Access-Control-Allow-Methods': 'GET,POST',
+							'Access-Control-Allow-Headers': 'x-requested-with,content-type'
+						});
+						context.response.end(body);
+						return;
+					}
 				});
-				context.response.end('');
-			}
-			res.on('data', (chunk) => { buffers.push(chunk); });
-			res.on('close', () => {
-				body = Buffer.concat(buffers);
-				// console.log('Retrieved all data');
-				context.response.writeHead(200, {
-					'Content-Type': contenttype,
-					'Cache-Control': 'public,s-maxage=300,max-age=300',
-					'Access-Control-Allow-Origin': '*',
-					'Access-Control-Allow-Methods': 'GET,POST',
-					'Access-Control-Allow-Headers': 'x-requested-with,content-type'
-				});
-				context.response.end(body);
 			});
-		});
 	},
 
 	//http://localhost:8088/api/sandtable/load-map?campaignId=campaign01&placeId=place01&sceneId=scene01
