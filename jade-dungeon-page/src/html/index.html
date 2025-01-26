@@ -63,11 +63,7 @@ if (urlUser && urlUser.length > 0) {
 }
 if (currUser && currUser.length > 0) {
 	cfg.authorId = currUser;
-<<<<<<< HEAD
-	jadeUtils.web.cookieOperator('data.currUser', currUser);
-=======
 	jadeUtils.web.cookieOperator('data.currUser', currUser, {SameSite: 'Lax', expires: 90});
->>>>>>> edfb64ad9a2b1013a55e0c049c0b9220e46025f6
 }
 
 let currPage = 1;
