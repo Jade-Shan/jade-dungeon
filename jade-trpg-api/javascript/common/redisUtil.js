@@ -4,10 +4,10 @@ let config = require('../config');
 let redisCfg = new Map();
 let connMap = new Map();
 config.globalCfg.redis.forEach((e) => {
-    redisCfg.set(e.name, `${e.host}:${e.port}`);
+    redisCfg.set(e.name, e);
     let client = redis.createClient({ host: e.host, port: e.port });
     client.on('error', (err) => console.log('Redis Client Error', err));
-    connMap.set(`${e.host}:${e.port}`, client);
+    connMap.set(e.name, client);
 });
 
 let callRedis = async (callback) => {
@@ -19,7 +19,7 @@ let callRedis = async (callback) => {
 };
 
 exports.connect = (connName) => {
-    let conn = connMap.get(redisCfg.get(connName));
+    let conn = connMap.get(connName);
     return {
         call: async (func) => {
             let resp = { isSuccess: false, data: null, err: null };

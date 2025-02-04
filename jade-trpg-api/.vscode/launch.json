@@ -9,6 +9,7 @@
                 "--preserve-symlinks",
                 "--preserve-symlinks-main"
             ],
+			"runtimeExecutable":"/home/jade/.nvm/versions/node/v16.20.2/bin/node",
             "skipFiles": [ "<node_internals>/**" ]
          }, {
             "name": "run-express-demo",
