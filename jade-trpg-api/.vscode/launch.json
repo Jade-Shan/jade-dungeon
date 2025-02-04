@@ -9,7 +9,6 @@
                 "--preserve-symlinks",
                 "--preserve-symlinks-main"
             ],
-			"runtimeExecutable":"/home/jade/.nvm/versions/node/v16.20.2/bin/node",
             "skipFiles": [ "<node_internals>/**" ]
          }, {
             "name": "run-express-demo",
@@ -20,12 +19,14 @@
                 "--preserve-symlinks",
                 "--preserve-symlinks-main"
             ],
+			"runtimeExecutable":"/home/jade/.nvm/versions/node/v16.20.2/bin/node",
             "skipFiles": [ "<node_internals>/**" ]
          }, {
             "name": "backup-website",
             "type": "node",
             "request": "launch",
             "program": "${workspaceFolder}/javascript/backup.js",
+			"runtimeExecutable":"/home/jade/.nvm/versions/node/v16.20.2/bin/node",
             "runtimeArgs": [
                 "--preserve-symlinks",
                 "--preserve-symlinks-main"
