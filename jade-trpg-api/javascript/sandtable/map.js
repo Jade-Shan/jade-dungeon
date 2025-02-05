@@ -203,7 +203,7 @@ exports.handler = {
 			});
 		}
 		if (owner == json.username) {
-			let res = await rdsUtil.connect('trpg').call((conn) => {
+			let res = await rdsUtil.connectV4('trpg').call((conn) => {
 				return conn.set(genSceneKey(data.params.campaignId, data.params.placeId, data.params.sceneId), data.params.jsonStr);
 			});
 			if (res.data) {
