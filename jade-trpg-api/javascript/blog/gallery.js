@@ -14,6 +14,7 @@ let smp = {
 let genGalleryKey = (userId) => { return `jadedungeon::gallery::${userId}`; };
 
 exports.handler = {
+	// http://localhost:8088/api/gallery/loadByUser?userId=u001&page=1&pageSize=10 
     "/api/gallery/loadByUser": async (context, data) => {
         let json = {"status": "err", "page": 1, "pageCount": 0, "articles": []};
         let userId = data.params.userId;
@@ -36,10 +37,10 @@ exports.handler = {
         let endIdx = startIdx + pageSize - 1;
         endIdx = endIdx < startIdx ? startIdx : endIdx;
         if (userId && userId.length > 1) {
-            let res = await rdsUtil.connect('blog').call((conn, callback) => {
-                conn.llen(genGalleryKey(userId), callback);
-            });
-            // console.log(res);
+			let res = await rdsUtil.connectV4('blog').call((conn) => {
+				return conn.lLen(genGalleryKey(userId));
+			});
+			console.log(res);
 			if (!res.isSuccess) { json.msg = res.err; } else {
                 let recCount = res.data;
                 if (recCount < pageSize) {
@@ -48,8 +49,8 @@ exports.handler = {
                     json.pageCount = parseInt((recCount + 1) / pageSize);
                 }
             }
-            let res2 = await rdsUtil.connect('blog').call((conn, callback) => {
-                conn.lrange(genGalleryKey(userId), startIdx, startIdx + pageSize -1, callback);
+            let res2 = await rdsUtil.connectV4('blog').call((conn) => {
+                return conn.lRange(genGalleryKey(userId), startIdx, startIdx + pageSize -1);
             });
 			if (!res2.isSuccess) { json.msg = res.err; } else {
                 json.status = 'success';
@@ -94,8 +95,8 @@ exports.handler = {
             if (ablum && ablum.length > 0) {
                 article = { "time": time, "auth": auth, "title": title, "text": text, "ablum": ablum };
                 console.log(article);
-                let res = await rdsUtil.connect('blog').call((conn, callback) => {
-                    conn.lpush(genGalleryKey(auth), JSON.stringify(article), callback);
+                let res = await rdsUtil.connectV4('blog').call((conn) => {
+                    return conn.lPush(genGalleryKey(auth), JSON.stringify(article));
                 });
                 // console.log(res);
                 if (!res.isSuccess) { json.msg = res.err; } else {

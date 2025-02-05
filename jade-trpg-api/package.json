@@ -7,7 +7,7 @@
 		"express": "^4.21.2",
 		"lodash": "^4.17.21",
 		"multer": "^1.4.5-lts.1",
-		"redis": "3.1.0",
+		"redis": "^4.7.0",
 		"top-level-await": "^1.1.0"
 	}
 }

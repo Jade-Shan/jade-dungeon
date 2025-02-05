@@ -4,6 +4,7 @@ let rdsUtil = require('../common/redisUtil');
 let genBlogKey = (userId) => { return `jadedungeon::blog::${userId}`; };
 
 exports.handler = {
+	// http://localhost:8088/api/blog/loadByUser?userId=u001&page=1&pageSize=10 
     "/api/blog/loadUserById": async (context, data) => {
         context.response.writeHead(200, {
             'Content-Type': 'application/json;charset=utf-8',
@@ -62,8 +63,8 @@ exports.handler = {
         let endIdx = startIdx + pageSize - 1;
         endIdx = endIdx < startIdx ? startIdx : endIdx;
         if (userId && userId.length > 1) {
-            let res = await rdsUtil.connect('blog').call((conn, callback) => {
-                conn.llen(genBlogKey(userId), callback);
+            let res = await rdsUtil.connectV4('blog').call((conn) => {
+                return conn.lLen(genBlogKey(userId));
             });
             // console.log(res);
 			if (!res.isSuccess) { json.msg = res.err; } else {
@@ -74,8 +75,8 @@ exports.handler = {
                     json.pageCount = parseInt((recCount + 1) / pageSize);
                 }
             }
-            let res2 = await rdsUtil.connect('blog').call((conn, callback) => {
-                conn.lrange(genBlogKey(userId), startIdx, startIdx + pageSize -1, callback);
+            let res2 = await rdsUtil.connectV4('blog').call((conn) => {
+                return conn.lRange(genBlogKey(userId), startIdx, startIdx + pageSize -1);
             });
 			if (!res2.isSuccess) { json.msg = res.err; } else {
                 json.status = 'success';
@@ -110,10 +111,10 @@ exports.handler = {
         let title  = data.params.title && data.params.title.length > 0 ? //
             data.params.title : `New Article ${now}`;
         if (userId && userId.length > 1 && text && text.length > 0) {
-            let res = await rdsUtil.connect('blog').call((conn, callback) => {
-                conn.lpush(genBlogKey(userId), JSON.stringify({
+            let res = await rdsUtil.connectV4('blog').call((conn) => {
+                return conn.lPush(genBlogKey(userId), JSON.stringify({
                     "time": time, "auth": userId, "title": title, "text": text
-                }), callback);
+                }));
             });
             // console.log(res);
 			if (!res.isSuccess) { json.msg = res.err; } else {

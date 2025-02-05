@@ -1,4 +1,4 @@
-const { request } = require('express');
+// const { request } = require('express');
 let jadeutils = require('../common/jadeutils');
 let rdsUtil = require('../common/redisUtil');
 
@@ -41,15 +41,15 @@ exports.handler = {
 		let username = data.params.username;
 		let password = data.params.password;
 		if (username && password && username.length > 0 && password.length > 0) {
-			let res = await rdsUtil.connect('auth').call((conn, callback) => {
-				conn.get(genUserInfoRrdsKey(username), callback);
+			let res = await rdsUtil.connectV4('auth').call((conn) => {
+				return conn.get(genUserInfoRrdsKey(username));
 			});
 			if (res && res.data && res.data.length > 0) {
 				json.msg = "username exists";
 				console.log(json.msg);
 			} else {
-				let resp = await rdsUtil.connect('auth').call((conn, callback) => {
-					conn.set(genUserInfoRrdsKey(username), password, callback);
+				let resp = await rdsUtil.connectV4('auth').call((conn) => {
+					return conn.set(genUserInfoRrdsKey(username), password);
 				});
 				json.msg = resp.data;
 				json.username = username;
@@ -73,13 +73,13 @@ exports.handler = {
 		let token = data.params.token;
 		let tokenObj = parseLoginToken(token);
 		if (username && password && username.length > 0 && password.length > 0) {
-			let res = await rdsUtil.connect('auth').call((conn, callback) => {
-				conn.get(genUserInfoRrdsKey(username), callback);
+			let res = await rdsUtil.connectV4('auth').call((conn) => {
+				return conn.get(genUserInfoRrdsKey(username));
 			});
 			if (res && res.data && res.data == password) {
 				let token = genLoginToken(username);
-				let resp = await rdsUtil.connect('auth').call((conn, callback) => {
-					conn.set(genUserTokenRrdsKey(username), token, callback);
+				let resp = await rdsUtil.connectV4('auth').call((conn) => {
+					return conn.set(genUserTokenRrdsKey(username), token);
 				});
 				json.msg = 'login success';
 				json.username = username;
@@ -92,12 +92,12 @@ exports.handler = {
 			if (tokenObj.expire < (new Date()).getTime()) {
 				json.msg = "login expire";
 			} else {
-				let value = await rdsUtil.connect('auth').call((conn, callback) => {
-					conn.get(genUserTokenRrdsKey(username), callback);
+				let value = await rdsUtil.connectV4('auth').call((conn) => {
+					return conn.get(genUserTokenRrdsKey(username));
 				});
 				if (value && value == token) {
-					let resp = await rdsUtil.connect('auth').call((conn, callback) => {
-						conn.set(genUserTokenRrdsKey(username), token, callback);
+					let resp = await rdsUtil.connectV4('auth').call((conn) => {
+						return conn.set(genUserTokenRrdsKey(username), token);
 					});
 					json.msg = 'login success';
 					json.username = username;

@@ -24,8 +24,8 @@ exports.handler = {
 		if (campaignId && placeId && sceneId && campaignId.length > 0 && 
 			placeId.length > 0 && sceneId.length > 0) //
 		{
-			let res = await rdsUtil.connect('trpg').call((conn, callback) => {
-				conn.hgetall(genMoveReqKey(campaignId, placeId, sceneId), callback);
+			let res = await rdsUtil.connectV4('trpg').call((conn) => {
+				return conn.hGetAll(genMoveReqKey(campaignId, placeId, sceneId));
 			});
 			console.log(res);
 			if (!res.isSuccess) { json.msg = res.err; } else {
@@ -65,17 +65,16 @@ exports.handler = {
 			placeId.length > 0 && sceneId.length > 0 && username.length > 0) //
 		{
 			if (x && y && x > -1 && y >-1) {
-				let res = await rdsUtil.connect('trpg').call((conn, callback) => {
-					conn.hset(genMoveReqKey(campaignId, placeId, sceneId), username, `{"x":${x},"y":${y}}`, callback);
-					// conn.del(genMoveReqKey(campaignId, placeId, sceneId), username, callback);
+				let res = await rdsUtil.connectV4('trpg').call((conn) => {
+					return conn.hSet(genMoveReqKey(campaignId, placeId, sceneId), username, `{"x":${x},"y":${y}}`);
 				});
 				console.log(res);
 				if (!res.isSuccess) { result.msg = res.err; } else {
 					result.status = 'success';
 				}
 			} else {
-				let res = await rdsUtil.connect('trpg').call((conn, callback) => {
-					conn.hdel(genMoveReqKey(campaignId, placeId, sceneId), username, callback);
+				let res = await rdsUtil.connect('trpg').call((conn) => {
+					return conn.hDel(genMoveReqKey(campaignId, placeId, sceneId), username);
 				});
 				console.log(res);
 				if (!res.isSuccess) { result.msg = res.err; } else {
@@ -148,11 +147,11 @@ exports.handler = {
 			});
 	},
 
-	//http://localhost:8088/api/sandtable/load-map?campaignId=campaign01&placeId=place01&sceneId=scene01
+	// localhost:8088/api/sandtable/map-owner?campaignId=campaign01 
 	"/api/sandtable/map-owner": async (context, data) => {
 		let json = {status:"error", msg: "unknow err"};
-		let res = await rdsUtil.connect('trpg').call((conn, callback) => {
-			conn.get(genOwnerKey(data.params.campaignId), callback);
+		let res = await rdsUtil.connectV4('trpg').call((conn) => {
+			return conn.get(genOwnerKey(data.params.campaignId));
 		});
 		if (res.isSuccess) {
 			json.msg = 'query success';
@@ -170,8 +169,8 @@ exports.handler = {
 	//http://localhost:8088/api/sandtable/load-map?campaignId=campaign01&placeId=place01&sceneId=scene01
 	"/api/sandtable/load-map": async (context, data) => {
 		let json = {status:"error", msg: ""};
-		let res = await rdsUtil.connect('trpg').call((conn, callback) => {
-			conn.get(genSceneKey(data.params.campaignId, data.params.placeId, data.params.sceneId), callback);
+		let res = await rdsUtil.connectV4('trpg').call((conn) => {
+			return conn.get(genSceneKey(data.params.campaignId, data.params.placeId, data.params.sceneId));
 		});
 		try {
 			json = JSON.parse(res.data);
@@ -190,8 +189,8 @@ exports.handler = {
 	//http://localhost:8088/api/sandtable/save-map?campaignId=campaign01&placeId=place01&sceneId=scene01&jsonStr={} 
 	"/api/sandtable/save-map": async (context, data) => {
 		let result = {status:'err'};
-		let res = await rdsUtil.connect('trpg').call((conn, callback) => {
-			conn.get(genOwnerKey(data.params.campaignId), callback);
+		let res = await rdsUtil.connectV4('trpg').call((conn) => {
+			return conn.get(genOwnerKey(data.params.campaignId));
 		});
 		let owner = res.data;
 		// console.log(data.params.jsonStr);
@@ -199,13 +198,13 @@ exports.handler = {
 		if (!owner || owner.length < 1) {
 			owner = json.username;
 			console.log(`${owner} create capaign ${genOwnerKey(data.params.campaignId)}`);
-			await rdsUtil.connect('trpg').call((conn, callback) => {
-				conn.set(genOwnerKey(data.params.campaignId), owner, callback);
+			await rdsUtil.connectV4('trpg').call((conn) => {
+				return conn.set(genOwnerKey(data.params.campaignId), owner);
 			});
 		}
 		if (owner == json.username) {
-			let res = await rdsUtil.connect('trpg').call((conn, callback) => {
-				conn.set(genSceneKey(data.params.campaignId, data.params.placeId, data.params.sceneId), data.params.jsonStr, callback);
+			let res = await rdsUtil.connect('trpg').call((conn) => {
+				return conn.set(genSceneKey(data.params.campaignId, data.params.placeId, data.params.sceneId), data.params.jsonStr);
 			});
 			if (res.data) {
 				result.status = 'success';

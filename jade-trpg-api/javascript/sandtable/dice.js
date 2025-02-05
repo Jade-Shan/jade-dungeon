@@ -55,8 +55,8 @@ exports.handler = {
             username.length > 0 && rollCmd.length > 0) //
         {
             let threshold = 0;
-            let res = await rdsUtil.connect('trpg').call((conn, callback) => {
-                conn.hget(genRollResultKey(campaignId, placeId, sceneId), username, callback);
+            let res = await rdsUtil.connectV4('trpg').call((conn) => {
+                return conn.hGet(genRollResultKey(campaignId, placeId, sceneId), username);
             });
             if (res.isSuccess) {
                 try {
@@ -70,9 +70,9 @@ exports.handler = {
                 let rollRes = rollDice(rollCmd);
                 if (rollRes && rollRes.sum > 0) {
                     rollRes.threshold = threshold;
-                    res = await rdsUtil.connect('trpg').call((conn, callback) => {
-                        conn.hset(genRollResultKey(campaignId, placeId, sceneId), username,
-                            JSON.stringify(rollRes), callback);
+                    res = await rdsUtil.connectV4('trpg').call((conn) => {
+                        return conn.hSet(genRollResultKey(campaignId, placeId, sceneId), 
+							username, JSON.stringify(rollRes));
                     });
                     if (!res.isSuccess) { result.msg = res.err; } else {
                         json.status = 'success';
@@ -106,9 +106,9 @@ exports.handler = {
             campaignId.length > 0 && placeId.length > 0 && sceneId.length > 0 && //
             threshold > 0) //
         {
-            let res = await rdsUtil.connect('trpg').call((conn, callback) => {
-                conn.hset(genRollResultKey(campaignId, placeId, sceneId), username,
-                    `{"threshold":${threshold}, "sum":0, "msg":""}`, callback);
+            let res = await rdsUtil.connectV4('trpg').call((conn) => {
+                return conn.hSet(genRollResultKey(campaignId, placeId, sceneId), username,
+                    `{"threshold":${threshold}, "sum":0, "msg":""}`);
             });
             if (!res.isSuccess) { result.msg = res.err; } else {
                 json.status = 'success';
@@ -133,8 +133,8 @@ exports.handler = {
 		if (campaignId && placeId && sceneId && campaignId.length > 0 && 
 			placeId.length > 0 && sceneId.length > 0) //
 		{
-			let res = await rdsUtil.connect('trpg').call((conn, callback) => {
-				conn.hgetall(genRollResultKey(campaignId, placeId, sceneId), callback);
+			let res = await rdsUtil.connectV4('trpg').call((conn) => {
+				return conn.hGetAll(genRollResultKey(campaignId, placeId, sceneId));
 			});
 			console.log(res);
 			if (!res.isSuccess) { json.msg = res.err; } else {
@@ -145,9 +145,11 @@ exports.handler = {
 						for (let key in res.data) {
 							try {
 								//json.data[key] = JSON.parse(res.data[key]);
-                                                                json.data.push({"userId": key, "threshold": rec.threshold,
-                                                                          "sum":rec.sum, "msg": rec.msg });
-							} catch(e) {/* do nothing */}
+								let rec = JSON.parse(res.data[key]);
+								json.data.push({"userId": key, "threshold": rec.threshold, "sum": rec.sum, "msg": rec.msg});
+							} catch(e) {
+								console.log(e);
+							}
 						}
 						// json.data = null == res.data ? {} : JSON.parse(res.data);
 					} catch (e) { /* */ }
