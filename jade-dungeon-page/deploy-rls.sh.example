@@ -1,5 +1,4 @@
 #!/bin/bash
-
-gulp release
+node ./node_modules/gulp-cli/bin/gulp.js release
 tar -cvf webroot.tar.gz webroot
 scp webroot.tar.gz   username@host:/webRootPath
