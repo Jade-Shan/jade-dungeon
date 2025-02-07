@@ -102,7 +102,11 @@ var HttpMethods = [{
 					cookies : request.cookies,
 					files   : []
 				};
-				bindFunc(context, data);
+				try {
+					bindFunc(context, data);
+				} catch (error) {
+					console.error(err);	
+				}
 			});
 		}
 	},{
@@ -130,7 +134,11 @@ var HttpMethods = [{
 						//cookies : cookies,
 						files   : uploadFiles 
 					};
-					bindFunc(context, data);
+					try {
+						bindFunc(context, data);
+					} catch (error) {
+						console.error(err);	
+					}
 				});
 		}
 	}];
