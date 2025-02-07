@@ -6,40 +6,45 @@ let genBlogKey = (userId) => { return `jadedungeon::blog::${userId}`; };
 exports.handler = {
 	// http://localhost:8088/api/blog/loadByUser?userId=u001&page=1&pageSize=10 
     "/api/blog/loadUserById": async (context, data) => {
-        context.response.writeHead(200, {
-            'Content-Type': 'application/json;charset=utf-8',
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'GET,POST',
-            'Access-Control-Allow-Headers': 'x-requested-with,content-type'
-        });
-        context.response.end(JSON.stringify({ "status": "success", "user": {
-                "userName": "Jade Shan",
-                "avatar": "http://152.32.139.17:8081/jadeutils.v2/themes/hobbit/images/atc-01.jpg",
-                "desc": "Demo post with formatted elements and comments.",
-                "joinTime": "2021-03-21",
-                "group": "Primer",
-                "homePageUrl": "#"
-            }
-        }));
+		if (!context.response.headersSent) {
+			await context.response.writeHead(200, {
+				'Content-Type': 'application/json;charset=utf-8',
+				'Access-Control-Allow-Origin': '*',
+				'Access-Control-Allow-Methods': 'GET,POST',
+				'Access-Control-Allow-Headers': 'x-requested-with,content-type'
+			});
+		}
+		context.response.end(JSON.stringify({
+			"status": "success", "user": {
+				"userName": "Jade Shan",
+				"avatar": "http://152.32.139.17:8081/jadeutils.v2/themes/hobbit/images/atc-01.jpg",
+				"desc": "Demo post with formatted elements and comments.",
+				"joinTime": "2021-03-21",
+				"group": "Primer",
+				"homePageUrl": "#"
+			}
+		}));
     },
     "/api/blog/loadRecommandArticles": async (context, data) => {
-        context.response.writeHead(200, {
-            'Content-Type': 'application/json;charset=utf-8',
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'GET,POST',
-            'Access-Control-Allow-Headers': 'x-requested-with,content-type'
-        });
-        context.response.end(JSON.stringify({
-            "status": "success", "recommands": [{
-                "title": "Demo post with formatted elements and comments",
-                "thumbnail": "http://152.32.139.17:8081/jadeutils.v2/themes/hobbit/images/atc-01.jpg",
-                "link": "#"
-            }, {
-                "title": "Images in this template",
-                "thumbnail": "http://152.32.139.17:8081/jadeutils.v2/themes/hobbit/images/atc-02.jpg",
-                "link": "#"
-            }]
-        }));
+		if (!context.response.headersSent) {
+			await context.response.writeHead(200, {
+				'Content-Type': 'application/json;charset=utf-8',
+				'Access-Control-Allow-Origin': '*',
+				'Access-Control-Allow-Methods': 'GET,POST',
+				'Access-Control-Allow-Headers': 'x-requested-with,content-type'
+			});
+		}
+		await context.response.end(JSON.stringify({
+				"status": "success", "recommands": [{
+					"title": "Demo post with formatted elements and comments",
+					"thumbnail": "http://152.32.139.17:8081/jadeutils.v2/themes/hobbit/images/atc-01.jpg",
+					"link": "#"
+				}, {
+					"title": "Images in this template",
+					"thumbnail": "http://152.32.139.17:8081/jadeutils.v2/themes/hobbit/images/atc-02.jpg",
+					"link": "#"
+				}]
+			}));
     },
     "/api/blog/loadByUser": async (context, data) => {
         let json = {"status": "err", "page": 1, "pageCount": 0, "articles": []};
@@ -88,13 +93,15 @@ exports.handler = {
             }
             // console.log(res2);
         }
-        context.response.writeHead(200, {
-            'Content-Type': 'application/json;charset=utf-8',
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'GET,POST',
-            'Access-Control-Allow-Headers': 'x-requested-with,content-type'
-        });
-        context.response.end(JSON.stringify(json));
+		if (!context.response.headersSent) {
+			await context.response.writeHead(200, {
+				'Content-Type': 'application/json;charset=utf-8',
+				'Access-Control-Allow-Origin': '*',
+				'Access-Control-Allow-Methods': 'GET,POST',
+				'Access-Control-Allow-Headers': 'x-requested-with,content-type'
+			});
+		}
+		await context.response.write(JSON.stringify(json));
     },
     "/api/blog/save": async (context, data) => {
         let now    = (new Date()).getTime();
@@ -121,12 +128,14 @@ exports.handler = {
                 json.status = "success";
             }
         }
-        context.response.writeHead(200, {
-            'Content-Type': 'application/json;charset=utf-8',
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'GET,POST',
-            'Access-Control-Allow-Headers': 'x-requested-with,content-type'
-        });
-        context.response.end(JSON.stringify(json));
+		if (!context.response.headersSent) {
+			await context.response.writeHead(200, {
+				'Content-Type': 'application/json;charset=utf-8',
+				'Access-Control-Allow-Origin': '*',
+				'Access-Control-Allow-Methods': 'GET,POST',
+				'Access-Control-Allow-Headers': 'x-requested-with,content-type'
+			});
+		}
+		await context.response.send(JSON.stringify(json));
     },
 };

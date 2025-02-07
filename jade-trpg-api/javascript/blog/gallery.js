@@ -62,13 +62,15 @@ exports.handler = {
             }
             // console.log(res2);
         }
-        context.response.writeHead(200, {
-            'Content-Type': 'application/json;charset=utf-8',
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'GET,POST',
-            'Access-Control-Allow-Headers': 'x-requested-with,content-type'
-        });
-        context.response.end(JSON.stringify(json));
+		if (!context.response.headersSent) {
+			await context.response.writeHead(200, {
+				'Content-Type': 'application/json;charset=utf-8',
+				'Access-Control-Allow-Origin': '*',
+				'Access-Control-Allow-Methods': 'GET,POST',
+				'Access-Control-Allow-Headers': 'x-requested-with,content-type'
+			});
+		}
+		await context.response.end(JSON.stringify(json));
     },
     "/api/gallery/save": async (context, data) => {
         // console.log(data);
@@ -104,12 +106,14 @@ exports.handler = {
                 }
             }
         }
-        context.response.writeHead(200, {
+		if (!context.response.headersSent) {
+        await context.response.writeHead(200, {
             'Content-Type': 'application/json;charset=utf-8',
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Methods': 'GET,POST',
             'Access-Control-Allow-Headers': 'x-requested-with,content-type'
         });
-        context.response.end(JSON.stringify(json));
+		}
+        await context.response.end(JSON.stringify(json));
     },
 };

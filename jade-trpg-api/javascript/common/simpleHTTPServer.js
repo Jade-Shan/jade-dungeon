@@ -91,7 +91,7 @@ var bindHandler = (context, handler) => {
 var HttpMethods = [{
 		method   : HTTP_GET,
 		bindFunc : (context, urlPtn, bindFunc) => {
-			context.application.get(urlPtn, function (request, response) {
+			context.application.get(urlPtn, async (request, response) => {
 				context.request = request;
 				context.response = response;
 				//let cookies = util.inspect(request.cookies);
@@ -103,17 +103,26 @@ var HttpMethods = [{
 					files   : []
 				};
 				try {
-					bindFunc(context, data);
+					await bindFunc(context, data);
 				} catch (error) {
 					console.error(err);	
 				}
+				if (!context.response.headersSent) {
+					await context.response.writeHead(200, {
+						'Content-Type': 'application/json;charset=utf-8',
+						'Access-Control-Allow-Origin': '*',
+						'Access-Control-Allow-Methods': 'GET,POST',
+						'Access-Control-Allow-Headers': 'x-requested-with,content-type'
+					});
+				}
+				await context.response.end(); // end response anyway
 			});
 		}
 	},{
 		method   : HTTP_POST,
 		bindFunc : (context, urlPtn, bindFunc) => {
 			context.application.post(urlPtn, // context.urlencodedParser, 
-				function (request, response) {
+				async (request, response)  => {
 					context.request = request;
 					context.response = response;
 					//let cookies = util.inspect(request.cookies);
@@ -135,10 +144,19 @@ var HttpMethods = [{
 						files   : uploadFiles 
 					};
 					try {
-						bindFunc(context, data);
+						await bindFunc(context, data);
 					} catch (error) {
 						console.error(err);	
 					}
+					if (!context.response.headersSent) {
+						await context.response.writeHead(200, {
+							'Content-Type': 'application/json;charset=utf-8',
+							'Access-Control-Allow-Origin': '*',
+							'Access-Control-Allow-Methods': 'GET,POST',
+							'Access-Control-Allow-Headers': 'x-requested-with,content-type'
+						});
+					}
+					await context.response.end(); // end response anyway
 				});
 		}
 	}];

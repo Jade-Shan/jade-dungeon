@@ -85,6 +85,7 @@ exports.handler = {
                 json.msg = 'not your turn';
             }
         } else { json.msg = 'miss params'; }
+		if (!context.response.headersSent) {
         context.response.writeHead(200, {
             'Content-Type': 'application/json;charset=utf-8',
             'Access-Control-Allow-Origin': '*',
@@ -92,6 +93,7 @@ exports.handler = {
             'Access-Control-Allow-Headers': 'x-requested-with,content-type'
         });
         context.response.end(JSON.stringify(json));
+		}
     },
 
     // http://localhost:8088/api/sandtable/set-roll-threshold?campaignId=campaign01&placeId=place01&sceneId=scene01&username=jade&threshold=33
@@ -115,6 +117,7 @@ exports.handler = {
                 json.data = res.data;
             }
         } else { json.msg = 'miss params'; }
+		if (!context.response.headersSent) {
         context.response.writeHead(200, {
             'Content-Type': 'application/json;charset=utf-8',
             'Access-Control-Allow-Origin': '*',
@@ -122,6 +125,7 @@ exports.handler = {
             'Access-Control-Allow-Headers': 'x-requested-with,content-type'
         });
         context.response.end(JSON.stringify(json));
+		}
     },
 
     // http://localhost:8088/api/sandtable/get-roll-result?campaignId=campaign01&placeId=place01&sceneId=scene01
@@ -157,11 +161,13 @@ exports.handler = {
 				json.status = 'success';
 			}
 		} else { json.msg = "miss params"; }
+		if (!context.response.headersSent) {
 		context.response.writeHead(200, {
 			'Content-Type':'application/json;charset=utf-8',
 			'Access-Control-Allow-Origin':'*',
 			'Access-Control-Allow-Methods':'GET,POST',
 			'Access-Control-Allow-Headers':'x-requested-with,content-type'});
 		context.response.end(JSON.stringify(json));
+		}
     }
 }
