@@ -5,9 +5,9 @@ let smp = {
     "title": "我在食堂学素描：第七周",
     "text": "\n",
     "ablum": [{
-        "id": 7, "title": "", "desc": "", "url": "http://47.102.120.187.17:8081/jadeutils.v2/themes/hobbit/images/banner.png"
+        "id": 7, "title": "", "desc": "", "url": "http://47.102.120.187:8081/jadeutils.v2/themes/hobbit/images/banner.png"
     }, {
-        "id": 14, "title": "老师的示范", "desc": "", "url": "http://47.102.120.187.17:8081/jadeutils.v2/themes/hobbit/images/banner.png"
+        "id": 14, "title": "老师的示范", "desc": "", "url": "http://47.102.120.187:8081/jadeutils.v2/themes/hobbit/images/banner.png"
     }]
 };
 

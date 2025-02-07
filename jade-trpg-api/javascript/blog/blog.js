@@ -17,7 +17,7 @@ exports.handler = {
 		context.response.end(JSON.stringify({
 			"status": "success", "user": {
 				"userName": "Jade Shan",
-				"avatar": "http://47.102.120.187.17:8081/jadeutils.v2/themes/hobbit/images/atc-01.jpg",
+				"avatar": "http://47.102.120.187:8081/jadeutils.v2/themes/hobbit/images/atc-01.jpg",
 				"desc": "Demo post with formatted elements and comments.",
 				"joinTime": "2021-03-21",
 				"group": "Primer",
@@ -37,11 +37,11 @@ exports.handler = {
 		await context.response.end(JSON.stringify({
 				"status": "success", "recommands": [{
 					"title": "Demo post with formatted elements and comments",
-					"thumbnail": "http://47.102.120.187.17:8081/jadeutils.v2/themes/hobbit/images/atc-01.jpg",
+					"thumbnail": "http://47.102.120.187:8081/jadeutils.v2/themes/hobbit/images/atc-01.jpg",
 					"link": "#"
 				}, {
 					"title": "Images in this template",
-					"thumbnail": "http://47.102.120.187.17:8081/jadeutils.v2/themes/hobbit/images/atc-02.jpg",
+					"thumbnail": "http://47.102.120.187:8081/jadeutils.v2/themes/hobbit/images/atc-02.jpg",
 					"link": "#"
 				}]
 			}));
