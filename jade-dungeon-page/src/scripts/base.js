@@ -14,7 +14,7 @@ var net = net || {};
 		self.data.nav = [
 			{title: "Journal", link: "/"},
 			{title: "Gallery", link: "/gallery.html"},
-			{title: "Note", link: "./study/notes/wiki_html"},
+			{title: "Note", link: "//47.102.120.187/study/notes/wiki_html"},
 			{title: "About Me", subs: [
 				{title: "Github", link: "//github.com/Jade-Shan/", isNewWin: true},
 				{title: "", link: ""},
