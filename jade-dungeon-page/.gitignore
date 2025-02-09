@@ -1,11 +1,11 @@
-**/*.swp
-deploy-rls.sh
-*.tar.gz
-tmp/
-webroot/
+*.swp
+
 node_modules/
 package-lock.json
+
+webroot/
 *.tar.gz
+
 deploy-rls-behind.sh
 deploy-rls-front.sh
 envs-behind.js
