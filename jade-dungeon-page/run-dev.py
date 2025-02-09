@@ -1,5 +1,4 @@
-#!/usr/bin/env python2
-# -*- coding: UTF-8 -*-
+#!/usr/bin/env python3
 
 import os, sys, getopt
 from http.server import SimpleHTTPRequestHandler
