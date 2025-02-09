@@ -4,7 +4,6 @@
 # styles/
 **/*.swp
 deploy-rls.sh
-envs.sample.js
 *.tar.gz
 tmp/
 webroot/
