@@ -6,7 +6,9 @@ package-lock.json
 webroot/
 *.tar.gz
 
+envs.js
 deploy-rls-behind.sh
 deploy-rls-front.sh
 envs-behind.js
 envs-front.js
+
