@@ -1,7 +1,7 @@
 exports.deployEnvs = {
 	dev: {
 		buildversion: "dev-0.0.1-",
-		webRoot: "//47.102.120.187",
+		webRoot: ".",
 		staticRoot: ".",
 		apiRoot: "//47.102.120.187:8088",
 		apiRootSandtable: "//47.102.120.187:8088",
