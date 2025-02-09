@@ -16,7 +16,7 @@ var net = net || {};
 			{title: "Gallery", link: "/gallery.html"},
 			{title: "Note", link: "//47.102.120.187/study/notes/wiki_html"},
 			{title: "About Me", subs: [
-				{title: "Github", link: "//github.com/Jade-Shan/", isNewWin: true},
+				// {title: "Github", link: "//github.com/Jade-Shan/", isNewWin: true},
 				{title: "", link: ""},
 				{title: "Resume", link: "/resume.html"}]},
 			{title: "Themes", subs: [
