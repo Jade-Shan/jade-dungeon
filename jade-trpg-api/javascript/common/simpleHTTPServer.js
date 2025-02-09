@@ -105,7 +105,7 @@ var HttpMethods = [{
 				try {
 					await bindFunc(context, data);
 				} catch (error) {
-					console.error(err);	
+					console.error(error);	
 				}
 				if (!context.response.headersSent) {
 					await context.response.writeHead(200, {
@@ -146,7 +146,7 @@ var HttpMethods = [{
 					try {
 						await bindFunc(context, data);
 					} catch (error) {
-						console.error(err);	
+						console.error(error);	
 					}
 					if (!context.response.headersSent) {
 						await context.response.writeHead(200, {
