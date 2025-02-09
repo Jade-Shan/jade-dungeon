@@ -12,50 +12,67 @@ let windDirtCodeMap = new Map();
 // create weather icon SVG to FONT:  https://icomoon.io/app/#/select
 
 exports.handler = {
-    "/api/weather/forecast": async (context, data) => {
-        let result = { status: 'err' };
-        let appKey1 = data.params.appKey1 ? data.params.appKey1 : "";
-        let appKey2 = data.params.appKey2 ? data.params.appKey2 : "";
-        let cityName = data.params.cityName ? data.params.cityName : "Shanghai";
-        let forecastDays = data.params.days ? data.params.days : "5";
+	"/api/weather/forecast": async (context, data) => {
+		let result = { status: 'err' };
+		let outFormat = "conky";
+		if (data.params.outFormat) {
+			if ("json" == data.params.outFormat) {
+				outFormat = "json";
+			}
+		}
+		let appKey1 = data.params.appKey1 ? data.params.appKey1 : "";
+		let appKey2 = data.params.appKey2 ? data.params.appKey2 : "";
+		let cityName = data.params.cityName ? data.params.cityName : "Shanghai";
+		let forecastDays = data.params.days ? data.params.days : "5";
 
-        if (appKey1 && appKey1.length > 6 && appKey2 && appKey2.length > 6) {
-            result = await weatherAPI.fetchForecast(appKey1, cityName, forecastDays);
-        let lat = data.params.lat ? data.params.lat : "31.18";
-        let lon = data.params.lon ? data.params.lon : "121.43";
-            let days = await openWeatherMap.fetchForecast(appKey2, lat, lon);
-            result.forecastDays[1].windDir   = days[1].windDir   ;
-            result.forecastDays[1].windSpeed = days[1].windSpeed ;
-            result.forecastDays[2].windDir   = days[2].windDir   ;
-            result.forecastDays[2].windSpeed = days[2].windSpeed ;
-            result.forecastDays[3] = days[3];
-            result.forecastDays[4] = days[4];
-            result.fontStr = transForecastFormatFontText(result.forecastDays);
-            context.response.writeHead(200, {
-                // 'Content-Type': 'application/json',
-                'Content-Type': 'text/plan',
-                'Cache-Control': 'public,s-maxage=300,max-age=300',
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Methods': 'GET,POST',
-                'Access-Control-Allow-Headers': 'x-requested-with,content-type'
-            });
-            // context.response.end(JSON.stringify(result));
-            context.response.end(result.fontStr);
-        } else {
-            if (res.statusCode != 200) {
-                console.error(`miss app key `);
-                context.response.writeHead(404, {
-                    'Content-Type': 'application/json',
-                    'Cache-Control': 'public,s-maxage=300,max-age=300',
-                    'Access-Control-Allow-Origin': '*',
-                    'Access-Control-Allow-Methods': 'GET,POST',
-                    'Access-Control-Allow-Headers': 'x-requested-with,content-type'
-                });
-                result.msg = 'miss appKey1'
-                context.response.end(JSON.stringify(result));
-            }
-        }
-    }
+		if (appKey1 && appKey1.length > 6 && appKey2 && appKey2.length > 6) {
+			result = await weatherAPI.fetchForecast(appKey1, cityName, forecastDays);
+			let lat = data.params.lat ? data.params.lat : "31.18";
+			let lon = data.params.lon ? data.params.lon : "121.43";
+			let days = await openWeatherMap.fetchForecast(appKey2, lat, lon);
+			result.forecastDays[1].windDir = days[1].windDir;
+			result.forecastDays[1].windSpeed = days[1].windSpeed;
+			result.forecastDays[2].windDir = days[2].windDir;
+			result.forecastDays[2].windSpeed = days[2].windSpeed;
+			result.forecastDays[3] = days[3];
+			result.forecastDays[4] = days[4];
+			let cType = "application/json";
+			if ("conky" == outFormat) {
+				cType = "text/plan";
+				result.fontStr = transForecastFormatFontText(result.forecastDays);
+			} else {
+				cType = "application/json";
+				result.fontStr = JSON.stringify(result);
+			}
+			if (!context.response.headersSent) {
+				await context.response.writeHead(200, {
+					// 'Content-Type': 'application/json',
+					'Content-Type': 'text/plan',
+					'Cache-Control': 'public,s-maxage=300,max-age=300',
+					'Access-Control-Allow-Origin': '*',
+					'Access-Control-Allow-Methods': 'GET,POST',
+					'Access-Control-Allow-Headers': 'x-requested-with,content-type'
+				});
+			}
+			// context.response.end(JSON.stringify(result));
+			await context.response.end(result.fontStr);
+		} else {
+			if (res.statusCode != 200) {
+				console.error(`miss app key `);
+				if (!context.response.headersSent) {
+					await context.response.writeHead(404, {
+						'Content-Type': 'application/json',
+						'Cache-Control': 'public,s-maxage=300,max-age=300',
+						'Access-Control-Allow-Origin': '*',
+						'Access-Control-Allow-Methods': 'GET,POST',
+						'Access-Control-Allow-Headers': 'x-requested-with,content-type'
+					});
+				}
+				result.msg = 'miss appKey1'
+				await context.response.end(JSON.stringify(result));
+			}
+		}
+	}
 };
 
 
