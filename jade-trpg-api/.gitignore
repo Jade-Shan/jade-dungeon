@@ -1,0 +1,6 @@
+node_modules/*
+output/*
+deploy-rls.sh
+patch.tar.gz
+backup-rls.sh
+package-lock.json

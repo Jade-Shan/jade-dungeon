@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en" dir="dir">
+	<head>
+<link rel="stylesheet" href="@@cdn3rd/bootstrap/3.3.6/css/bootstrap.min.css" />
+<link rel="stylesheet" href="@@cdn3rd/bootstrap/3.3.6/css/bootstrap-theme.min.css" />
+		<style>
+		</style>
+		<meta charset="UTF-8">
+		<title>sand box</title>
+	</head>
+	<body class="container">
+		<div id="most-out" class="row">
+			<div class="col-12">
+			
+
+
+<h1 id="toc_1">准备图片资源</h1>
+
+<p>
+需要的图片资源的两类：
+</p>
+
+<ul>
+<li>
+场景的地图
+
+<li>
+玩家、敌人、环境物等棋子的图标
+
+</ul>
+
+<p>
+场景地图为单独一张大图：
+</p>
+
+<p>
+<img src="images/sandtable/map.jpg" width="600px" />
+</p>
+
+<p>
+为了优化网络流量，推荐把多个小图标合并为一张大图：
+</p>
+
+<p>
+<img src="images/sandtable/icons.jpg" />
+</p>
+
+<h2 id="toc_1.1">上传图片资源</h2>
+
+<p>
+因为本服务器是最便宜的服务器，没有空间可以上传图片。
+图片只能用第三方图床来外链。
+</p>
+
+<p>
+以前新浪微博的图片可以外链，现在已经不能用了。
+可以找一些速度慢免费的第三方图床，比如：路过图床<code>https://imgtu.com/</code>
+</p>
+
+
+
+<h1 id="toc_2">创建沙盘</h1>
+
+<h2 id="toc_2.1">注册登录</h2>
+
+<p>
+首先注册登录，过程略。
+</p>
+
+<h2 id="toc_2.2">新建场景沙盘</h2>
+
+<p>
+每个沙盘的场景都以：「模组」、「地点」、「场景」作为唯一标识。比如：
+</p>
+
+<img src="images/sandtable/smp-login.jpg" />
+
+<p>
+「深水城大冒险」「海拉斯特的地下城」「山下一层」
+</p>
+
+<p>
+第一个使用新的模组名称的用户将作为该模组的拥有者与维护者，
+其他人无法编辑任何使用该模组名的场景沙盘。
+</p>
+
+<h2 id="toc_2.3">编辑沙盘</h2>
+
+<p>
+沙盘上所有的元素按使用过程中操作的频率分类为：
+</p>
+
+<img src="images/sandtable/smp-grpicons.jpg" />
+
+<ul>
+<li>
+玩家
+
+<li>
+非完家生物
+
+<li>
+场景物品
+
+<li>
+门
+
+<li>
+墙壁
+
+<li>
+图片资源
+
+</ul>
+
+<h2 id="toc_2.4">图片资源</h2>
+
+<p>
+图片资源只在创建沙盘时用到，使用的频率较低。
+</p>
+
+<h3 id="toc_2.4.1">背景地图</h3>
+
+<p>
+点击图片资源的按钮，其中必须有一张名为<code>map</code>的图片，该图片是整个场景的地图背景：
+</p>
+
+<img src="images/sandtable/smp-editimg.jpg" />
+
+<p>
+编辑器会为新创建的场景生成一张默认的<code>map</code>图片。
+点击该图片，下方的编辑区中可以把图片的URL换成你场景中需要用到的地图。
+</p>
+
+<h3 id="toc_2.4.2">导入新图片资源</h3>
+
+<p>
+按下方的「创建新图像」按钮，会创建一个新的图片资源。
+下方的编辑区中可以把图片的URL换成你场景中需要用到的图片。
+</p>
+
+<img src="images/sandtable/smp-iptimg.jpg" />
+
+<h2 id="toc_2.5">墙壁元素</h2>
+
+<p>
+墙壁元素只在创建沙盘时用到，使用的频率较低。
+</p>
+
+<p>
+墙壁用来遮挡玩家的视线，有线条、圆形、方块三种按钮用来建立三种不同的墙壁。
+</p>
+
+<img src="images/sandtable/smp-wall.jpg" />
+
+<p>
+点击创建线条按钮后，再用鼠标点击沙盘，
+拖动后放开会在该位置创建一个遮挡玩家的视线墙壁。
+</p>
+
+<h2 id="toc_2.6">棋子元素</h2>
+
+<p>
+棋子元素在跑团过程会经常移动位置。
+以下这些都是棋子元素：
+</p>
+
+<ul>
+<li>
+玩家（代表玩家的棋子的ID必须与玩家注册的用户名一致）
+
+<li>
+非完家生物
+
+<li>
+场景物品
+
+<li>
+门
+
+</ul>
+
+<p>
+地图的编辑者可以通过在沙盘上点击或是在列表中选择的方式来选中棋子。
+正文的编辑区域会显示棋子的属性，如位置、大小、图标、是否可见，
+是否遮挡其他玩家的视线等。
+</p>
+
+<h3 id="toc_2.6.1">创建棋子</h3>
+
+<img src="images/sandtable/smp-edittoken.jpg" />
+<p>
+在列表中选择对应的棋子列表，列表下方会显示创建不同类型棋子的按钮。
+</p>
+
+<p>
+点击创建按钮后，再用鼠标点击沙盘会在对应的位置创建棋子。
+</p>
+
+<h3 id="toc_2.6.2">棋子的图标</h3>
+
+<p>
+圆形与方形的棋子可以显示图标：
+</p>
+
+<img src="images/sandtable/smp-tokenimg.jpg" />
+
+<p>
+在编辑区域选择之前导入的图片资源，通过指定左上角的坐标与宽高，
+会把右边图片资源中框出来的区域作为棋子的图标。
+</p>
+
+<h3 id="toc_2.6.3">控制棋子</h3>
+
+<ul>
+<li>
+通过编辑位置属性或是按<code>Ctril</code>加鼠标拖动的方式可以移动棋子的位置。
+
+<li>
+通过编辑大小属性或是按<code>Alt</code>加鼠标拖动的方式可以改变棋子的大小。
+
+</ul>			
+			
+
+<h2 id="toc_2.7">保存元素</h2>
+
+<p>
+点击「保存并发布」按钮保存编辑结果，并让所有玩家看到沙盘的变化：
+</p>
+
+<img src="images/sandtable/smp-save.jpg" />
+
+
+
+<h1 id="toc_3">玩家操作</h1>
+
+<h2 id="toc_3.1">玩家登录</h1>
+
+<h3 id="toc_3.1.1">团队成员玩家</h3>
+
+<p>
+团队成员玩家注册的用户名必须与对应棋子的ID一致，这样才能把自己的视野绑定到对应的棋子上，
+关向DM发出移动棋子的请求：
+</p>
+
+<img src="images/sandtable/smp-rndet-01.jpg" />
+
+<h3 id="toc_3.1.2">旁观者</h3>
+
+<p>
+旁观者的视野被绑定在由DM创建的名为`spectator`的棋子上，该棋子的位置由DM控制：
+</p>
+
+<img src="images/sandtable/smp-spter.jpg" />
+
+<p>
+如果DM没有创建的名为`spectator`的棋子，那么旁观者打开沙盘时视野被固定在左上角。
+这个位置很有可能神墙壁给卡住，什么也看不到：
+</p>
+
+<img src="images/sandtable/smp-sptwl.jpg" />
+
+<h2 id="toc_3.2">移动棋子</h2>
+
+<p>
+本沙盘工具没有碰撞体积检测功能，所以棋子的移动是否符合移动范围与地形条件全靠人工判断。
+所以玩家只能提出移动棋子的请求，然后DM来裁定是否可以移动到指定位置。
+</p>
+
+<h3 id="toc_3.2.1">玩家出称动棋子的请求</h3>
+
+<p>
+玩家按住「Ctrl」加鼠标拖动棋子的操作，在沙盘上标示出想要移动的目标位置：
+</p>
+
+<img src="images/sandtable/smp-rndet-01.jpg" />
+
+<p>
+玩家如果想要撤消请求，直接鼠标点代表目的地的圆圈即可。
+撤消请求以后可以再次拖动，发出新的请求。
+</p>
+
+
+<h3 id="toc_3.2.2">DM裁定玩家的请求</h3>
+
+<p>
+因为服务器资源限制，为了减少请求的数量与网络流量。需要DM手动按刷新请求按钮：
+</p>
+
+<img src="images/sandtable/smp-rndet-04.jpg" />
+
+<p>
+可以在沙盘上看到所有玩家提出的移动请求：
+</p>
+
+<img src="images/sandtable/smp-rndet-02.jpg" />
+
+<p>
+DM按「Ctrl」加鼠标拖动棋子的操作可以直接操作棋子。
+</p>
+
+<img src="images/sandtable/smp-rndet-03.jpg" />
+
+<p>
+如果DM有异议，直接通过聊天与玩家讨论，讨论完后再移动。
+</p>
+
+
+<h3 id="toc_3.2.3">DM发布沙盘的变化</h3>
+
+<p>
+移动棋子完成以后，DM点击「保存并发布」按钮保存编辑结果。把修改后的沙盘广播给各位玩家：
+</p>
+
+<img src="images/sandtable/smp-save.jpg" />
+
+<h3 id="toc_3.2.4">玩家刷新沙盘</h3>
+
+<p>
+因为服务器资源限制，为了减少请求的数量与网络流量。需要玩家刷新网页（按F5或
+Ctrl+R都可以）才能看到新的位置与在新位置的视野范围内看到的新界面：
+</p>
+
+<img src="images/sandtable/smp-rndet-05.jpg" />
+
+
+
+<h2 id="toc_3.3">投骰与检定</h2>
+
+<p>
+为了防止玩家重复多次投骰子的操作。
+服务器只会记录在DM设定了对应对应玩家ID的检定阈值以后第一次投骰操作的结果。
+</p>
+
+<p>
+如果玩家的操作有误，必须要DM重新设置阈值以后，重新投骰的结果才会被服务器记录。
+</p>
+
+<h3 id="toc_3.3.1">DM指定玩家检定</h3>
+
+<p>
+DM选择一名玩家进行检定，并输入指定通过的阈值后，按「加车键」发出请求：
+</p>
+
+<img src="images/sandtable/smp-roll-dmreq.jpg" />
+
+<h3 id="toc_3.3.2">DM查看玩家检定结果</h3>
+
+<p>
+DM鼠标点击文本框，查看玩家投骰的结果：
+</p>
+
+<img src="images/sandtable/smp-roll-dmcheckres.jpg" />
+
+<p>
+第一条记录包括：玩家的ID、通过的阈值、是否成功、投骰子的详细信息。
+</p>
+
+<h3 id="toc_3.3.3">玩家检定</h3>
+
+<p>
+玩家直接在文本框中输入表达式并按回车键投骰。例如：2d6+1d4+3
+</p>
+
+<img src="images/sandtable/smp-roll-playerroll.jpg" />
+
+<p>
+玩家也可以通过鼠标点击文本框查看投骰结果，但是看不到DM设置的阈值。
+只能看到是否成功与详细数值：
+</p>
+
+<img src="images/sandtable/smp-roll-playerveiwres.jpg" />
+			
+			
+			
+			</div>
+
+
+		</div>
+	</body>
+	<script src="@@cdn3rd/jquery/2.1.4/jquery.min.js"></script>
+	<script src="@@cdn3rd/bootstrap/3.3.6/js/bootstrap.min.js" ></script>
+	<script type="text/javascript">
+let apiRoot = '@@apiRootSandtable/api/sandtable/';
+let apiRootAuth = '@@apiRootSandtable/api/auth/';
+
+	</script>
+</html>

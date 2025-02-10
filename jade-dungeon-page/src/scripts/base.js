@@ -1,4 +1,5 @@
 /* jshint esversion: 6 */
+
 var net = net || {};
 (function ($) {
 	net.jadedungeon = function () { init(); return this; };
@@ -13,9 +14,9 @@ var net = net || {};
 		self.data.nav = [
 			{title: "Journal", link: "/"},
 			{title: "Gallery", link: "/gallery.html"},
-			{title: "Note", link: "./study/notes/wiki_html"},
+			{title: "Note", link: "//47.102.120.187/study/notes/wiki_html"},
 			{title: "About Me", subs: [
-				{title: "Github", link: "//github.com/Jade-Shan/", isNewWin: true},
+				// {title: "Github", link: "//github.com/Jade-Shan/", isNewWin: true},
 				{title: "", link: ""},
 				{title: "Resume", link: "/resume.html"}]},
 			{title: "Themes", subs: [
@@ -170,7 +171,7 @@ var net = net || {};
 			let lnk = styles[i];
 			let ttitle = lnk.title;
 			if (ttitle == themeName) { 
-				jadeUtils.web.cookieOperator("ui.theme", themeName, {SameSite:'Lax'});
+				jadeUtils.web.cookieOperator("ui.theme", themeName, {SameSite:'Lax', expires: 90 });
 				lnk.disabled = false; 
 			}
 		}
@@ -178,7 +179,8 @@ var net = net || {};
 
 	self.loadUserById = function (apiRoot, userId) {
 		$.ajax({ 
-			url: encodeURI(apiRoot + "loadUserById/" + userId), 
+			url: encodeURI(apiRoot + "blog/loadUserById?userId=" + userId), 
+			xhrFields: {'Access-Control-Allow-Origin':'*'}, 
 			type: 'GET', dataType: 'json', data: { },
 			timeout: net.jadedungeon.ajaxTimeout,
 			success: function(data, status, xhr) {
@@ -207,7 +209,8 @@ var net = net || {};
 
 	self.loadRecommadArticles = function (apiRoot) {
 		$.ajax({ 
-			url: encodeURI(apiRoot + "loadRecommandArticles"), 
+			url: encodeURI(apiRoot + "blog/loadRecommandArticles"), 
+			xhrFields: {'Access-Control-Allow-Origin':'*'}, 
 			type: 'GET', dataType: 'json', data: { },
 			timeout: net.jadedungeon.ajaxTimeout,
 			success: function(data, status, xhr) {

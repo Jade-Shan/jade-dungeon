@@ -1,11 +1,15 @@
-# study/*
-# scripts/
-# themes/hobbit/css/
-# styles/
-**/*.swp
-deploy-rls.sh
-envs.sample.js
-*.tar.gz
-tmp/
+*.swp
+
+node_modules/
+package-lock.json
+
 webroot/
 *.tar.gz
+
+envs.js
+deploy-rls-behind.sh
+deploy-rls-front.sh
+envs-dev.js
+envs-behind.js
+envs-front.js
+

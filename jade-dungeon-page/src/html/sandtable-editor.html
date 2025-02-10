@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en" dir="dir">
+	<head>
+<link rel="stylesheet" href="@@cdn3rd/bootstrap/3.3.6/css/bootstrap.min.css" />
+<link rel="stylesheet" href="@@cdn3rd/bootstrap/3.3.6/css/bootstrap-theme.min.css" />
+		<style>
+			div#hideImgs { display: none;}
+			div#mapArea {overflow: auto;}	
+			div#tokenListArea {overflow: auto;}	
+			div#propImgArea {overflow: auto; height: 150px;}	
+		</style>
+		<meta charset="UTF-8">
+		<title>sandtable</title>
+	</head>
+	<body class="container-fluid">
+		<div id="most-out" class="row">
+			<div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">
+				<div class="row">
+					<div id="mapArea" class="col-12">
+						<canvas id="canvas" height="300" width="300"></canvas>	
+					</div>
+				</div>
+				<div class="row">
+					<div id="ctrlPanel" class="col-lg-8 col-md-8 col-sm-6 col-xs-6">
+						<table class="table table-striped">
+							<tbody id="tk-prop-editer"></tbody>
+						</table>
+					</div>
+					<div id="propImgArea" class="col-lg-4 col-md-4 col-sm-6 col-xs-6">
+						<canvas id="tkImgCanvas" height="100" width="100"></canvas>	
+					</div>
+				</div>
+			</div>
+			<div class="container col-lg-3 col-md-3 col-sm-3 col-xs-3">
+				<div id='tokenGroupBtns' class="row">
+					<div class="btn-group col-12">
+						<button type="button"	id="btn-lst-teams"      onClick="javascript:sandtable.listGroupTokens('team'      );" class="btn btn-default">&#128100</button>
+						<button type="button"	id="btn-lst-creaters"   onClick="javascript:sandtable.listGroupTokens('creater'   );" class="btn btn-default">&#128126</button>
+						<button type="button"	id="btn-lst-furnishing" onClick="javascript:sandtable.listGroupTokens('furnishing');" class="btn btn-default">&#128452</button>
+						<button type="button"	id="btn-lst-doors"      onClick="javascript:sandtable.listGroupTokens('door'      );" class="btn btn-default">&#128682</button>
+						<button type="button"	id="btn-lst-walls"      onClick="javascript:sandtable.listGroupTokens('wall'      );" class="btn btn-default">&#127959</button>
+						<button type="button"	id="btn-lst-images"     onClick="javascript:sandtable.listGroupTokens('image'     );" class="btn btn-default">&#127756</button>
+					</div>
+				</div>
+				<div class="row">
+					<div id="tokenListArea" class="col-12">
+						<table class="table table-striped">
+							<tbody id="token-list"></tbody>
+						</table>	
+					</div>
+				</div>
+				<div id="createTokenArea" class="row">
+					<span id="tokenCreateText" class="btn-group col-6"></span>
+					<div  id="tokenCreateBtns" class="btn-group col-6"></div>
+				</div>
+				<div id="optSaveBtnsArea" class="row">
+					<div  id="optSaveBtns" class="btn-group col-12"></div>
+				</div>
+				<div id="logInfoArea" class="row">
+					<textarea id="logInfo" class="form-control col-12" rows="10" readonly='readonly' onClick="javascript:sandtable.queryRollResult()"></textarea>
+				</div>
+				<div id="rollDiceArea" class="row">
+					<div class="col-lg-4">
+						<select id="rollDiceUser" class="form-control" ></select>
+					</div>
+					<div class="col-lg-8">
+						<input id="rollDiceThreshold" type="text" class="form-control" placeholder="threshold" >
+					</div>
+						<!--  
+					<div class="col-lg-3">
+						<button type="button"	id="rollDiceReqSubmit" onClick="javascript:sandtable.requestRollThreshold()" class="btn btn-default">提交</button>
+					</div>
+						-->
+				</div>
+			</div>
+		</div>
+
+
+		<div id="hideImgs">
+			<canvas id="finalCanvas" height="300" width="300"></canvas>	
+		</div>
+
+		<script src="@@cdn3rd/jquery/2.1.4/jquery.min.js"></script>
+		<script src="@@cdn3rd/bootstrap/3.3.6/js/bootstrap.min.js" ></script>
+<!--build:js @@webRoot/scripts/all.min.js?v=@@buildversion-->
+		<script src="@@webRoot/scripts/canvas2dutils.js?v=@@buildversion" ></script>
+		<script src="@@webRoot/scripts/sandtable-comm.js?v=@@buildversion" ></script>
+		<script src="@@webRoot/scripts/sandtable-view.js?v=@@buildversion" ></script>
+		<script src="@@webRoot/scripts/sandtable-editor.js?v=@@buildversion" ></script>
+<!--/build -->
+	</body>
+	<script type="text/javascript">
+let apiRoot = '@@apiRootSandtable/api/sandtable/';
+
+let editorHtmlLine =  '<tr>' +
+	'<td style=\'width:60px\'>线条：</td><td><input type="text" id="tkId" class="tkPropIpt" style="width:100px"></td>'
+	+ '<td>x：</td><td><input type="text" id="tkX" class="tkPropIpt" style="width:60px"></td>'
+	+ '<td>y：</td><td><input type="text" id="tkY" class="tkPropIpt" style="width:60px"></td>'
+	+ '<td>x：</td><td><input type="text" id="tkX2" class="tkPropIpt" style="width:60px"></td>'
+	+ '<td>y：</td><td><input type="text" id="tkY2" class="tkPropIpt" style="width:60px"></td>'
+	+ '</tr><tr>'
+	+ '<td></td><td></td>'
+	+ '<td></td><td></td>'
+	+ '<td></td><td></td>'
+	+ '<td></td><td></td>'
+	+ '<td></td><td></td>'
+	+ '</tr><tr>'
+	+ '<td>颜色：</td><td><select id="tkColor" class="tkPropIpt" style="width:100px">' 
+	+ '<option value="#000000" style="color:#000000">&#9608; 000000</option>'
+	+ '<option value="#FF0000" style="color:#FF0000">&#9608; FF0000</option>'
+	+ '<option value="#00FF00" style="color:#00FF00">&#9608; 00FF00</option>'
+	+ '<option value="#0000FF" style="color:#0000FF">&#9608; 0000FF</option>'
+	+ '<option value="#FFFF00" style="color:#FFFF00">&#9608; FFFF00</option>'
+	+ '<option value="#00FFFF" style="color:#00FFFF">&#9608; 00FFFF</option>'
+	+ '<option value="#FF00FF" style="color:#FF00FF">&#9608; FF00FF</option>'
+	+ '<option value="#C0C0C0" style="color:#C0C0C0">&#9608; C0C0C0</option>'
+	+ '<option value="#FFFFFF" style="color:#FFFFFF">&#9608; FFFFFF</option>'
+	+ '</select></td>'
+	+ '<td>遮挡：</td><td><select id="tkBlock" class="tkPropIpt" style="width:80px"><option value="true">遮挡视线</option><option value="false">后方可见</option></select></td>' 
+	+ '<td>可见：</td><td><select id="tkVisiable" class="tkPropIpt" style="width:60px"><option value="true">可见</option><option value="false">隐形</option></select></td>' 
+	+ '<td></td><td></td><td></td>'
+	+ '<td><button type="button" onClick="javascript:sandtable.updateToken();" class="btn btn-primary">修改</button></td>'
+	+ '</tr>';
+
+let editorHtmlRect =  '<tr>' +
+	'<td style=\'width:60px\'>方块：</td><td><input type="text" id="tkId" class="tkPropIpt" style="width:100px"></td>'
+	+ '<td>x：</td><td><input type="text" id="tkX" class="tkPropIpt" style="width:60px"></td>'
+	+ '<td>y：</td><td><input type="text" id="tkY" class="tkPropIpt" style="width:60px"></td>'
+	+ '<td>宽：</td><td><input type="text" id="tkWidth" class="tkPropIpt" style="width:60px"></td>'
+	+ '<td>高：</td><td><input type="text" id="tkHeigh" class="tkPropIpt" style="width:60px"></td>'
+	+ '</tr><tr>'
+	+ '<td>图片：</td><td><select id="tkImgKey" class="tkPropIpt" style="width:100px"></select></td>'
+	+ '<td>x：</td><td><input type="text" id="tkImgX" class="tkPropIpt" style="width:60px"></td>'
+	+ '<td>y：</td><td><input type="text" id="tkImgY" class="tkPropIpt" style="width:60px"></td>'
+	+ '<td>宽：</td><td><input type="text" id="tkImgWidth" class="tkPropIpt" style="width:60px"></td>'
+	+ '<td>高：</td><td><input type="text" id="tkImgHeight" class="tkPropIpt" style="width:60px"></td>'
+	+ '</tr><tr>'
+	+ '<td>颜色：</td><td><select id="tkColor" class="tkPropIpt" style="width:100px">' 
+	+ '<option value="#000000" style="color:#000000">&#9608; 000000</option>'
+	+ '<option value="#FF0000" style="color:#FF0000">&#9608; FF0000</option>'
+	+ '<option value="#00FF00" style="color:#00FF00">&#9608; 00FF00</option>'
+	+ '<option value="#0000FF" style="color:#0000FF">&#9608; 0000FF</option>'
+	+ '<option value="#FFFF00" style="color:#FFFF00">&#9608; FFFF00</option>'
+	+ '<option value="#00FFFF" style="color:#00FFFF">&#9608; 00FFFF</option>'
+	+ '<option value="#FF00FF" style="color:#FF00FF">&#9608; FF00FF</option>'
+	+ '<option value="#C0C0C0" style="color:#C0C0C0">&#9608; C0C0C0</option>'
+	+ '<option value="#FFFFFF" style="color:#FFFFFF">&#9608; FFFFFF</option>'
+	+ '</select></td>'
+	+ '<td>遮挡：</td><td><select id="tkBlock" class="tkPropIpt" style="width:80px"><option value="true">遮挡视线</option><option value="false">后方可见</option></select></td>' 
+	+ '<td>可见：</td><td><select id="tkVisiable" class="tkPropIpt" style="width:60px"><option value="true">可见</option><option value="false">隐形</option></select></td>' 
+	+ '<td></td><td></td><td></td>'
+	+ '<td><button type="button" onClick="javascript:sandtable.updateToken();" class="btn btn-primary">修改</button></td>'
+	+ '</tr>';
+
+let editorHtmlCirc =  '<tr>' +
+	'<td style=\'width:60px\'>棋子：</td><td><input type="text" id="tkId" class="tkPropIpt" style="width:100px"></td>'
+	+ '<td>x：</td><td><input type="text" id="tkX" class="tkPropIpt" style="width:60px"></td>'
+	+ '<td>y：</td><td><input type="text" id="tkY" class="tkPropIpt" style="width:60px"></td>'
+	+ '<td>半径：</td><td><input type="text" id="tkRadius" class="tkPropIpt" style="width:60px"></td>'
+	+ '<td></td></td>'
+	+ '</tr><tr>'
+	+ '<td>图片：</td><td><select id="tkImgKey" class="tkPropIpt" style="width:100px"></select></td>'
+	+ '<td>x：</td><td><input type="text" id="tkImgX" class="tkPropIpt" style="width:60px"></td>'
+	+ '<td>y：</td><td><input type="text" id="tkImgY" class="tkPropIpt" style="width:60px"></td>'
+	+ '<td>宽：</td><td><input type="text" id="tkImgWidth" class="tkPropIpt" style="width:60px"></td>'
+	+ '<td>高：</td><td><input type="text" id="tkImgHeight" class="tkPropIpt" style="width:60px"></td>'
+	+ '</tr><tr>'
+	+ '<td>颜色：</td><td><select id="tkColor" class="tkPropIpt" style="width:100px"onChange="javascript:changeEditColor();">' 
+	+ '<option value="#000000" style="color:#000000">&#9608; 000000</option>'
+	+ '<option value="#FF0000" style="color:#FF0000">&#9608; FF0000</option>'
+	+ '<option value="#00FF00" style="color:#00FF00">&#9608; 00FF00</option>'
+	+ '<option value="#0000FF" style="color:#0000FF">&#9608; 0000FF</option>'
+	+ '<option value="#FFFF00" style="color:#FFFF00">&#9608; FFFF00</option>'
+	+ '<option value="#00FFFF" style="color:#00FFFF">&#9608; 00FFFF</option>'
+	+ '<option value="#FF00FF" style="color:#FF00FF">&#9608; FF00FF</option>'
+	+ '<option value="#C0C0C0" style="color:#C0C0C0">&#9608; C0C0C0</option>'
+	+ '<option value="#FFFFFF" style="color:#FFFFFF">&#9608; FFFFFF</option>'
+	+ '</select></td>'
+	+ '<td>遮挡：</td><td><select id="tkBlock" class="tkPropIpt" style="width:80px"><option value="true">遮挡视线</option><option value="false">后方可见</option></select></td>' 
+	+ '<td>可见：</td><td><select id="tkVisiable" class="tkPropIpt" style="width:60px"><option value="true">可见</option><option value="false">隐形</option></select></td>' 
+	+ '<td></td><td></td><td></td>'
+	+ '<td><button type="button" onClick="javascript:sandtable.updateToken();" class="btn btn-primary">修改</button></td>'
+	+ '</tr>';
+
+let editorHtmlImg =  '<tr>' +
+	'<td style=\'width:60px\'>URL：</td><td colspan="9"><input type="text" id="tkURL" class="tkPropIpt" style="width:600px"></td>'
+	+ '</tr><tr>'
+	+ '<td>名称：</td><td><input type="text" id="tkImgKey" class="tkPropIpt" style="width:100px"></td>'
+	+ '<td>宽：</td><td><input type="text" readOnly="readOnly" id="tkImgWidth"  class="tkPropIpt" style="width:60px"></td>'
+	+ '<td>高：</td><td><input type="text" readOnly="readOnly" id="tkImgHeight" class="tkPropIpt" style="width:60px"></td>'
+	+ '<td><input type="hidden" id="tkId" class="tkPropIpt"></td><td></td><td></td><td></td>'
+	+ '</tr><tr>'
+	+ '<td></td><td><input type="hidden" id="tkColor"/></td>'
+	+ '<td></td><td><input type="hidden" id="tkBlock" /></td>' 
+	+ '<td></td><td><input type="hidden" id="tkVisiable" /></td>' 
+	+ '<td></td><td></td><td></td>'
+	+ '<td><button type="button" onClick="javascript:sandtable.updateToken();" class="btn btn-primary">修改</button></td>'
+	+ '</tr>';
+
+function changeEditColor() {
+	let color = $('#tkColor').val();
+	$('#tkColor').attr('style','color:' + color + ';background-color:#505050');
+};
+
+let params     = parseUrlParams();
+let campaignId = params.get('campaignId');
+let placeId    = params.get('placeId'   );
+let sceneId    = params.get('sceneId'   );
+
+if (campaignId && placeId && sceneId && 
+	campaignId.length > 0 && placeId.length > 0 && sceneId.length > 0) //
+{
+	/* ok */ 
+} else {
+	window.location = '@@webRoot/sandtable-index.html?campaignId=campaign01&placeId=place01&sceneId=scene01';
+}
+let sandtable = {};
+let username = cookieOperator('username');
+if (username && username.length > 0) {
+	queryCampaignOwner(campaignId).then((data) => {
+		console.log(data);
+		if (data && data.owner && data.owner.length > 0 && data.owner != username) {
+			alert(`战役名称「${campaignId}」已经被用户「${data.owner}」占用。\n请改用其他战役名称`);
+			window.location = '@@webRoot/sandtable-index.html?campaignId=campaign01&placeId=place01&sceneId=scene01';
+		} else {
+			sandtable = new SandTableEditor(
+				document.getElementById("canvas"), 
+				document.getElementById("tkImgCanvas"), {
+					viewRange: 500, shadowColor: 'rgba(0, 0, 0, 0.7)',
+					campaignId: campaignId, placeId: placeId, sceneId: sceneId}, 
+				username);
+			window.addEventListener('resize', sandtable.resizeLayout);
+			sandtable.drawSandTable();
+		}
+	}).catch((err) => {
+		console.log(err);
+		alert('系统异常');
+		window.location = '@@webRoot/sandtable-index.html?campaignId=campaign01&placeId=place01&sceneId=scene01';
+	});
+} else {
+	alert('登录信息已经过期，请重新登录');
+	window.location = '@@webRoot/sandtable-index.html?campaignId=campaign01&placeId=place01&sceneId=scene01';
+}
+
+
+	</script>
+</html>

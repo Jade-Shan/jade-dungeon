@@ -1,0 +1,51 @@
+div#sandtable-body {
+	overflow: scroll;
+}
+
+div.float-window {
+	padding: 5px;
+	margin: 5px;
+	opacity: 0.5;
+	border: 1px solid #803530;
+	box-shadow: inset 0 0 10px rgba(0, 0, 0, .2), 10px 0 5px rgba(0, 0, 0, .4);
+	background-image: url(http://www.jade-dungeon.net:8081/jadeutils.v2/themes/hobbit/images/toc-bg.jpg);
+	position: fixed;
+	/* z-index: 100; */
+}
+
+div.float-window:hover { opacity: 0.9; }
+
+div.float-window .title-bar {
+	cursor: move;
+	overflow: hidden;
+	width: 100%;
+	height: 35px;
+	padding: 5px 10px;
+	color: #000;
+	background: #8B4513;
+	border: 1px solid #803530;
+	box-shadow: inset 0 0 10px rgba(0, 0, 0, .2);
+	text-align: center;
+	/*
+	font-size: 1.3em;
+	font-weight: 200;
+	*/
+	line-height: 1.5em;
+	letter-spacing: .01em;
+}
+
+div.float-window .title-bar>.title-icon { float: left ;  }
+div.float-window .title-bar>.title-ctrl { float: right;  }
+
+div.float-window .window-body { width:100%; height:  100%; }
+/* div.float-window .window-body div.log-text { height: 120px; word-wrap: break-word; overflow-y: scroll; }
+*/
+
+div#msg-win { top:  60px; left:  10px; width: 300; height: 100; z-index: 100; }
+div#dic-win { top: 100px; left: 160px; width: 300; height: 100; z-index: 100; }
+div#msg-win .window-body div.log-text { height: 120px; word-wrap: break-word; overflow-y: scroll; }
+div#dic-win .window-body div.log-text { height: 120px; word-wrap: break-word; overflow-y: scroll; }
+
+div#token-win    { top: 500px; left:  10px; width: 500; height: 100; z-index: 100; }
+div#token-win .window-body div.log-text { overflow: scroll; }
+div#resource-win { top: 150px; left: 190px; width: 300; height: 100; z-index: 100; }

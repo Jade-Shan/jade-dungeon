@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" dir="dir">
+	<head>
+<link rel="stylesheet" href="@@cdn3rd/bootstrap/3.3.6/css/bootstrap.min.css" />
+<link rel="stylesheet" href="@@cdn3rd/bootstrap/3.3.6/css/bootstrap-theme.min.css" />
+		<style>
+		</style>
+		<meta charset="UTF-8">
+		<title>sand box</title>
+	</head>
+	<body class="container">
+		<div id="most-out" class="row">
+
+			<form class="form-horizontal col-12" role="form">
+				<div class="form-group">
+					<label for="username" class="col-sm-2 control-label">用户名</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" id="username" placeholder="请输入用户名">
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="password" class="col-sm-2 control-label">密码</label>
+					<div class="col-sm-10">
+						<input type="password" class="form-control" id="password" placeholder="请输入密码">
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-offset-2 col-sm-10">
+						<!-- 
+						<div class="checkbox">
+							<label>
+								<input type="checkbox">请记住我
+							</label>
+						</div>
+						-->
+						<button type="button" class="btn btn-default" onClick="javascript:pageLogin();">登录</button>
+						<button type="button" class="btn btn-default" onClick="javascript:pageRegist();">注册</button>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="campaignId" class="col-sm-2 control-label">战役名称</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" id="campaignId" placeholder="请输入战役名称">
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="placeId" class="col-sm-2 control-label">所在地区</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" id="placeId" placeholder="请输入所在地区">
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="sceneId" class="col-sm-2 control-label">所在场景</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" id="sceneId" placeholder="请输入所在场景">
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-offset-2 col-sm-10">
+						<button type="button" class="btn btn-default" onClick="javascript:goSandtable();">进入场景</button>
+						<button type="button" class="btn btn-default" onClick="javascript:editSandtable();">编辑该场景</button>
+						<a href="sandtable-readme.html" >帮助文档</a>
+					</div>
+				</div>
+			</form>
+
+		</div>
+	</body>
+	<script src="@@cdn3rd/jquery/2.1.4/jquery.min.js"></script>
+	<script src="@@cdn3rd/bootstrap/3.3.6/js/bootstrap.min.js" ></script>
+	<!--build:js @@webRoot/scripts/all.min.js?v=@@buildversion-->
+	<script src="@@webRoot/scripts/canvas2dutils.js?v=@@buildversion" ></script>
+	<script src="@@webRoot/scripts/sandtable-comm.js?v=@@buildversion" ></script>
+	<script src="@@webRoot/scripts/sandtable-index.js?v=@@buildversion" ></script>
+	<script src="@@webRoot/scripts/sandtable-view.js?v=@@buildversion" ></script>
+	<script src="@@webRoot/scripts/sandtable-editor.js?v=@@buildversion" ></script>
+	<!--/build -->
+	<script type="text/javascript">
+let apiRoot = '@@apiRootSandtable/api/sandtable/';
+let apiRootAuth = '@@apiRootSandtable/api/auth/';
+
+let params     = parseUrlParams();
+let campaignId = params.get('campaignId');
+let placeId    = params.get('placeId'   );
+let sceneId    = params.get('sceneId'   );
+
+if (campaignId && placeId && sceneId) { /* ok */ } else {
+	window.location = '@@webRoot/sandtable-index.html?campaignId=campaign01&placeId=place01&sceneId=scene01';
+}
+
+$('#campaignId').val(campaignId);
+$('#placeId'   ).val(placeId   );
+$('#sceneId'   ).val(sceneId   );
+
+let pageRegist = () => {
+	userRegist($('#username').val(),$('#password').val());
+};
+
+let pageLogin = () => {
+	userLogin($('#username').val(), $('#password').val(), '', (data) => {
+		if ('success' == data.status) {
+			alert('登录成功');
+		} else {
+			alert(data.msg);
+		}
+	});
+};
+
+let goSandtable = () => {
+	userLogin($('#username').val(), $('#password').val(), '', (data) => {
+		if ('success' == data.status) {
+			let campaignId = $('#campaignId').val();
+			let placeId    = $('#placeId'   ).val();
+			let sceneId    = $('#sceneId'   ).val();
+			if (campaignId && placeId && sceneId && 
+				campaignId.length > 0 && placeId.length > 0 && sceneId.length > 0) //
+			{
+				window.location = '@@webRoot/sandtable.html?campaignId=' + 
+					campaignId + '&placeId=' + placeId + '&sceneId=' + sceneId;
+			} else {
+				alert('请输入战役名称、地区、场景信息');
+			}
+		} else {
+			alert(data.msg);
+		}
+	});
+};
+
+let editSandtable = () => {
+	userLogin($('#username').val(), $('#password').val(), '', (data) => {
+		if ('success' == data.status) {
+			let campaignId = $('#campaignId').val();
+			let placeId    = $('#placeId'   ).val();
+			let sceneId    = $('#sceneId'   ).val();
+			if (campaignId && placeId && sceneId && 
+				campaignId.length > 0 && placeId.length > 0 && sceneId.length > 0) //
+			{
+				window.location = '@@webRoot/sandtable-editor.html?campaignId=' + 
+					campaignId + '&placeId=' + placeId + '&sceneId=' + sceneId;
+			} else {
+				alert('请输入战役名称、地区、场景信息');
+			}
+		} else {
+			alert(data.msg);
+		}
+	});
+};
+
+
+
+	</script>
+</html>

@@ -1,0 +1,37 @@
+{
+    "version": "0.2.0",
+    "configurations": [{
+            "name": "run-sandtable",
+            "type": "node",
+            "request": "launch",
+            "program": "${workspaceFolder}/javascript/main.js",
+            "runtimeArgs": [
+                "--preserve-symlinks",
+                "--preserve-symlinks-main"
+            ],
+			"args": ["-h","localhost","-p","8038"],
+            "skipFiles": [ "<node_internals>/**" ]
+         }, {
+            "name": "run-express-demo",
+            "type": "node",
+            "request": "launch",
+            "program": "${workspaceFolder}/javascript/expressDemo.js",
+            "runtimeArgs": [
+                "--preserve-symlinks",
+                "--preserve-symlinks-main"
+            ],
+			"runtimeExecutable":"/home/jade/.nvm/versions/node/v16.20.2/bin/node",
+            "skipFiles": [ "<node_internals>/**" ]
+         }, {
+            "name": "backup-website",
+            "type": "node",
+            "request": "launch",
+            "program": "${workspaceFolder}/javascript/backup.js",
+			"runtimeExecutable":"/home/jade/.nvm/versions/node/v16.20.2/bin/node",
+            "runtimeArgs": [
+                "--preserve-symlinks",
+                "--preserve-symlinks-main"
+            ],
+            "skipFiles": [ "<node_internals>/**" ]
+    }]
+}

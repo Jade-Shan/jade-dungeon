@@ -7,6 +7,10 @@
 	     "keywords": "jade-dungeon, Gallery",
 	 "description": "jade-dungeon, Gallery"
 })
+
+<!--
+<script src="https://unpkg.com/webamp"></script>
+-->
 </head>
 <body>
 
@@ -33,18 +37,82 @@
 	role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 </div>
 
+<div id="webAmpDiv"></div>
 </body>
 <script type="text/javascript">
 var cfg = {
 	// apiRoot: "http://localhost:8080/crawler-web2/api/blog/",
-	apiRoot: "@@apiRoot/api/blog/",
+	apiRoot: "@@apiRoot/api/",
 	pageTitle: "Gallery", subTitle: "My Gallery"
 };
 
-cfg.authorId = 'u001';
+/* parse url params */
+let urlParams = new URLSearchParams(window.location.search);
+
+/* =================== */
+/* init user           */
+/* =================== */
+let currUser = jadeUtils.web.cookieOperator('data.currUser');
+if (currUser && currUser.length > 0) {
+	// do nothging
+} else {
+	currUser = 'teo';
+}
+let urlUser = urlParams.get('currUser')
+if (urlUser && urlUser.length > 0) {
+	currUser = urlUser;
+}
+if (currUser && currUser.length > 0) {
+	cfg.authorId = currUser;
+	jadeUtils.web.cookieOperator('data.currUser', currUser, {SameSite:'Lax', expires: 90});
+}
+
+let currPage = 1;
+let pageParams = urlParams.get('currPage');
+if (pageParams && !isNaN(pageParams)) {
+	currPage = pageParams;
+}
+
+/* load data */
 var page = new net.jadedungeon.gallery(cfg);
 page.render();
 page.loadPage(1);
 
+
+/* =================== */
+/* init ui theme       */
+/* =================== */
+let theme = jadeUtils.web.cookieOperator('ui.theme');
+if (theme && (theme == 'hobbit' || theme == 'lo-fi' || theme == 'paper-print')) {
+	// do nothing
+} else {
+	theme = 'hobbit';
+}
+net.jadedungeon.changeTheme(theme);
+
+/* =================== */
+/* init ui music player       */
+/* =================== */
+// let needAmp = true;
+// let needAmpCookie = jadeUtils.web.cookieOperator('ui.needAmp');
+// if (needAmpCookie && needAmpCookie == 'true') {
+// 	needAmp = true;
+// } else {
+// 	needAmp = false;
+// }
+// let needAmpParam = urlParams.get('needAmp');
+// if (needAmpParam && needAmpParam == 'true') {
+// 	needAmp = true;
+// } else if (needAmpParam && needAmpParam == 'false') {
+// 	needAmp = false;
+// }
+// jadeUtils.web.cookieOperator('ui.needAmp', needAmp, {SameSite:'Lax', expires: 90 });
+// if (needAmp) {
+// 	/* https://webamp.org/ */
+// 	/* https://github.com/captbaritone/webamp */
+// 	const webAmpDiv = document.getElementById("webAmpDiv")
+// 	const webamp = new Webamp();
+// 	webamp.renderWhenReady(webAmpDiv);
+// }
 </script>
 </html>

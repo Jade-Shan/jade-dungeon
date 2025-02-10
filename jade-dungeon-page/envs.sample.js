@@ -3,16 +3,17 @@ exports.deployEnvs = {
 		buildversion: "dev-0.0.1-",
 		webRoot: ".",
 		staticRoot: ".",
-		apiRoot: ".",
-		cdnRoot: "//localhost:8081/webroot",
+		apiRoot: "//localhost:8082",
+		cdnRoot: "//localhost:8081",
 		cdn3rd : "//cdn.bootcss.com"
 	},
 	rls: {
 		buildversion: "rls-0.0.1-",
 		webRoot: ".",
 		staticRoot: ".",
-		apiRoot: ".",
-		cdnRoot: "//www.jade-dungeon.net:8081",
-		cdn3rd : "//cdn.bootcss.com"
+		apiRoot: "//:8082/src/mock-backend",
+		cdnRoot: "//:8081/jadeutils.v2",
+		cdn3rd : "//:8081/3rd.v2"
 	}
 };
+
