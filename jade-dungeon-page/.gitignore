@@ -9,6 +9,7 @@ webroot/
 envs.js
 deploy-rls-behind.sh
 deploy-rls-front.sh
+envs-dev.js
 envs-behind.js
 envs-front.js
 
