@@ -136,6 +136,6 @@ exports.handler = {
 				'Access-Control-Allow-Headers': 'x-requested-with,content-type'
 			});
 		}
-		await context.response.send(JSON.stringify(json));
+		await context.response.write(JSON.stringify(json));
     },
 };
